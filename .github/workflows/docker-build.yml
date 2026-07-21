@@ -1,0 +1,1 @@
+name: Docker Build\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo build docker

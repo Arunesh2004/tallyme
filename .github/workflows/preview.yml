@@ -1,0 +1,1 @@
+name: Preview\non: [pull_request]\njobs:\n  preview:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo preview

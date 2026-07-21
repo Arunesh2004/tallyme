@@ -1,0 +1,3 @@
+export const TOKEN_PROVIDER = 'TOKEN_PROVIDER';
+export const PASSWORD_HASHER = 'PASSWORD_HASHER';
+export const AUTH_SERVICE = 'AUTH_SERVICE';

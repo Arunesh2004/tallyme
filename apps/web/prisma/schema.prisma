@@ -1,0 +1,975 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id             String    @id @default(uuid())
+  name           String
+  gstin          String?
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  users          User[]
+  roles          Role[]
+  systemSettings SystemSetting[]
+  auditLogs      AuditLog[]
+  businessRules  BusinessRule[]
+  notifications  Notification[]
+  eventOutbox    EventOutbox[]
+  failedEvents   FailedEvent[]
+  processingHist ProcessingHistory[]
+  accountingVouchers AccountingVoucher[]
+  accountingLedgers  AccountingLedger[]
+  accountingMasters  AccountingMaster[]
+  syncMetrics        SyncMetric[]
+  
+  // Inventory Bounded Context
+  inventoryStockGroups      InventoryStockGroup[]
+  inventoryStockCategories  InventoryStockCategory[]
+  inventoryUnits            InventoryUnit[]
+  inventoryGodowns          InventoryGodown[]
+  inventoryPriceLevels      InventoryPriceLevel[]
+  inventoryBatches          InventoryBatch[]
+  inventoryStockItems       InventoryStockItem[]
+
+  // Student Fees Bounded Context
+  ingestionMessages         IngestionMessage[]
+  manualReviews             ManualReview[]
+
+  // Student Information System
+  feeHeads                  FeeHead[]
+  feeStructures             FeeStructure[]
+  studentProfiles           StudentProfile[]
+  feeTransactions           FeeTransaction[]
+
+  // Accounting Mapper
+  ledgerMappings            LedgerMapping[]
+  accountingTransactions    AccountingTransaction[]
+
+  // Sync Integration
+  syncSessions              SyncSession[]
+
+  @@map("organizations")
+}
+
+model User {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  passwordHash   String    @map("password_hash")
+  organizationId String    @map("organization_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  userRoles      UserRole[]
+
+  @@index([organizationId], name: "idx_users_organization_id")
+  @@map("users")
+}
+
+model Role {
+  id             String    @id @default(uuid())
+  name           String
+  organizationId String    @map("organization_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  permissions    Permission[]
+  userRoles      UserRole[]
+
+  @@index([organizationId], name: "idx_roles_organization_id")
+  @@map("roles")
+}
+
+model Permission {
+  id             String    @id @default(uuid())
+  action         String
+  resource       String
+  roleId         String    @map("role_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  role           Role      @relation(fields: [roleId], references: [id])
+
+  @@index([roleId], name: "idx_permissions_role_id")
+  @@map("permissions")
+}
+
+model UserRole {
+  id             String    @id @default(uuid())
+  userId         String    @map("user_id")
+  roleId         String    @map("role_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  user           User      @relation(fields: [userId], references: [id])
+  role           Role      @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId], name: "uq_user_roles_user_role")
+  @@index([userId], name: "idx_user_roles_user_id")
+  @@map("user_roles")
+}
+
+model SystemSetting {
+  id             String    @id @default(uuid())
+  key            String
+  value          Json
+  organizationId String    @map("organization_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, key], name: "uq_system_settings_org_key")
+  @@index([organizationId], name: "idx_system_settings_org_id")
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id             String    @id @default(uuid())
+  action         String
+  entityType     String    @map("entity_type")
+  entityId       String    @map("entity_id")
+  diff           Json
+  organizationId String    @map("organization_id")
+  
+  // Lifecycle (Append only, no updates/deletes)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  createdBy      String?   @map("created_by")
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId, entityType, entityId], name: "idx_audit_logs_org_entity")
+  @@map("audit_logs")
+}
+
+model BusinessRule {
+  id             String    @id @default(uuid())
+  name           String
+  category       String
+  conditionJson  Json      @map("condition_json")
+  actionJson     Json      @map("action_json")
+  isActive       Boolean   @default(true) @map("is_active")
+  organizationId String    @map("organization_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+  createdBy      String?   @map("created_by")
+  updatedBy      String?   @map("updated_by")
+  deletedBy      String?   @map("deleted_by")
+  version        Int       @default(1)
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId, category], name: "idx_business_rules_org_cat")
+  @@map("business_rules")
+}
+
+model ProcessingHistory {
+  id             String    @id @default(uuid())
+  entityType     String    @map("entity_type")
+  entityId       String    @map("entity_id")
+  state          String
+  payload        Json
+  organizationId String    @map("organization_id")
+  
+  // Lifecycle (Append only)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  createdBy      String?   @map("created_by")
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId, entityId], name: "idx_processing_history_org_entity")
+  @@map("processing_history")
+}
+
+enum SyncStatus {
+  PENDING
+  QUEUED
+  PROCESSING
+  SYNCED
+  FAILED
+  RETRYING
+  DEAD_LETTER
+  CONFLICT
+}
+
+enum EventStatus {
+  PENDING
+  PROCESSING
+  RETRYING
+  PUBLISHED
+  FAILED
+}
+
+model EventOutbox {
+  id             String      @id @default(uuid())
+  eventId        String      @unique @default(uuid()) @map("event_id")
+  aggregateId    String      @map("aggregate_id")
+  aggregateType  String      @map("aggregate_type")
+  eventType      String      @map("event_type")
+  payload        Json
+  correlationId  String?     @map("correlation_id")
+  status         EventStatus @default(PENDING)
+  retryCount     Int         @default(0) @map("retry_count")
+  lastError      String?     @map("last_error")
+  processedAt    DateTime?   @map("processed_at")
+  organizationId String      @map("organization_id")
+  
+  // Lifecycle
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([status, createdAt], name: "idx_event_outbox_status")
+  @@index([organizationId], name: "idx_event_outbox_org_id")
+  @@map("event_outbox")
+}
+
+model FailedEvent {
+  id             String    @id @default(uuid())
+  eventType      String    @map("event_type")
+  payload        Json
+  errorReason    String    @map("error_reason")
+  retryCount     Int       @default(0) @map("retry_count")
+  organizationId String    @map("organization_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId], name: "idx_failed_events_org_id")
+  @@map("failed_events")
+}
+
+model Notification {
+  id             String    @id @default(uuid())
+  type           String
+  message        String
+  isRead         Boolean   @default(false) @map("is_read")
+  recipientId    String    @map("recipient_id")
+  organizationId String    @map("organization_id")
+  
+  // Audit & Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([recipientId, isRead], name: "idx_notifications_recipient_read")
+  @@index([organizationId], name: "idx_notifications_org_id")
+  @@map("notifications")
+}
+
+model AccountingVoucher {
+  id                      String      @id @default(uuid())
+  accountingTransactionId String?     @unique @map("accounting_transaction_id")
+  voucherNumber           String?     @map("voucher_number")
+  tallyId                 String?     @map("tally_id")
+  voucherType             String      @map("voucher_type")
+  date                    DateTime
+  narration               String?
+  syncStatus              SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt              DateTime?   @map("last_sync_at")
+  syncAttempts            Int         @default(0) @map("sync_attempts")
+  lastSyncError           String?     @map("last_sync_error")
+  xmlRequest              String?     @map("xml_request")
+  xmlResponse             String?     @map("xml_response")
+  
+  // Lifecycle Metadata
+  validatedAt             DateTime?   @map("validated_at")
+  queuedAt                DateTime?   @map("queued_at")
+  syncedAt                DateTime?   @map("synced_at")
+  failedAt                DateTime?   @map("failed_at")
+  retryCount              Int         @default(0) @map("retry_count")
+  lastFailureReason       String?     @map("last_failure_reason")
+  
+  // Audit & Lifecycle
+  correlationId           String?     @map("correlation_id")
+  sourceSystem            String      @default("TallyMe") @map("source_system")
+  createdAt               DateTime    @default(now()) @map("created_at")
+  updatedAt               DateTime    @updatedAt @map("updated_at")
+  createdBy               String?     @map("created_by")
+  updatedBy               String?     @map("updated_by")
+
+  organizationId          String      @map("organization_id")
+  organization            Organization @relation(fields: [organizationId], references: [id])
+  accountingTransaction   AccountingTransaction? @relation(fields: [accountingTransactionId], references: [id])
+  entries                 VoucherEntry[]
+  syncSessions            SyncSession[]
+  
+  @@map("accounting_vouchers")
+}
+
+model VoucherEntry {
+  id             String      @id @default(uuid())
+  voucherId      String      @map("voucher_id")
+  ledgerId       String      @map("ledger_id")
+  isDebit        Boolean     @map("is_debit")
+  amount         Decimal
+  narration      String?
+
+  voucher        AccountingVoucher @relation(fields: [voucherId], references: [id])
+  ledger         AccountingLedger  @relation(fields: [ledgerId], references: [id])
+
+  @@index([voucherId], name: "idx_voucher_entry_voucher")
+  @@map("voucher_entries")
+}
+
+model AccountingLedger {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  parentGroup    String      @map("parent_group")
+  isActive       Boolean     @default(true) @map("is_active")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  // Relations
+  ledgerMappings   LedgerMapping[]
+  accountingEntries AccountingEntry[]
+  voucherEntries    VoucherEntry[]
+
+  @@map("accounting_ledgers")
+}
+
+model AccountingMaster {
+  id             String      @id @default(uuid())
+  masterType     String      @map("master_type")
+  name           String
+  tallyId        String?     @map("tally_id")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+  
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("accounting_masters")
+}
+
+model SyncMetric {
+  id             String      @id @default(uuid())
+  eventId        String      @map("event_id")
+  aggregateId    String      @map("aggregate_id")
+  aggregateType  String      @map("aggregate_type")
+  status         String      // SUCCESS, FAILED
+  durationMs     Int         @map("duration_ms")
+  retryCount     Int         @default(0) @map("retry_count")
+  errorReason    String?     @map("error_reason")
+  
+  // Lifecycle
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([status, createdAt], name: "idx_sync_metrics_status")
+  @@index([organizationId], name: "idx_sync_metrics_org_id")
+  @@map("sync_metrics")
+}
+
+// ==========================================
+// INVENTORY BOUNDED CONTEXT
+// ==========================================
+
+model InventoryStockGroup {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  parentGroup    String?     @map("parent_group")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_stock_groups")
+}
+
+model InventoryStockCategory {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  parentCategory String?     @map("parent_category")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_stock_categories")
+}
+
+model InventoryUnit {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  originalName   String?     @map("original_name")
+  decimalPlaces  Int         @default(0) @map("decimal_places")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_units")
+}
+
+model InventoryGodown {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  parentGodown   String?     @map("parent_godown")
+  address        String?
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_godowns")
+}
+
+model InventoryPriceLevel {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_price_levels")
+}
+
+model InventoryBatch {
+  id             String      @id @default(uuid())
+  name           String
+  tallyId        String?     @map("tally_id")
+  stockItemId    String      @map("stock_item_id")
+  mfgDate        DateTime?   @map("mfg_date")
+  expiryDate     DateTime?   @map("expiry_date")
+  payload        Json
+  syncStatus     SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt     DateTime?   @map("last_sync_at")
+  syncAttempts   Int         @default(0) @map("sync_attempts")
+  lastSyncError  String?     @map("last_sync_error")
+  xmlRequest     String?     @map("xml_request")
+  xmlResponse    String?     @map("xml_response")
+
+  // Audit & Lifecycle
+  correlationId  String?     @map("correlation_id")
+  sourceSystem   String      @default("TallyMe") @map("source_system")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdBy      String?     @map("created_by")
+  updatedBy      String?     @map("updated_by")
+
+  organizationId String      @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_batches")
+}
+
+model InventoryStockItem {
+  id               String      @id @default(uuid())
+  name             String
+  alias            String?
+  sku              String?     @unique
+  barcode          String?
+  hsnCode          String?     @map("hsn_code")
+  gstRate          Decimal?    @map("gst_rate")
+  stockGroup       String?     @map("stock_group")
+  stockCategory    String?     @map("stock_category")
+  unit             String
+  godown           String?
+  
+  // Future ERP Tracking
+  manufacturer     String?
+  brand            String?
+  isBatchTracking  Boolean     @default(false) @map("is_batch_tracking")
+  isSerialTracking Boolean     @default(false) @map("is_serial_tracking")
+  isExpiryTracking Boolean     @default(false) @map("is_expiry_tracking")
+  mfgDate          DateTime?   @map("mfg_date")
+  metadata         Json?
+  
+  payload          Json
+  syncStatus       SyncStatus  @default(PENDING) @map("sync_status")
+  
+  // Sync Metadata
+  lastSyncAt       DateTime?   @map("last_sync_at")
+  syncAttempts     Int         @default(0) @map("sync_attempts")
+  lastSyncError    String?     @map("last_sync_error")
+  xmlRequest       String?     @map("xml_request")
+  xmlResponse      String?     @map("xml_response")
+  
+  // Audit & Lifecycle
+  correlationId    String?     @map("correlation_id")
+  sourceSystem     String      @default("TallyMe") @map("source_system")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+  createdBy        String?     @map("created_by")
+  updatedBy        String?     @map("updated_by")
+
+  organizationId   String      @map("organization_id")
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  @@map("inventory_stock_items")
+}
+
+// ==========================================
+// STUDENT FEES BOUNDED CONTEXT
+// ==========================================
+
+model IngestionMessage {
+  id             String    @id @default(uuid())
+  provider       String    // GMAIL, OUTLOOK, etc.
+  messageId      String    @map("message_id")
+  threadId       String?   @map("thread_id")
+  historyId      String?   @map("history_id")
+  labelIds       Json?     @map("label_ids")
+  subject        String?
+  fromEmail      String?   @map("from_email")
+  payloadHash    String    @map("payload_hash") // Semantic duplication
+  status         String    @default("PENDING") // PENDING, PUBLISHED, FAILED
+  
+  // Audits & Error tracking
+  retryCount     Int       @default(0) @map("retry_count")
+  lastError      String?   @map("last_error")
+  receivedAt     DateTime  @map("received_at")
+  processedAt    DateTime? @map("processed_at")
+  
+  // Lifecycle
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  organizationId String    @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  // Composite constraints to prevent identical Message IDs per provider
+  @@unique([provider, messageId], name: "uq_ingestion_messages_provider_msg")
+  @@index([provider, status], name: "idx_ingestion_messages_status")
+  @@index([payloadHash], name: "idx_ingestion_messages_hash")
+  @@map("ingestion_messages")
+}
+
+// ==========================================
+// STUDENT INFORMATION SYSTEM
+// ==========================================
+
+model FeeHead {
+  id                 String    @id @default(uuid())
+  name               String
+  priority           Int       @default(999)
+  type               String    // e.g. TUITION, TRANSPORT, LATE_FEE, ADVANCE
+  active             Boolean   @default(true)
+
+  // Audits & Lifecycle
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  organizationId     String    @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id])
+  
+  feeStructureItems  FeeStructureItem[]
+  allocations        FeeTransactionAllocation[]
+
+  @@map("fee_heads")
+}
+
+model FeeStructure {
+  id                 String    @id @default(uuid())
+  name               String
+  
+  // Audits & Lifecycle
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  organizationId     String    @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id])
+  
+  students           StudentProfile[]
+  items              FeeStructureItem[]
+  feeTransactions    FeeTransaction[]
+  
+  @@map("fee_structures")
+}
+
+model FeeStructureItem {
+  id                 String    @id @default(uuid())
+  feeStructureId     String    @map("fee_structure_id")
+  feeHeadId          String    @map("fee_head_id")
+  amount             Decimal   @default(0)
+
+  feeStructure       FeeStructure @relation(fields: [feeStructureId], references: [id])
+  feeHead            FeeHead      @relation(fields: [feeHeadId], references: [id])
+
+  @@unique([feeStructureId, feeHeadId], name: "uq_fee_structure_item")
+  @@map("fee_structure_items")
+}
+
+model StudentProfile {
+  id                 String    @id @default(uuid())
+  admissionNumber    String    @unique @map("admission_number")
+  rollNumber         String?   @map("roll_number")
+  studentName        String    @map("student_name")
+  fatherName         String?   @map("father_name")
+  motherName         String?   @map("mother_name")
+  class              String
+  section            String?
+  academicSession    String    @map("academic_session")
+  status             String    @default("ACTIVE") // ACTIVE, INACTIVE, ALUMNI
+  phone              String?
+  email              String?
+  metadata           Json?
+  
+  feeStructureId     String?   @map("fee_structure_id")
+  feeStructure       FeeStructure? @relation(fields: [feeStructureId], references: [id])
+  
+  feeTransactions    FeeTransaction[]
+
+  // Audits & Lifecycle
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  organizationId     String    @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([admissionNumber], name: "idx_students_admission_no")
+  @@index([studentName, class], name: "idx_students_name_class")
+  @@map("student_profiles")
+}
+
+// ==========================================
+// STUDENT FEES BOUNDED CONTEXT (MATCHING & EXCEPTIONS)
+// ==========================================
+
+model ManualReview {
+  id                 String    @id @default(uuid())
+  type               String    // MATCHING_FAILURE, OVERPAYMENT, DUPLICATE
+  reason             String
+  status             String    @default("PENDING") // PENDING, RESOLVED
+  payload            Json      // The original PaymentNotification or context
+  resolution         String?
+  assignedTo         String?   @map("assigned_to")
+  
+  // Audits & Lifecycle
+  createdAt          DateTime  @default(now()) @map("created_at")
+  resolvedAt         DateTime? @map("resolved_at")
+
+  organizationId     String    @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([status, type], name: "idx_manual_reviews_status")
+  @@map("manual_reviews")
+}
+
+model FeeTransaction {
+  id                      String    @id @default(uuid())
+  studentId               String    @map("student_id")
+  paymentNotificationId   String?   @map("payment_notification_id")
+  feeStructureId          String    @map("fee_structure_id")
+  expectedAmount          Decimal   @map("expected_amount")
+  receivedAmount          Decimal   @map("received_amount")
+  balanceRemaining        Decimal   @map("balance_remaining")
+  
+  billingPeriod           String    @default("MONTHLY") @map("billing_period") // MONTHLY, QUARTERLY, ANNUAL
+  feeMonth                String?   @map("fee_month")
+  
+  paymentDate             DateTime  @map("payment_date")
+  gateway                 String?
+  utr                     String?
+  status                  String    @default("PENDING") // PAID, PARTIALLY_PAID, OVERPAID, ADVANCE_PAYMENT
+  remarks                 String?
+  metadata                Json?
+
+  // Audits & Lifecycle
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+  
+  organizationId          String    @map("organization_id")
+  organization            Organization @relation(fields: [organizationId], references: [id])
+
+  student                 StudentProfile @relation(fields: [studentId], references: [id])
+  feeStructure            FeeStructure   @relation(fields: [feeStructureId], references: [id])
+  allocations             FeeTransactionAllocation[]
+
+  @@index([studentId, paymentDate], name: "idx_fee_transactions_student_date")
+  @@map("fee_transactions")
+}
+
+model FeeTransactionAllocation {
+  id                 String    @id @default(uuid())
+  feeTransactionId   String    @map("fee_transaction_id")
+  feeHeadId          String    @map("fee_head_id")
+  
+  expectedAmount     Decimal   @map("expected_amount")
+  allocatedAmount    Decimal   @map("allocated_amount")
+  remainingAmount    Decimal   @map("remaining_amount")
+  priority           Int
+
+  feeTransaction     FeeTransaction @relation(fields: [feeTransactionId], references: [id])
+  feeHead            FeeHead        @relation(fields: [feeHeadId], references: [id])
+
+  @@index([feeTransactionId], name: "idx_fee_allocations_txn")
+  @@map("fee_transaction_allocations")
+}
+
+// ==========================================
+// ACCOUNTING MAPPER (ANTI-CORRUPTION LAYER)
+// ==========================================
+
+model LedgerMapping {
+  id                 String    @id @default(uuid())
+  mappingKey         String    @map("mapping_key") // e.g. 'FEE_HEAD_TUITION', 'BANK_HDFC'
+  ledgerId           String    @map("ledger_id")
+  
+  // Audits & Lifecycle
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  organizationId     String    @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id])
+  ledger             AccountingLedger @relation(fields: [ledgerId], references: [id])
+
+  @@unique([organizationId, mappingKey], name: "uq_ledger_mapping")
+  @@map("ledger_mappings")
+}
+
+model AccountingTransaction {
+  id                 String    @id @default(uuid())
+  referenceId        String    @map("reference_id") // ID from business domain
+  referenceType      String    @map("reference_type") // e.g. 'FEE_RECEIPT'
+  transactionDate    DateTime  @map("transaction_date")
+  description        String?
+  voucherType        String    @map("voucher_type") // RECEIPT, PAYMENT, JOURNAL
+  status             String    @default("PENDING") // PENDING, GENERATED, FAILED
+  
+  // Immutability & Idempotency
+  version            Int       @default(1)
+  sourceEventId      String    @unique @map("source_event_id") // Correlates to FeeAllocated eventId
+  
+  // Audits & Lifecycle
+  createdBy          String    @default("SYSTEM") @map("created_by")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  organizationId     String    @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id])
+  
+  entries            AccountingEntry[]
+  accountingVoucher  AccountingVoucher?
+
+  @@index([referenceId, referenceType], name: "idx_acct_txn_reference")
+  @@map("accounting_transactions")
+}
+
+model AccountingEntry {
+  id                 String    @id @default(uuid())
+  transactionId      String    @map("transaction_id")
+  ledgerId           String    @map("ledger_id")
+  
+  debit              Decimal   @default(0)
+  credit             Decimal   @default(0)
+  costCenter         String?   @map("cost_center")
+  narration          String?
+  metadata           Json?
+  
+  transaction        AccountingTransaction @relation(fields: [transactionId], references: [id])
+  ledger             AccountingLedger      @relation(fields: [ledgerId], references: [id])
+
+  @@index([transactionId], name: "idx_acct_entry_txn")
+  @@map("accounting_entries")
+}
+
+model SyncSession {
+  id               String    @id @default(uuid())
+  voucherId        String    @map("voucher_id")
+  attempt          Int
+  status           SyncStatus
+  
+  startedAt        DateTime  @default(now()) @map("started_at")
+  completedAt      DateTime? @map("completed_at")
+  duration         Int?      // Duration in milliseconds
+  
+  response         Json?
+  error            String?
+  correlationId    String?   @map("correlation_id")
+
+  voucher          AccountingVoucher @relation(fields: [voucherId], references: [id])
+  organizationId   String    @map("organization_id")
+  organization     Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([voucherId], name: "idx_sync_session_voucher")
+  @@map("sync_sessions")
+}

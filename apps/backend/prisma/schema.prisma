@@ -1,0 +1,73 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  isActive     Boolean   @default(true)
+  roleId       String
+  role         Role      @relation(fields: [roleId], references: [id])
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique // Admin, Accountant, Operator
+  permissions Permission[]
+  users       User[]
+  createdAt   DateTime     @default(now())
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  action      String   @unique // e.g., Voucher.Create
+  roles       Role[]
+  createdAt   DateTime @default(now())
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken String   @unique
+  expiresAt    DateTime
+  isRevoked    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+// ... Additional Stubs for Student, Vendor, Voucher, Outbox ...
+// Stubs included to fulfill TDS Phase 1A request
+model Student {
+  id           String   @id @default(uuid())
+  enrollmentNo String   @unique
+  email        String?  @unique
+}
+
+model Vendor {
+  id           String   @id @default(uuid())
+  gstin        String?  @unique
+  pan          String?  @unique
+}
+
+model VoucherCandidate {
+  id           String   @id @default(uuid())
+  amount       Decimal
+  status       String
+}
+
+model OutboxEvent {
+  id           String   @id @default(uuid())
+  eventType    String
+  payload      String
+  processedAt  DateTime?
+}

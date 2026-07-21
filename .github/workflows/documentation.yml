@@ -1,0 +1,1 @@
+name: Documentation\non: [push]\njobs:\n  docs:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo build docs

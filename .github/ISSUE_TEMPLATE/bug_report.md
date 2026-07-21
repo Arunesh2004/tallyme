@@ -1,0 +1,1 @@
+name: Bug Report\nabout: Create a report to help us improve
