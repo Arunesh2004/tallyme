@@ -10,7 +10,12 @@ export interface IMatchingRepository {
   logAttempt(attempt: any): Promise<void>;
   saveConflict(conflict: any): Promise<void>;
   saveMatch(match: any): Promise<void>;
-  saveMatchingResult(candidateData: any, attemptData: any, matchesData: any[], conflictsData: any[]): Promise<any>;
+  saveMatchingResult(
+    candidateData: any,
+    attemptData: any,
+    matchesData: any[],
+    conflictsData: any[],
+  ): Promise<any>;
 }
 
 export interface RuleEvaluationResult {

@@ -4,8 +4,19 @@ import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 
 export const configureApp = (app: INestApplication) => {
-  // Security headers
-  app.use(helmet());
+  // Security headers with CSP
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
+      },
+    }),
+  );
 
   // Compression
   app.use(compression());

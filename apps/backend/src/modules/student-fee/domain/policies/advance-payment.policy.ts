@@ -7,9 +7,14 @@ import * as crypto from 'crypto';
 
 @Injectable()
 export class AdvancePaymentPolicy {
-  
-  handleOverpayment(candidate: PaymentCandidate, allocations: FeeAllocation[]): FeeAllocation | null {
-    const totalAllocated = allocations.reduce((sum, alloc) => sum + alloc.allocatedAmount.amount.toNumber(), 0);
+  handleOverpayment(
+    candidate: PaymentCandidate,
+    allocations: FeeAllocation[],
+  ): FeeAllocation | null {
+    const totalAllocated = allocations.reduce(
+      (sum, alloc) => sum + alloc.allocatedAmount.amount.toNumber(),
+      0,
+    );
     const paidAmount = candidate.amount.amount.toNumber();
 
     const overpaymentAmount = paidAmount - totalAllocated;
@@ -20,10 +25,10 @@ export class AdvancePaymentPolicy {
         crypto.randomUUID(),
         candidate.id, // Linking back to payment match
         'ADVANCE_FEE_LEDGER_STUB',
-        new PaymentAmount(new DecimalWrapper(overpaymentAmount))
+        new PaymentAmount(new DecimalWrapper(overpaymentAmount)),
       );
     }
-    
+
     return null;
   }
 }

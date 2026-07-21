@@ -16,7 +16,7 @@ export class CorrelationMiddleware implements NestMiddleware {
     const contextData = {
       correlationId,
       requestId: crypto.randomUUID(),
-      tenantId: req.header('x-tenant-id') || 'DEFAULT'
+      tenantId: req.header('x-tenant-id') || 'DEFAULT',
     };
 
     CorrelationContext.run(contextData, () => {

@@ -18,7 +18,7 @@ export class ERPController {
   @Post('sync')
   @Permissions('admin:erp-connector:sync')
   async process(@Body() dto: ProcessERPSyncDto) {
-    await this.useCase.execute(dto.voucherCandidateId);
+    await this.useCase.execute(dto.voucherCandidateId, 1);
     return { success: true, message: 'ERP sync process initiated' };
   }
 

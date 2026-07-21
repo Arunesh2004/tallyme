@@ -6,7 +6,7 @@ export class InMemoryEventDispatcher implements EventDispatcher {
 
   async dispatch(event: Event): Promise<void> {
     const handlers = this.registry.getHandlers(event.metadata.eventType);
-    
+
     // Synchronous dispatch in sequence
     for (const handler of handlers) {
       if (handler.canHandle(event)) {
@@ -17,15 +17,20 @@ export class InMemoryEventDispatcher implements EventDispatcher {
 
   async dispatchAsync(event: Event): Promise<void> {
     const handlers = this.registry.getHandlers(event.metadata.eventType);
-    
+
     // Fire and forget, or `Promise.all` in background
     Promise.all(
       handlers
-        .filter(handler => handler.canHandle(event))
-        .map(handler => handler.handle(event).catch(err => {
-          // In a real system, you'd inject a Logger here
-          console.error(`Async dispatch failed for event ${event.metadata.eventType}`, err);
-        }))
+        .filter((handler) => handler.canHandle(event))
+        .map((handler) =>
+          handler.handle(event).catch((err) => {
+            // In a real system, you'd inject a Logger here
+            console.error(
+              `Async dispatch failed for event ${event.metadata.eventType}`,
+              err,
+            );
+          }),
+        ),
     );
   }
 }

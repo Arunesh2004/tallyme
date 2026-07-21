@@ -68,7 +68,12 @@ export class ProcessMatchingUseCase {
       resultStatus: result.status,
     };
 
-    const savedMatch = await this.repository.saveMatchingResult(candidateData, attemptData, [], []);
+    const savedMatch = await this.repository.saveMatchingResult(
+      candidateData,
+      attemptData,
+      [],
+      [],
+    );
 
     if (result.status === 'MATCHED' && !conflicts.length) {
       await this.queue.addJob(FEE_VALIDATION_QUEUE, 'validate-fee', {

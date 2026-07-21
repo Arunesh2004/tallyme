@@ -70,7 +70,7 @@ export class PrismaMailRepository implements IMailRepository {
       });
 
       if (attachmentsData && attachmentsData.length > 0) {
-        attachmentsData.forEach(a => a.emailId = email.id);
+        attachmentsData.forEach((a) => (a.emailId = email.id));
         await tx.emailAttachment.createMany({ data: attachmentsData as any });
       }
 

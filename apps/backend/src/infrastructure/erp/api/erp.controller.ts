@@ -1,14 +1,25 @@
 // src/infrastructure/erp/api/erp.controller.ts
-import { Controller, Get, Post, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../../modules/auth/guards/jwt-auth.guard';
-import { PermissionsGuard, RequirePermissions } from '../../../modules/auth/guards/permissions.guard';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '../../../modules/auth/guards/permissions.guard';
 import { QueueRegistry } from '../../queue/bullmq';
 
 @Controller('erp')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ErpController {
   constructor(private readonly queueRegistry: QueueRegistry) {}
-  
+
   @Get('sync/:voucherId')
   @RequirePermissions('ERP.Read')
   async getSyncStatus(@Param('voucherId') voucherId: string) {
@@ -20,7 +31,10 @@ export class ErpController {
   @RequirePermissions('ERP.Sync')
   async retrySync(@Param('voucherId') voucherId: string) {
     const queue = this.queueRegistry.getQueue('erp-sync');
-    await queue.add('sync-job', { voucherId, correlationId: crypto.randomUUID() });
+    await queue.add('sync-job', {
+      voucherId,
+      correlationId: crypto.randomUUID(),
+    });
     return { voucherId, status: 'REQUEUED' };
   }
 

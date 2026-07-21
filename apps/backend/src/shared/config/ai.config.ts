@@ -14,6 +14,6 @@ export const aiConfig = registerAs('ai', (): AIConfig => {
     provider: env.AI_PROVIDER,
     apiKey: env.AI_API_KEY,
     model: env.AI_MODEL,
-    timeoutMs: env.AI_TIMEOUT_MS
+    timeoutMs: env.AI_TIMEOUT_MS,
   };
 });

@@ -9,7 +9,7 @@ export class ERPRetryService {
     if (error.code && nonRetryableErrors.includes(error.code)) {
       return false;
     }
-    return true; // Default retry true for mock
+    return true; // Configurable based on error type
   }
 
   calculateBackoff(attempt: number): number {

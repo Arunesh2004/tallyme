@@ -15,16 +15,23 @@ export class ERPSyncWorker extends WorkerHost {
 
   async process(job: Job<any, any, string>): Promise<any> {
     this.logger.log(
-      `Processing ERP sync job ${job.id} for voucher ${job.data.voucherCandidateId}`,
+      {
+        message: 'Processing ERP sync job',
+        jobId: job.data.jobId,
+        attempt: job.attemptsMade,
+      },
       'ERPSyncWorker',
     );
 
     try {
-      await this.useCase.execute(job.data.voucherCandidateId);
+      await this.useCase.execute(job.data.jobId, job.attemptsMade || 1);
       return { success: true };
     } catch (error) {
       this.logger.error(
-        `ERP Sync failed for voucher ${job.data.voucherCandidateId}`,
+        {
+          message: 'ERP Sync job threw error, delegating to BullMQ retry',
+          jobId: job.data.jobId,
+        },
         (error as Error).stack,
         'ERPSyncWorker',
       );

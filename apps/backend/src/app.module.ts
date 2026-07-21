@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import {
@@ -29,6 +30,8 @@ import { StudentMatchingModule } from './modules/student-matching/student-matchi
 import { FeeValidationModule } from './modules/fee-validation/fee-validation.module';
 import { VoucherBuilderModule } from './modules/voucher-builder/voucher-builder.module';
 import { ERPConnectorModule } from './modules/erp-connector/erp-connector.module';
+import { OperationsPortalModule } from './modules/operations-portal/operations-portal.module';
+import { ObservabilityModule } from './shared/observability/observability.module';
 
 @Module({
   imports: [
@@ -48,6 +51,7 @@ import { ERPConnectorModule } from './modules/erp-connector/erp-connector.module
         mailConfig,
       ],
     }),
+    PrometheusModule.register(),
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
@@ -69,6 +73,8 @@ import { ERPConnectorModule } from './modules/erp-connector/erp-connector.module
     FeeValidationModule,
     VoucherBuilderModule,
     ERPConnectorModule,
+    OperationsPortalModule,
+    ObservabilityModule,
   ],
   providers: [
     {

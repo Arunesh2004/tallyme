@@ -18,7 +18,11 @@ export class OutstandingFeeResolver {
 
 @Injectable()
 export class FeeAllocator {
-  allocate(candidate: PaymentCandidate, match: StudentMatch, outstandingFees: any[]): FeeAllocation[] {
+  allocate(
+    candidate: PaymentCandidate,
+    match: StudentMatch,
+    outstandingFees: any[],
+  ): FeeAllocation[] {
     const allocations: FeeAllocation[] = [];
     let remaining = candidate.amount.amount.toNumber();
 
@@ -26,16 +30,18 @@ export class FeeAllocator {
     // Stub implementation assumes fees are sorted by priority
     for (const fee of outstandingFees) {
       if (remaining <= 0) break;
-      
+
       const toAllocate = Math.min(fee.balance, remaining);
       remaining -= toAllocate;
 
-      allocations.push(new FeeAllocation(
-        crypto.randomUUID(),
-        match.id, // Links to the StudentPayment/Match
-        fee.id,
-        new PaymentAmount(new DecimalWrapper(toAllocate))
-      ));
+      allocations.push(
+        new FeeAllocation(
+          crypto.randomUUID(),
+          match.id, // Links to the StudentPayment/Match
+          fee.id,
+          new PaymentAmount(new DecimalWrapper(toAllocate)),
+        ),
+      );
     }
 
     // If remaining > 0, we have an advance payment, requiring special handling

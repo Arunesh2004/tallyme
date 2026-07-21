@@ -21,6 +21,14 @@ import { RequestContextService } from '../context/request-context.service';
               req.headers[REQUEST_ID_HEADER] ||
               RequestContextService.getCorrelationId() ||
               crypto.randomUUID(),
+            customProps: (req: any, res: any) => {
+              return {
+                userId: req.user?.id,
+                companyId: req.user?.companyId,
+                workerId: process.env.WORKER_ID || 'web-api-1',
+                erpJobId: req.headers['x-erp-job-id'],
+              };
+            },
             redact: {
               paths: [
                 'req.headers.authorization',

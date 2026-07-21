@@ -9,8 +9,13 @@ import axios from 'axios';
 export class TallyIdempotencyService {
   constructor(private readonly logger: ILogger) {}
 
-  async isVoucherAlreadySynced(candidateId: string, gatewayUrl: string): Promise<boolean> {
-    this.logger.info(`Checking idempotency for Voucher ${candidateId} in Tally`);
+  async isVoucherAlreadySynced(
+    candidateId: string,
+    gatewayUrl: string,
+  ): Promise<boolean> {
+    this.logger.info(
+      `Checking idempotency for Voucher ${candidateId} in Tally`,
+    );
     // In Tally, we query the Gateway for a Voucher where NARRATION or a custom UDF matches our Candidate ID
     const queryXml = `
       <ENVELOPE>
@@ -27,13 +32,13 @@ export class TallyIdempotencyService {
         </BODY>
       </ENVELOPE>
     `;
-    
+
     try {
       // Stub HTTP request to Tally
       // const response = await axios.post(gatewayUrl, queryXml);
       // const xml = response.data;
       // return xml.includes(candidateId); // Parse XML for candidateId
-      return false; 
+      return false;
     } catch (e) {
       this.logger.error('Failed to query Tally for idempotency', e);
       throw e; // We MUST throw so BullMQ backs off, rather than risking a duplicate creation

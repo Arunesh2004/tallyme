@@ -19,16 +19,18 @@ export class VoucherSyncWorker extends WorkerHost implements OnModuleInit {
 
   async process(job: Job): Promise<any> {
     const correlationId = job.data.correlationId;
-    this.logger.info(`Starting Tally sync for Voucher ${job.data.voucherId}`, { correlationId });
+    this.logger.info(`Starting Tally sync for Voucher ${job.data.voucherId}`, {
+      correlationId,
+    });
 
     try {
       // 1. Fetch VoucherCandidate from DB
-      const candidate = { id: job.data.voucherId, /* ... */ }; // Stub
+      const candidate = { id: job.data.voucherId /* ... */ }; // Stub
 
       // 2. Call ERP Connector
       const response = await this.erpConnector.postVoucher({
         payload: candidate,
-        correlationId
+        correlationId,
       });
 
       // 3. Update Sync Status
@@ -40,7 +42,10 @@ export class VoucherSyncWorker extends WorkerHost implements OnModuleInit {
         throw new Error(`Tally Rejected: ${response.errorMessage}`); // Triggers BullMQ retry
       }
     } catch (error: any) {
-      this.logger.error(`Failed to sync voucher ${job.data.voucherId}`, error.stack);
+      this.logger.error(
+        `Failed to sync voucher ${job.data.voucherId}`,
+        error.stack,
+      );
       // Fallback to DLQ or retry handled by BullMQ retry policy
       throw error;
     }

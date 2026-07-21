@@ -12,5 +12,8 @@ export interface Span {
 
 export abstract class Tracer {
   abstract startSpan(name: string): Span;
-  abstract startActiveSpan<F extends (span: Span) => unknown>(name: string, fn: F): ReturnType<F>;
+  abstract startActiveSpan<F extends (span: Span) => unknown>(
+    name: string,
+    fn: F,
+  ): ReturnType<F>;
 }

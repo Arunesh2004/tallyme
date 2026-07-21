@@ -19,6 +19,3 @@ export * from './enums';
 export * from './result';
 export * from './specification';
 export * from './value-objects';
-export * from './services';
-export * from './factories';
-export * from './policies';

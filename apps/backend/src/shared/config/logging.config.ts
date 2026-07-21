@@ -12,6 +12,6 @@ export const loggingConfig = registerAs('logging', (): LoggingConfig => {
   return {
     level: env.LOG_LEVEL,
     prettyPrint: env.LOG_PRETTY_PRINT,
-    requestLogging: env.LOG_REQUEST_LOGGING
+    requestLogging: env.LOG_REQUEST_LOGGING,
   };
 });

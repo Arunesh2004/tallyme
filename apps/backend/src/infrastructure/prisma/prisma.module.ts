@@ -2,8 +2,8 @@ import { Module, Global } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { TransactionManager } from './transaction.manager';
 import { PrismaHealthIndicator } from './prisma.health';
-import { MigrationService } from './migration.ts';
-import { SeedService } from './seed.ts';
+import { MigrationService } from './migration';
+import { SeedService } from './seed';
 
 @Global()
 @Module({
@@ -12,12 +12,8 @@ import { SeedService } from './seed.ts';
     TransactionManager,
     PrismaHealthIndicator,
     MigrationService,
-    SeedService
+    SeedService,
   ],
-  exports: [
-    PrismaService,
-    TransactionManager,
-    PrismaHealthIndicator
-  ]
+  exports: [PrismaService, TransactionManager, PrismaHealthIndicator],
 })
 export class PrismaModule {}

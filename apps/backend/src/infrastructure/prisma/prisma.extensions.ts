@@ -14,8 +14,8 @@ export const withExtensions = (prisma: PrismaClient) => {
     model: {
       $allModels: {
         // Placeholder for custom model methods like softDelete
-      }
-    }
+      },
+    },
   });
 };
 

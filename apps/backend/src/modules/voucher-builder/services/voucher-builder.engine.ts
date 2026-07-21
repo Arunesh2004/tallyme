@@ -40,7 +40,8 @@ export class VoucherBuilderEngine {
     };
 
     // Debit Line
-    const debitLedger = await this.ledgerResolver.resolveDebitLedger(paymentData);
+    const debitLedger =
+      await this.ledgerResolver.resolveDebitLedger(paymentData);
     result.lines.push({
       ledgerId: debitLedger.id,
       ledgerName: debitLedger.name,

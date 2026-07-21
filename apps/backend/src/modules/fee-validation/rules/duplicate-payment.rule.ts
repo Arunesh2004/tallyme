@@ -23,22 +23,23 @@ export class DuplicatePaymentRule extends BaseValidationRule {
       };
     }
 
-    const duplicateCandidate = await this.prisma.feeAllocationCandidate.findFirst({
-      where: {
-        studentPaymentCandidate: {
-          paymentCandidate: {
-            OR: [
-              { transactionId: paymentData.transactionId || undefined },
-              { utr: paymentData.utr || undefined },
-            ],
-            gateway: paymentData.gateway || undefined,
-          }
+    const duplicateCandidate =
+      await this.prisma.feeAllocationCandidate.findFirst({
+        where: {
+          studentPaymentCandidate: {
+            paymentCandidate: {
+              OR: [
+                { transactionId: paymentData.transactionId || undefined },
+                { utr: paymentData.utr || undefined },
+              ],
+              gateway: paymentData.gateway || undefined,
+            },
+          },
+          validationStatus: {
+            not: 'INVALID',
+          },
         },
-        validationStatus: {
-          not: 'INVALID'
-        }
-      }
-    });
+      });
 
     if (duplicateCandidate) {
       return {
@@ -46,7 +47,9 @@ export class DuplicatePaymentRule extends BaseValidationRule {
         isValid: false,
         isDuplicate: true,
         statusModifier: 'DUPLICATE_PAYMENT',
-        warnings: ['Suspected duplicate payment transaction detected based on existing allocation'],
+        warnings: [
+          'Suspected duplicate payment transaction detected based on existing allocation',
+        ],
       };
     }
 

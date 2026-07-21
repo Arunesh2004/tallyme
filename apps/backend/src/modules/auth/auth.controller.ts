@@ -1,12 +1,25 @@
 // src/modules/auth/auth.controller.ts
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Request } from 'express';
 
 // Stubs for DTOs
-export class LoginDto { email!: string; password!: string; }
-export class RefreshTokenDto { refreshToken!: string; }
+export class LoginDto {
+  email!: string;
+  password!: string;
+}
+export class RefreshTokenDto {
+  refreshToken!: string;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +32,7 @@ export class AuthController {
     // return this.authService.login(loginDto);
     return {
       accessToken: 'STUB_ACCESS_TOKEN',
-      refreshToken: 'STUB_REFRESH_TOKEN'
+      refreshToken: 'STUB_REFRESH_TOKEN',
     };
   }
 

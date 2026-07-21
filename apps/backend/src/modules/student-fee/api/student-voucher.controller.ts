@@ -1,13 +1,23 @@
 // src/modules/student-fee/api/student-voucher.controller.ts
-import { Controller, Get, Post, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
-import { PermissionsGuard, RequirePermissions } from '../../../auth/guards/permissions.guard';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '../../../auth/guards/permissions.guard';
 import { StudentVoucherOrchestrator } from '../domain/services/student-voucher.orchestrator';
 
 @Controller('student-fees/vouchers')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class StudentVoucherController {
-  
   constructor(private readonly orchestrator: StudentVoucherOrchestrator) {}
 
   @Get(':allocationId')

@@ -29,13 +29,13 @@ export const bullMQConfig = registerAs('bullmq', (): BullMQConfig => {
       expenseValidation: env.BULLMQ_EXPENSE_VAL_QUEUE,
       ledgerMapping: env.BULLMQ_LEDGER_MAP_QUEUE,
       voucherBuilder: env.BULLMQ_VOUCHER_QUEUE,
-      dlq: env.BULLMQ_DLQ
+      dlq: env.BULLMQ_DLQ,
     },
     retryAttempts: env.BULLMQ_RETRY_ATTEMPTS,
     concurrency: env.BULLMQ_CONCURRENCY,
     backoff: {
       type: env.BULLMQ_BACKOFF_TYPE,
-      delay: env.BULLMQ_BACKOFF_DELAY
-    }
+      delay: env.BULLMQ_BACKOFF_DELAY,
+    },
   };
 });

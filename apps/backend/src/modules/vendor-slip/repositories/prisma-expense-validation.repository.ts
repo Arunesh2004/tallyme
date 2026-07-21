@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { IExpenseAllocationRepository } from '../interfaces/expense-validation.repository.interface';
-import { DuplicateInvoiceError, TransactionFailureError } from '../exceptions/repository.exceptions';
+import {
+  DuplicateInvoiceError,
+  TransactionFailureError,
+} from '../exceptions/repository.exceptions';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -10,7 +13,7 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
 
   async create(data: any, tx?: any): Promise<any> {
     const client = tx || this.prisma;
-    
+
     try {
       // Must use transaction to ensure all subcomponents are created atomically
       // By wrapping it in $transaction if not provided
@@ -24,10 +27,17 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new DuplicateInvoiceError(data.vendorId, data.invoiceNumber, error);
+          throw new DuplicateInvoiceError(
+            data.vendorId,
+            data.invoiceNumber,
+            error,
+          );
         }
       }
-      throw new TransactionFailureError('Failed to create ExpenseAllocationCandidate', error);
+      throw new TransactionFailureError(
+        'Failed to create ExpenseAllocationCandidate',
+        error,
+      );
     }
   }
 
@@ -37,9 +47,9 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
       where: {
         vendorId_invoiceNumber: {
           vendorId: data.vendorId,
-          invoiceNumber: data.invoiceNumber
-        }
-      }
+          invoiceNumber: data.invoiceNumber,
+        },
+      },
     });
 
     if (existing) {
@@ -60,16 +70,16 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
         currency: data.currency,
         status: data.status,
         lines: {
-          create: data.lines
+          create: data.lines,
         },
         taxBreakdown: {
-          create: data.taxBreakdown
-        }
+          create: data.taxBreakdown,
+        },
       },
       include: {
         lines: true,
-        taxBreakdown: true
-      }
+        taxBreakdown: true,
+      },
     });
   }
 
@@ -79,7 +89,7 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
       take: limit,
       skip: offset,
       orderBy: { invoiceDate: 'desc' },
-      include: { lines: true, taxBreakdown: true }
+      include: { lines: true, taxBreakdown: true },
     });
   }
 
@@ -88,10 +98,10 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
       where: {
         vendorId_invoiceNumber: {
           vendorId,
-          invoiceNumber
-        }
+          invoiceNumber,
+        },
       },
-      include: { lines: true, taxBreakdown: true }
+      include: { lines: true, taxBreakdown: true },
     });
   }
 
@@ -99,11 +109,11 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
     return this.prisma.expenseAllocationCandidate.findMany({
       where: {
         status: 'VALIDATED', // Assuming VALIDATED is the status when ready
-        voucherCandidate: null // No voucher created yet
+        voucherCandidate: null, // No voucher created yet
       },
       take: limit,
       skip: offset,
-      include: { lines: true, taxBreakdown: true }
+      include: { lines: true, taxBreakdown: true },
     });
   }
 
@@ -112,7 +122,7 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
       where: { status },
       take: limit,
       skip: offset,
-      include: { lines: true, taxBreakdown: true }
+      include: { lines: true, taxBreakdown: true },
     });
   }
 }

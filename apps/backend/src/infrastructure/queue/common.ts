@@ -38,7 +38,10 @@ export interface RetryClassifier {
 export class DefaultRetryClassifier implements RetryClassifier {
   isRetryable(error: any): boolean {
     // Do not retry validation or business rule exceptions
-    if (error?.name === 'ValidationException' || error?.name === 'BaseDomainException') {
+    if (
+      error?.name === 'ValidationException' ||
+      error?.name === 'BaseDomainException'
+    ) {
       return false;
     }
     return true; // Retry infrastructure and unknown errors

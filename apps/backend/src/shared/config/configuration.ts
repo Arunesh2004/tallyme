@@ -17,5 +17,5 @@ export const loadConfiguration = [
   aiConfig,
   erpConfig,
   loggingConfig,
-  securityConfig
+  securityConfig,
 ];

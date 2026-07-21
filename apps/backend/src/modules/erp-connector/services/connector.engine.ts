@@ -1,68 +1,81 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ERPConnectionManager } from './connection.manager';
 import { ERPPayloadBuilder } from './payload.builder';
 import { ERPResponseParser } from './response.parser';
-import { ERPRetryService } from './retry.service';
-import { IERPRepository } from '../interfaces/erp.interfaces';
-import { ERP_REPOSITORY, ERP_SYNC_STATUS } from '../constants/erp.constants';
-import { ERPConnectionException } from '../exceptions/erp.exceptions';
+import { VoucherMapperService } from './voucher-mapper.service';
 import { LoggerService } from '../../../core/logger/logger.service';
+import { ERPRequestContext } from '../dto/transport.dto';
+import { ERPSyncResult } from '../dto/orchestrator.dto';
 
 @Injectable()
 export class ERPConnectorEngine {
   constructor(
     private readonly connectionManager: ERPConnectionManager,
+    private readonly mapper: VoucherMapperService,
     private readonly payloadBuilder: ERPPayloadBuilder,
     private readonly responseParser: ERPResponseParser,
-    private readonly retryService: ERPRetryService,
-    @Inject(ERP_REPOSITORY) private readonly repository: IERPRepository,
     private readonly logger: LoggerService,
   ) {}
 
-  async syncVoucher(voucherCandidate: any, adapterCode: string): Promise<any> {
+  /**
+   * Orchestrates the strict, unidirectional ERP synchronization workflow:
+   * Voucher Source -> Mapper -> TallyVoucherDTO -> XML Builder -> Transport -> XML Response Parser -> ERPSyncResult
+   */
+  async syncVoucher(
+    internalVoucherData: any,
+    adapterCode: string,
+    context: ERPRequestContext,
+  ): Promise<ERPSyncResult> {
     const startTime = Date.now();
+
+    this.logger.debug(
+      {
+        message: 'Beginning ERP orchestration workflow',
+        voucherId: context.voucherId,
+      },
+      'ERPConnectorEngine',
+    );
 
     // 1. Resolve Adapter & Connection
     const { adapter } =
       await this.connectionManager.getConnectionAndAdapter(adapterCode);
 
-    // 2. Build Payload
-    const payload = this.payloadBuilder.build(adapter, voucherCandidate);
+    // 2. Anti-Corruption Layer (Mapping)
+    const transportContract = this.mapper.mapToTransport(internalVoucherData);
 
-    let syncResult;
-    let success = false;
-    let errorMessage = null;
+    // 3. Build Payload
+    const payload = this.payloadBuilder.build(adapter, transportContract);
 
-    try {
-      // 3. Send
-      const rawResponse = await adapter.sendVoucher(payload);
+    // 4. Send over Transport
+    // We do not catch transport errors here. They propagate upward as ERPTransportException.
+    const transportResult = await adapter.sendVoucher(payload, context);
 
-      // 4. Parse & Validate
-      const { parsed, isValid } = this.responseParser.parseAndValidate(
-        adapter,
-        rawResponse,
-      );
+    // 5. Parse & Normalize Response
+    // We do not catch parser exceptions here. They propagate upward.
+    const { parsed, isValid } = this.responseParser.parseAndValidate(
+      adapter,
+      transportResult,
+    );
 
-      success = isValid;
-      syncResult = parsed;
-      if (!isValid) errorMessage = 'ERP returned failure response';
-    } catch (error) {
-      errorMessage = (error as Error).message;
-      if (this.retryService.shouldRetry(error)) {
-        throw new ERPConnectionException(`Connection failed: ${errorMessage}`); // will be caught by worker for retry
-      }
-    }
+    const durationMs = Date.now() - startTime;
 
-    const duration = Date.now() - startTime;
-
+    // 6. Return standard Orchestrator Result
     return {
-      success,
-      erpReferenceId: syncResult?.masterId,
-      status: success ? ERP_SYNC_STATUS.SUCCESS : ERP_SYNC_STATUS.FAILED,
-      duration,
-      payload,
-      response: syncResult,
-      errorMessage,
+      success: isValid,
+      referenceId: parsed.referenceId,
+      responseType:
+        parsed.responseCode || (isValid ? 'SUCCESS' : 'BUSINESS_ERROR'),
+      message:
+        parsed.message ||
+        (isValid
+          ? 'Successfully synchronized'
+          : 'ERP returned failure response'),
+      parserWarnings: parsed.parserWarnings || [],
+      transportMetadata: {
+        durationMs: transportResult.durationMs,
+        httpStatus: transportResult.httpStatus,
+      },
+      durationMs,
     };
   }
 }

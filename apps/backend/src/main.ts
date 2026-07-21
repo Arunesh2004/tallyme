@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { configureApp } from './bootstrap/configure-app';
 import { configureLogging } from './bootstrap/configure-logging';
 import { configureValidation } from './bootstrap/configure-validation';
+import { configureOpenAPI } from './bootstrap/configure-openapi';
 import { LoggerService } from './core/logger/logger.service';
 
 async function bootstrap() {
@@ -12,6 +13,7 @@ async function bootstrap() {
   configureApp(app);
   configureLogging(app);
   configureValidation(app);
+  configureOpenAPI(app);
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('app.port') || 3000;

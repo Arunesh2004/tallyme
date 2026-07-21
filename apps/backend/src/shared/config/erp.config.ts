@@ -16,6 +16,6 @@ export const erpConfig = registerAs('erp', (): ERPConfig => {
     port: env.ERP_PORT,
     username: env.ERP_USERNAME,
     password: env.ERP_PASSWORD,
-    companyName: env.ERP_COMPANY_NAME
+    companyName: env.ERP_COMPANY_NAME,
   };
 });

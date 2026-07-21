@@ -13,9 +13,15 @@ describe('VoucherBuilderEngine', () => {
 
   beforeEach(() => {
     ledgerResolver = {
-      resolveDebitLedger: jest.fn().mockResolvedValue({ id: 'L1', name: 'Bank' }),
-      resolveCreditLedger: jest.fn().mockResolvedValue({ id: 'L2', name: 'Tuition Fees' }),
-      resolveAdvanceLedger: jest.fn().mockResolvedValue({ id: 'L3', name: 'Student Advance' }),
+      resolveDebitLedger: jest
+        .fn()
+        .mockResolvedValue({ id: 'L1', name: 'Bank' }),
+      resolveCreditLedger: jest
+        .fn()
+        .mockResolvedValue({ id: 'L2', name: 'Tuition Fees' }),
+      resolveAdvanceLedger: jest
+        .fn()
+        .mockResolvedValue({ id: 'L3', name: 'Student Advance' }),
     };
 
     referenceGenerator = {
@@ -46,7 +52,11 @@ describe('VoucherBuilderEngine', () => {
     };
     const student = { name: 'John' };
 
-    const result = await engine.buildReceiptVoucher(allocationData, paymentData, student);
+    const result = await engine.buildReceiptVoucher(
+      allocationData,
+      paymentData,
+      student,
+    );
 
     expect(result.totalDebit).toBe(1000);
     expect(result.totalCredit).toBe(1000);
@@ -67,7 +77,11 @@ describe('VoucherBuilderEngine', () => {
     };
     const student = { name: 'John' };
 
-    const result = await engine.buildReceiptVoucher(allocationData, paymentData, student);
+    const result = await engine.buildReceiptVoucher(
+      allocationData,
+      paymentData,
+      student,
+    );
 
     expect(result.totalDebit).toBe(1200);
     expect(result.totalCredit).toBe(1200);
@@ -91,7 +105,11 @@ describe('VoucherBuilderEngine', () => {
     };
     const student = { name: 'John' };
 
-    const result = await engine.buildReceiptVoucher(allocationData, paymentData, student);
+    const result = await engine.buildReceiptVoucher(
+      allocationData,
+      paymentData,
+      student,
+    );
 
     expect(result.isBalanced).toBe(false);
     expect(result.status).toBe('INVALID');
@@ -107,7 +125,11 @@ describe('VoucherBuilderEngine', () => {
     };
     const student = { name: 'John' };
 
-    const result = await engine.buildReceiptVoucher(allocationData, paymentData, student);
+    const result = await engine.buildReceiptVoucher(
+      allocationData,
+      paymentData,
+      student,
+    );
 
     expect(result.status).toBe('INVALID');
     expect(result.warnings).toContain('Voucher line amount cannot be negative');

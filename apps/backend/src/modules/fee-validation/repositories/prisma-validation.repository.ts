@@ -31,7 +31,11 @@ export class PrismaFeeValidationRepository implements IFeeValidationRepository {
   }
 
   // New method for transactional save
-  async saveValidationResult(candidateData: any, logData: any, exceptionsData: any[]): Promise<any> {
+  async saveValidationResult(
+    candidateData: any,
+    logData: any,
+    exceptionsData: any[],
+  ): Promise<any> {
     return this.prisma.$transaction(async (tx) => {
       const candidate = await tx.feeAllocationCandidate.create({
         data: candidateData,
@@ -45,20 +49,25 @@ export class PrismaFeeValidationRepository implements IFeeValidationRepository {
           data: {
             feeAllocationCandidateId: candidate.id,
             status: candidateData.validationStatus,
-            executionTimeMs: logData.details?.executionTimeMs || 0
-          }
+            executionTimeMs: logData.details?.executionTimeMs || 0,
+          },
         });
         logData.feeValidationId = validation.id;
         await tx.feeValidationLog.create({ data: logData });
       }
 
       if (exceptionsData && exceptionsData.length > 0) {
-        exceptionsData.forEach(e => e.feeAllocationCandidateId = candidate.id);
+        exceptionsData.forEach(
+          (e) => (e.feeAllocationCandidateId = candidate.id),
+        );
         await tx.feeValidationException.createMany({ data: exceptionsData });
       }
 
       // Update OutstandingFee balances based on successful allocations
-      if (candidateData.validationStatus !== 'INVALID' && candidateData.validationStatus !== 'DUPLICATE_PAYMENT') {
+      if (
+        candidateData.validationStatus !== 'INVALID' &&
+        candidateData.validationStatus !== 'DUPLICATE_PAYMENT'
+      ) {
         for (const alloc of candidateData.allocationBreakdown) {
           if (alloc.outstandingFeeId) {
             await tx.outstandingFee.update({

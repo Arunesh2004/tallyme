@@ -1,5 +1,10 @@
 // entities/index.ts
-import { PaymentReference, TransactionId, PaymentAmount, StudentRollNumber } from '../value-objects';
+import {
+  PaymentReference,
+  TransactionId,
+  PaymentAmount,
+  StudentRollNumber,
+} from '../value-objects';
 import { BaseEntity, AggregateRoot } from '../../../shared/domain/base'; // Assumes existing from Module 1
 
 export class PaymentCandidate {
@@ -11,7 +16,7 @@ export class PaymentCandidate {
     public readonly paymentDate: Date,
     public readonly studentNameRaw: string,
     public readonly remarks: string,
-    public status: 'PENDING' | 'MATCHED' | 'REVIEW' = 'PENDING'
+    public status: 'PENDING' | 'MATCHED' | 'REVIEW' = 'PENDING',
   ) {}
 }
 
@@ -20,7 +25,7 @@ export class StudentPayment {
     public readonly id: string,
     public readonly studentId: string,
     public readonly paymentCandidateId: string,
-    public readonly amount: PaymentAmount
+    public readonly amount: PaymentAmount,
   ) {}
 }
 
@@ -29,6 +34,6 @@ export class FeeAllocation {
     public readonly id: string,
     public readonly studentPaymentId: string,
     public readonly outstandingFeeId: string,
-    public readonly allocatedAmount: PaymentAmount
+    public readonly allocatedAmount: PaymentAmount,
   ) {}
 }

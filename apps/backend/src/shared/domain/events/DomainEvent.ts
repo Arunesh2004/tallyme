@@ -15,7 +15,7 @@ export abstract class DomainEvent {
     aggregateId: string,
     aggregateType: string,
     version: number,
-    correlationId?: CorrelationId
+    correlationId?: CorrelationId,
   ) {
     this.eventId = idGenerator.generateId() as UUID;
     this.occurredOn = clock.now();

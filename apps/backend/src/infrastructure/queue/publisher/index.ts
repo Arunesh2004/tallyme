@@ -1,7 +1,11 @@
 // publisher/index.ts
 import { Injectable } from '@nestjs/common';
 import { QueueRegistry } from '../bullmq';
-import { EventPublisher, Event, OutboxRepository } from '../../../shared/events';
+import {
+  EventPublisher,
+  Event,
+  OutboxRepository,
+} from '../../../shared/events';
 import { ILogger } from '../../../shared/observability';
 
 @Injectable()
@@ -18,13 +22,15 @@ export class BullMQEventPublisher implements EventPublisher {
   async publishBatch(events: Event[]): Promise<void> {
     const queue = this.queueRegistry.getQueue('integration-events');
     if (queue) {
-      const jobs = events.map(e => ({ name: e.metadata.eventType, data: e }));
+      const jobs = events.map((e) => ({ name: e.metadata.eventType, data: e }));
       await queue.addBulk(jobs);
     }
   }
 
   async publishInTransaction(event: Event, txContext: any): Promise<void> {
-    throw new Error('BullMQEventPublisher cannot publish directly in a transaction. Use OutboxRepository.');
+    throw new Error(
+      'BullMQEventPublisher cannot publish directly in a transaction. Use OutboxRepository.',
+    );
   }
 }
 
@@ -33,7 +39,7 @@ export class OutboxPublisher {
   constructor(
     private readonly outboxRepo: OutboxRepository,
     private readonly publisher: EventPublisher,
-    private readonly logger: ILogger
+    private readonly logger: ILogger,
   ) {}
 
   async processUnpublished(): Promise<void> {
@@ -44,7 +50,10 @@ export class OutboxPublisher {
         await this.publisher.publish(domainEvent);
         await this.outboxRepo.markAsProcessed(record.id);
       } catch (e: any) {
-        this.logger.error(`Failed to publish outbox event ${record.id}`, e.stack);
+        this.logger.error(
+          `Failed to publish outbox event ${record.id}`,
+          e.stack,
+        );
         await this.outboxRepo.markAsFailed(record.id, e.message);
       }
     }

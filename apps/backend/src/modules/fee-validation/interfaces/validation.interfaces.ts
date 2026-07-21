@@ -5,7 +5,11 @@ export interface IFeeValidationRepository {
   findCandidateById(id: string): Promise<FeeAllocationCandidate | null>;
   logValidation(log: any): Promise<void>;
   saveException(exception: any): Promise<void>;
-  saveValidationResult(candidateData: any, logData: any, exceptionsData: any[]): Promise<any>;
+  saveValidationResult(
+    candidateData: any,
+    logData: any,
+    exceptionsData: any[],
+  ): Promise<any>;
 }
 
 export interface RuleValidationResult {

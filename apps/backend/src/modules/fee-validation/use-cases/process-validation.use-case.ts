@@ -84,7 +84,11 @@ export class ProcessValidationUseCase {
       details: { executionTimeMs: Date.now() - startTime } as any,
     };
 
-    const savedCandidate = await this.repository.saveValidationResult(candidateData, logData, []);
+    const savedCandidate = await this.repository.saveValidationResult(
+      candidateData,
+      logData,
+      [],
+    );
 
     if (!validationResult.requiresManualReview) {
       await this.queue.addJob(VOUCHER_GENERATION_QUEUE, 'generate-voucher', {

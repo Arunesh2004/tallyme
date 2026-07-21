@@ -7,8 +7,11 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class GoogleOAuthService {
   // private oauth2Client;
-  
-  constructor(private readonly config: ConfigService, private readonly logger: ILogger) {
+
+  constructor(
+    private readonly config: ConfigService,
+    private readonly logger: ILogger,
+  ) {
     // this.oauth2Client = new google.auth.OAuth2(...)
   }
 
@@ -32,10 +35,12 @@ export class GoogleOAuthService {
 export class GmailConnector {
   constructor(
     private readonly oauth: GoogleOAuthService,
-    private readonly logger: ILogger
+    private readonly logger: ILogger,
   ) {}
 
-  async registerWatch(topicName: string): Promise<{ historyId: string, expiration: number }> {
+  async registerWatch(
+    topicName: string,
+  ): Promise<{ historyId: string; expiration: number }> {
     this.logger.info(`Registering Gmail Watch on topic ${topicName}`);
     // await gmail.users.watch(...)
     return { historyId: '123456789', expiration: Date.now() + 86400000 };

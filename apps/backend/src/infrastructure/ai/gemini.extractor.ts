@@ -2,7 +2,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { AIExtractor } from '../../modules/vendor-slip/domain/services';
 import { InvoiceCandidate } from '../../modules/vendor-slip/domain/entities';
-import { InvoiceNumber, InvoiceDate, InvoiceAmount, ConfidenceScore } from '../../modules/vendor-slip/domain/value-objects';
+import {
+  InvoiceNumber,
+  InvoiceDate,
+  InvoiceAmount,
+  ConfidenceScore,
+} from '../../modules/vendor-slip/domain/value-objects';
 import { GSTIN } from '../../shared/domain/value-objects';
 import { ILogger } from '../../shared/observability';
 import { ConfigService } from '@nestjs/config';
@@ -15,7 +20,7 @@ export class GeminiAIExtractor implements AIExtractor {
 
   constructor(
     private readonly logger: ILogger,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     // this.ai = new GoogleGenAI({ apiKey: configService.get('GEMINI_API_KEY') });
   }
@@ -43,14 +48,16 @@ export class GeminiAIExtractor implements AIExtractor {
         'DOC_ID_STUB',
         new InvoiceNumber('INV-2023-01'),
         new InvoiceDate(new Date('2023-10-01T00:00:00Z')),
-        new InvoiceAmount(new DecimalWrapper(15000.00)),
+        new InvoiceAmount(new DecimalWrapper(15000.0)),
         new GSTIN('27AADCB2230M1Z2'),
         new ConfidenceScore(98),
-        'EXTRACTED'
+        'EXTRACTED',
       );
     } catch (error: any) {
       this.logger.error(`Gemini Extraction failed`, error.stack);
-      throw new InternalServerErrorException('AI Extraction Failure', { cause: error });
+      throw new InternalServerErrorException('AI Extraction Failure', {
+        cause: error,
+      });
     }
   }
 }

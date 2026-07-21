@@ -21,36 +21,43 @@ describe('DuplicatePaymentRule', () => {
   });
 
   it('should flag duplicate if historical allocation exists', async () => {
-    prisma.feeAllocationCandidate.findFirst.mockResolvedValue({ id: 'existing_alloc_id' });
-    
-    const result = await rule.evaluate({ transactionId: 'TX123', gateway: 'razorpay' }, {});
-    
+    prisma.feeAllocationCandidate.findFirst.mockResolvedValue({
+      id: 'existing_alloc_id',
+    });
+
+    const result = await rule.evaluate(
+      { transactionId: 'TX123', gateway: 'razorpay' },
+      {},
+    );
+
     expect(result.isValid).toBe(false);
     expect(result.isDuplicate).toBe(true);
     expect(result.statusModifier).toBe('DUPLICATE_PAYMENT');
-    expect(prisma.feeAllocationCandidate.findFirst).toHaveBeenCalledWith(expect.objectContaining({
-      where: expect.objectContaining({
-        studentPaymentCandidate: {
-          paymentCandidate: {
-            OR: [
-              { transactionId: 'TX123' },
-              { utr: undefined },
-            ],
-            gateway: 'razorpay',
-          }
-        },
-        validationStatus: {
-          not: 'INVALID'
-        }
-      })
-    }));
+    expect(prisma.feeAllocationCandidate.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          studentPaymentCandidate: {
+            paymentCandidate: {
+              OR: [{ transactionId: 'TX123' }, { utr: undefined }],
+              gateway: 'razorpay',
+            },
+          },
+          validationStatus: {
+            not: 'INVALID',
+          },
+        }),
+      }),
+    );
   });
 
   it('should pass if no historical allocation exists', async () => {
     prisma.feeAllocationCandidate.findFirst.mockResolvedValue(null);
-    
-    const result = await rule.evaluate({ transactionId: 'TX123', gateway: 'razorpay' }, {});
-    
+
+    const result = await rule.evaluate(
+      { transactionId: 'TX123', gateway: 'razorpay' },
+      {},
+    );
+
     expect(result.isValid).toBe(true);
     expect(result.isDuplicate).toBeFalsy();
   });

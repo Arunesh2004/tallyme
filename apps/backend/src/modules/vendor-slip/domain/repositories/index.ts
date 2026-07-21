@@ -1,4 +1,8 @@
-import { ITransactionContext, Page, PageRequest } from '../../../shared/domain/repositories';
+import {
+  ITransactionContext,
+  Page,
+  PageRequest,
+} from '../../../shared/domain/repositories';
 import { Result } from '../../../shared/domain/result';
 
 // Stubs for Domain Entities
@@ -26,11 +30,16 @@ export interface IVendorRepository {
 }
 
 export interface IVendorLedgerProfileRepository {
-  findLedgerMappingForVendor(vendorId: string): Promise<VendorLedgerProfile | null>;
+  findLedgerMappingForVendor(
+    vendorId: string,
+  ): Promise<VendorLedgerProfile | null>;
 }
 
 export interface IInvoiceDocumentRepository {
-  saveUploadedDocument(document: InvoiceDocument, tx?: ITransactionContext): Promise<void>;
+  saveUploadedDocument(
+    document: InvoiceDocument,
+    tx?: ITransactionContext,
+  ): Promise<void>;
   findPendingOCRDocuments(page: PageRequest): Promise<Page<InvoiceDocument>>;
   markAsCorrupted(documentId: string, reason: string): Promise<void>;
 }
@@ -40,23 +49,42 @@ export interface IOCRResultRepository {
 }
 
 export interface IInvoiceCandidateRepository {
-  saveExtractedCandidate(candidate: InvoiceCandidate, tx: ITransactionContext): Promise<void>;
-  existsByVendorAndInvoiceNumber(vendorId: string, invoiceNumber: string): Promise<boolean>;
+  saveExtractedCandidate(
+    candidate: InvoiceCandidate,
+    tx: ITransactionContext,
+  ): Promise<void>;
+  existsByVendorAndInvoiceNumber(
+    vendorId: string,
+    invoiceNumber: string,
+  ): Promise<boolean>;
   findPendingVendorMatching(): Promise<InvoiceCandidate[]>;
 }
 
 export interface IVendorMatchRepository {
-  saveMatchedInvoice(match: VendorMatch, tx: ITransactionContext): Promise<void>;
+  saveMatchedInvoice(
+    match: VendorMatch,
+    tx: ITransactionContext,
+  ): Promise<void>;
   findPendingExpenseValidation(): Promise<VendorMatch[]>;
 }
 
 export interface IExpenseAllocationRepository {
-  saveValidatedExpense(allocation: ExpenseAllocation, tx: ITransactionContext): Promise<void>;
+  saveValidatedExpense(
+    allocation: ExpenseAllocation,
+    tx: ITransactionContext,
+  ): Promise<void>;
   findPendingLedgerMapping(): Promise<ExpenseAllocation[]>;
 }
 
 export interface IManualReviewRepository {
-  routeToManualReview(task: ManualReviewTask, tx?: ITransactionContext): Promise<void>;
+  routeToManualReview(
+    task: ManualReviewTask,
+    tx?: ITransactionContext,
+  ): Promise<void>;
   findPendingReviews(page: PageRequest): Promise<Page<ManualReviewTask>>;
-  resolveReview(taskId: string, resolutionData: any, tx: ITransactionContext): Promise<void>;
+  resolveReview(
+    taskId: string,
+    resolutionData: any,
+    tx: ITransactionContext,
+  ): Promise<void>;
 }

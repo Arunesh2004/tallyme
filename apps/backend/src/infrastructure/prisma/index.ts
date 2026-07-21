@@ -4,6 +4,6 @@ export * from './prisma.service';
 export * from './transaction.manager';
 export * from './decimal';
 export * from './prisma.health';
-export * from './migration.ts';
-export * from './seed.ts';
+export * from './migration';
+export * from './seed';
 export * from './prisma.module';

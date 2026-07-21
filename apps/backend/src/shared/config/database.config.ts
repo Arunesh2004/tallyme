@@ -8,6 +8,6 @@ export interface DatabaseConfig {
 export const databaseConfig = registerAs('database', (): DatabaseConfig => {
   const env = process.env as unknown as EnvConfig;
   return {
-    url: env.DATABASE_URL
+    url: env.DATABASE_URL,
   };
 });

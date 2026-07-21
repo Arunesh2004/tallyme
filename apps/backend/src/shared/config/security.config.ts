@@ -14,6 +14,6 @@ export const securityConfig = registerAs('security', (): SecurityConfig => {
     jwtSecret: env.JWT_SECRET,
     jwtExpiry: env.JWT_EXPIRY,
     encryptionKey: env.ENCRYPTION_KEY,
-    corsOrigins: env.CORS_ORIGINS
+    corsOrigins: env.CORS_ORIGINS,
   };
 });

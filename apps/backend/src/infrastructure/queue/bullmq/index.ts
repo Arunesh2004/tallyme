@@ -49,6 +49,6 @@ export class QueueHealth {
 @Global()
 @Module({
   providers: [QueueRegistry, QueueHealth],
-  exports: [QueueRegistry, QueueHealth]
+  exports: [QueueRegistry, QueueHealth],
 })
 export class BullMQModule {}

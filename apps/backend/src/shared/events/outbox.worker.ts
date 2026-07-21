@@ -9,7 +9,7 @@ export class OutboxWorker implements OnModuleInit {
   constructor(
     private readonly prisma: PrismaService,
     private readonly queue: QueueRegistry,
-    private readonly logger: ILogger
+    private readonly logger: ILogger,
   ) {}
 
   onModuleInit() {

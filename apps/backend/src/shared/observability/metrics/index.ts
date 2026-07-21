@@ -13,7 +13,20 @@ export interface Gauge {
 }
 
 export abstract class MetricsCollector {
-  abstract createCounter(name: string, help: string, labelNames?: string[]): Counter;
-  abstract createHistogram(name: string, help: string, labelNames?: string[], buckets?: number[]): Histogram;
-  abstract createGauge(name: string, help: string, labelNames?: string[]): Gauge;
+  abstract createCounter(
+    name: string,
+    help: string,
+    labelNames?: string[],
+  ): Counter;
+  abstract createHistogram(
+    name: string,
+    help: string,
+    labelNames?: string[],
+    buckets?: number[],
+  ): Histogram;
+  abstract createGauge(
+    name: string,
+    help: string,
+    labelNames?: string[],
+  ): Gauge;
 }

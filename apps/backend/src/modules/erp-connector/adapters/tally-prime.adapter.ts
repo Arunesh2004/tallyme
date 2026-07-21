@@ -1,46 +1,98 @@
 import { Injectable } from '@nestjs/common';
 import { BaseERPAdapter } from './base.adapter';
+import { TallyXmlBuilderService } from '../services/xml-builder.service';
+import { TallyVoucherDTO } from '../dto/tally-voucher.dto';
+import { TallyTransportService } from '../services/transport.service';
+import { ERPRequestContext, TransportResult } from '../dto/transport.dto';
+import { TallyXmlParserService } from '../services/xml-parser.service';
+import { ERPResponse } from '../dto/response.dto';
 
 @Injectable()
 export class TallyPrimeAdapter extends BaseERPAdapter {
+  constructor(
+    private readonly xmlBuilder: TallyXmlBuilderService,
+    private readonly transport: TallyTransportService,
+    private readonly xmlParser: TallyXmlParserService,
+  ) {
+    super();
+  }
+
   async connect(): Promise<boolean> {
-    // Mock connection
-    return true;
+    return this.transport.checkHealth();
   }
 
   async disconnect(): Promise<void> {
-    // Mock disconnection
+    // Tally HTTP integration is stateless; no disconnection required.
   }
 
   async healthCheck(): Promise<boolean> {
-    // Mock Tally Server Health Check
-    return true;
+    return this.transport.checkHealth();
   }
 
-  buildPayload(voucherData: any): string {
-    // Mock XML Builder. In reality use xmlbuilder2 or similar.
-    return `<ENVELOPE><HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER><BODY><IMPORTDATA><REQUESTDATA><TALLYMESSAGE><VOUCHER>Mock Tally XML for ${voucherData.voucherNumber}</VOUCHER></TALLYMESSAGE></REQUESTDATA></IMPORTDATA></BODY></ENVELOPE>`;
+  buildPayload(voucherData: TallyVoucherDTO): string {
+    return this.xmlBuilder.buildVoucherXml(voucherData);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async sendVoucher(payload: string): Promise<any> {
-    // Mock Axios POST to Tally Server
-    return {
-      status: 200,
-      data: '<RESPONSE><CREATED>1</CREATED><LASTVCHID>TALLY-999</LASTVCHID></RESPONSE>',
-    };
+  async sendVoucher(
+    payload: string,
+    context: ERPRequestContext,
+  ): Promise<TransportResult> {
+    // Completely payload-agnostic transport delegation.
+    return this.transport.send(payload, context);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  parseResponse(response: any): any {
-    // Mock XML parser
-    return {
-      success: true,
-      masterId: 'TALLY-999',
-    };
+  parseResponse(response: TransportResult): ERPResponse {
+    return this.xmlParser.parse(response);
   }
 
-  validateResponse(parsedResponse: any): boolean {
+  validateResponse(parsedResponse: ERPResponse): boolean {
+    // Basic validation; orchestration checks status independently
     return parsedResponse && parsedResponse.success;
+  }
+
+  async verifyVoucherExists(
+    voucherNumber: string,
+    context: ERPRequestContext,
+  ): Promise<'EXISTS' | 'NOT_FOUND' | 'UNKNOWN'> {
+    try {
+      // 1. Build the Export XML query
+      const payload = this.xmlBuilder.buildExportXml(voucherNumber);
+
+      // 2. Send via transport
+      const transportResult = await this.transport.send(payload, context);
+
+      // 3. Simple inspection of the raw response
+      // Tally returns <ENVELOPE> ... </ENVELOPE>
+      // If it contains <VOUCHER>, it exists.
+      // If it says "No entries", it does not exist.
+      if (
+        transportResult.rawResponse.includes('<VOUCHER>') ||
+        transportResult.rawResponse.includes('<VOUCHER ')
+      ) {
+        return 'EXISTS';
+      }
+
+      if (
+        transportResult.rawResponse.includes('No entries') ||
+        transportResult.rawResponse.includes('No Entries')
+      ) {
+        return 'NOT_FOUND';
+      }
+
+      // If we got an unexpected response but it was a valid 200 OK without vouchers, we might assume NOT_FOUND,
+      // but to be perfectly safe, UNKNOWN triggers another retry limit.
+      // Let's assume an empty response or unexpected XML means NOT_FOUND if it's well-formed but empty.
+      if (
+        transportResult.rawResponse.includes('<DATA>') &&
+        !transportResult.rawResponse.includes('<VOUCHER')
+      ) {
+        return 'NOT_FOUND';
+      }
+
+      return 'UNKNOWN';
+    } catch (error) {
+      // Transport timeouts, socket hangs, etc. map to UNKNOWN
+      return 'UNKNOWN';
+    }
   }
 }

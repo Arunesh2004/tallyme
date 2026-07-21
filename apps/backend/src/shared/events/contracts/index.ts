@@ -51,7 +51,10 @@ export interface EventPublisher {
 
 // EventSubscriber.ts
 export interface EventSubscriber {
-  subscribe<TEvent extends Event>(eventType: string, handler: EventHandler<TEvent>): void;
+  subscribe<TEvent extends Event>(
+    eventType: string,
+    handler: EventHandler<TEvent>,
+  ): void;
   unsubscribe(eventType: string, handler: EventHandler): void;
 }
 
@@ -62,7 +65,8 @@ export interface EventDispatcher {
 }
 
 // EventBus.ts
-export interface EventBus extends EventPublisher, EventSubscriber, EventDispatcher {}
+export interface EventBus
+  extends EventPublisher, EventSubscriber, EventDispatcher {}
 
 // index.ts
 export * from './EventMetadata';

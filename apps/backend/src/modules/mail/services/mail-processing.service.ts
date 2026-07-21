@@ -75,7 +75,7 @@ export class MailProcessingService {
     const emailRecord = await this.repository.saveEmailWithAttachmentsAndLogs(
       emailData,
       attachmentsData,
-      logData
+      logData,
     );
 
     // Publish to Processing Queue

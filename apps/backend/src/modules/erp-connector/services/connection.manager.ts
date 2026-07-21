@@ -14,9 +14,9 @@ export class ERPConnectionManager {
     const connectionInfo =
       await this.repository.findConnectionByAdapter(adapterCode);
     if (!connectionInfo) {
-      // Mock for milestone to avoid requiring manual DB seeding
+      // Default local connection fallback if none configured in database
       return {
-        connectionInfo: { id: 'mock_conn_id', url: 'http://localhost:9000' },
+        connectionInfo: { id: 'default_local', url: 'http://localhost:9000' },
         adapter: this.factory.getAdapter(adapterCode),
       };
     }

@@ -9,7 +9,7 @@ export class VoucherEntry {
   constructor(
     public readonly ledgerName: string,
     public readonly amount: IDecimal,
-    public readonly isDebit: boolean
+    public readonly isDebit: boolean,
   ) {}
 }
 
@@ -20,7 +20,7 @@ export class VoucherCandidate {
     public readonly voucherType: string,
     public readonly date: Date,
     public readonly narration: string,
-    public readonly entries: VoucherEntry[]
+    public readonly entries: VoucherEntry[],
   ) {}
 }
 
@@ -31,7 +31,8 @@ export class VoucherValidator {
     let credits = 0;
 
     for (const entry of candidate.entries) {
-      if (entry.amount.toNumber() <= 0) return fail('Voucher entries must have positive amounts');
+      if (entry.amount.toNumber() <= 0)
+        return fail('Voucher entries must have positive amounts');
       if (entry.isDebit) {
         debits += entry.amount.toNumber();
       } else {
@@ -41,7 +42,9 @@ export class VoucherValidator {
 
     // Floating point safe comparison using Decimal wrappers would happen here. For stub:
     if (Math.abs(debits - credits) > 0.01) {
-      return fail(`Voucher must balance. Debits: ${debits}, Credits: ${credits}`);
+      return fail(
+        `Voucher must balance. Debits: ${debits}, Credits: ${credits}`,
+      );
     }
 
     if (!candidate.narration || candidate.narration.trim() === '') {
@@ -56,7 +59,10 @@ export class VoucherValidator {
 export class VoucherBuilder {
   constructor(private readonly validator: VoucherValidator) {}
 
-  build(allocation: ExpenseAllocation, vendorLedger: string): Result<VoucherCandidate, string> {
+  build(
+    allocation: ExpenseAllocation,
+    vendorLedger: string,
+  ): Result<VoucherCandidate, string> {
     const entries: VoucherEntry[] = [];
     let totalDebit = 0;
 
@@ -67,7 +73,9 @@ export class VoucherBuilder {
     }
 
     // Credit the vendor ledger
-    entries.push(new VoucherEntry(vendorLedger, allocation.totalAllocated, false));
+    entries.push(
+      new VoucherEntry(vendorLedger, allocation.totalAllocated.amount, false),
+    );
 
     const candidate = new VoucherCandidate(
       crypto.randomUUID(),
@@ -75,12 +83,12 @@ export class VoucherBuilder {
       'Purchase',
       new Date(),
       `Being purchase invoice booked for allocation ${allocation.id}`,
-      entries
+      entries,
     );
 
     const validation = this.validator.validate(candidate);
     if (validation.isFailure) {
-      return fail(validation.getError());
+      return fail(validation.error);
     }
 
     return ok(candidate);

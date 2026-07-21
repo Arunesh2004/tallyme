@@ -13,21 +13,21 @@ export class PrismaManualReviewRepository implements IManualReviewRepository {
       where: {
         entityType: data.entityType,
         entityId: data.entityId,
-        status: 'PENDING'
-      }
+        status: 'PENDING',
+      },
     });
 
     if (existing) return existing;
 
     return await this.prisma.manualReviewTask.create({
-      data
+      data,
     });
   }
 
   async assign(id: string, userId: string): Promise<any> {
     return await this.prisma.manualReviewTask.update({
       where: { id },
-      data: { assignedTo: userId }
+      data: { assignedTo: userId },
     });
   }
 
@@ -35,10 +35,10 @@ export class PrismaManualReviewRepository implements IManualReviewRepository {
     const client = tx || this.prisma;
     return await client.manualReviewTask.update({
       where: { id },
-      data: { 
+      data: {
         status: 'RESOLVED',
-        resolution
-      }
+        resolution,
+      },
     });
   }
 
@@ -46,10 +46,10 @@ export class PrismaManualReviewRepository implements IManualReviewRepository {
     const client = tx || this.prisma;
     return await client.manualReviewTask.update({
       where: { id },
-      data: { 
+      data: {
         status: 'REJECTED',
-        resolution
-      }
+        resolution,
+      },
     });
   }
 
@@ -58,7 +58,7 @@ export class PrismaManualReviewRepository implements IManualReviewRepository {
       where: { status: 'PENDING' },
       take: limit,
       skip: offset,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 }

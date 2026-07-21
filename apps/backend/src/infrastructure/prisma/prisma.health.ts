@@ -19,10 +19,10 @@ export class PrismaHealthIndicator {
       const latencyMs = Date.now() - start;
       return { status: 'UP', latencyMs };
     } catch (error) {
-      return { 
-        status: 'DOWN', 
-        latencyMs: Date.now() - start, 
-        message: 'Database connection failed' 
+      return {
+        status: 'DOWN',
+        latencyMs: Date.now() - start,
+        message: 'Database connection failed',
       };
     }
   }

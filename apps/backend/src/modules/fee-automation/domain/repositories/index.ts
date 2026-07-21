@@ -14,17 +14,29 @@ export interface IStudentRepository {
 
 export interface IOutstandingFeeRepository {
   findOutstandingFeesForStudent(studentId: string): Promise<OutstandingFee[]>;
-  lockAndGetOutstandingFee(feeId: string, tx: ITransactionContext): Promise<OutstandingFee | null>;
-  saveFeeAllocation(fee: OutstandingFee, tx: ITransactionContext): Promise<void>;
+  lockAndGetOutstandingFee(
+    feeId: string,
+    tx: ITransactionContext,
+  ): Promise<OutstandingFee | null>;
+  saveFeeAllocation(
+    fee: OutstandingFee,
+    tx: ITransactionContext,
+  ): Promise<void>;
 }
 
 export interface IPaymentCandidateRepository {
-  saveIncomingPayment(candidate: PaymentCandidate, tx?: ITransactionContext): Promise<void>;
+  saveIncomingPayment(
+    candidate: PaymentCandidate,
+    tx?: ITransactionContext,
+  ): Promise<void>;
   findUnprocessedPayments(): Promise<PaymentCandidate[]>;
   markAsProcessed(candidateId: string, tx: ITransactionContext): Promise<void>;
 }
 
 export interface IStudentPaymentCandidateRepository {
-  saveMatchedStudentPayment(candidate: StudentPaymentCandidate, tx: ITransactionContext): Promise<void>;
+  saveMatchedStudentPayment(
+    candidate: StudentPaymentCandidate,
+    tx: ITransactionContext,
+  ): Promise<void>;
   findPendingFeeAllocations(): Promise<StudentPaymentCandidate[]>;
 }

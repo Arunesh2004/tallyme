@@ -62,7 +62,7 @@ export class ProcessPaymentEmailUseCase {
       ...candidateDomain,
       isDuplicate,
     });
-    
+
     const attemptData = {
       emailId: email.id,
       parserUsed: parser.identifier,
@@ -70,7 +70,10 @@ export class ProcessPaymentEmailUseCase {
       confidenceScore: candidateDomain.confidence,
     };
 
-    const saved = await this.repository.saveParsingResult(dbPayload, attemptData);
+    const saved = await this.repository.saveParsingResult(
+      dbPayload,
+      attemptData,
+    );
 
     if (isSuccess && candidateDomain.confidence > 0 && !isDuplicate) {
       await this.queue.addJob(PAYMENT_CANDIDATE_QUEUE, 'match-student', {

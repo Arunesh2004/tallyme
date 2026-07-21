@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
-import { IVendorRepository, IVendorLedgerProfileRepository } from '../interfaces/vendor.repository.interface';
-import { VendorNotFoundError, UniqueConstraintViolationError, TransactionFailureError } from '../exceptions/repository.exceptions';
+import {
+  IVendorRepository,
+  IVendorLedgerProfileRepository,
+} from '../interfaces/vendor.repository.interface';
+import {
+  VendorNotFoundError,
+  UniqueConstraintViolationError,
+  TransactionFailureError,
+} from '../exceptions/repository.exceptions';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -12,14 +19,14 @@ export class PrismaVendorRepository implements IVendorRepository {
     const vendor = await this.prisma.vendor.findFirst({
       where: {
         id,
-        ...(includeDeleted ? {} : { deletedAt: null })
-      }
+        ...(includeDeleted ? {} : { deletedAt: null }),
+      },
     });
-    
+
     if (!vendor) {
       throw new VendorNotFoundError(`ID: ${id}`);
     }
-    
+
     return vendor;
   }
 
@@ -27,10 +34,10 @@ export class PrismaVendorRepository implements IVendorRepository {
     const vendor = await this.prisma.vendor.findFirst({
       where: {
         gstin,
-        ...(includeDeleted ? {} : { deletedAt: null })
-      }
+        ...(includeDeleted ? {} : { deletedAt: null }),
+      },
     });
-    
+
     return vendor;
   }
 
@@ -38,10 +45,10 @@ export class PrismaVendorRepository implements IVendorRepository {
     const vendor = await this.prisma.vendor.findFirst({
       where: {
         vendorCode: code,
-        ...(includeDeleted ? {} : { deletedAt: null })
-      }
+        ...(includeDeleted ? {} : { deletedAt: null }),
+      },
     });
-    
+
     return vendor;
   }
 
@@ -50,19 +57,19 @@ export class PrismaVendorRepository implements IVendorRepository {
       where: {
         name: {
           contains: name,
-          mode: 'insensitive'
+          mode: 'insensitive',
         },
-        deletedAt: null
+        deletedAt: null,
       },
       take: limit,
       skip: offset,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.vendor.count({
-      where: { id, deletedAt: null }
+      where: { id, deletedAt: null },
     });
     return count > 0;
   }
@@ -74,17 +81,21 @@ export class PrismaVendorRepository implements IVendorRepository {
         return await this.prisma.vendor.upsert({
           where: { gstin: data.gstin },
           update: {}, // Don't update if it exists
-          create: data
+          create: data,
         });
       }
-      
+
       return await this.prisma.vendor.create({
-        data
+        data,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new UniqueConstraintViolationError('Vendor', 'gstin/vendorCode', error);
+          throw new UniqueConstraintViolationError(
+            'Vendor',
+            'gstin/vendorCode',
+            error,
+          );
         }
       }
       throw error;
@@ -95,7 +106,7 @@ export class PrismaVendorRepository implements IVendorRepository {
     try {
       return await this.prisma.vendor.update({
         where: { id },
-        data
+        data,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -111,7 +122,7 @@ export class PrismaVendorRepository implements IVendorRepository {
     try {
       await this.prisma.vendor.update({
         where: { id },
-        data: { deletedAt: new Date() }
+        data: { deletedAt: new Date() },
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -130,7 +141,7 @@ export class PrismaVendorLedgerProfileRepository implements IVendorLedgerProfile
 
   async findByVendorId(vendorId: string): Promise<any> {
     return this.prisma.vendorLedgerProfile.findUnique({
-      where: { vendorId }
+      where: { vendorId },
     });
   }
 
@@ -141,12 +152,13 @@ export class PrismaVendorLedgerProfileRepository implements IVendorLedgerProfile
         update: data,
         create: {
           vendorId,
-          ...data
-        }
+          ...data,
+        },
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2003') { // Foreign key constraint failed
+        if (error.code === 'P2003') {
+          // Foreign key constraint failed
           throw new VendorNotFoundError(`ID: ${vendorId}`);
         }
       }

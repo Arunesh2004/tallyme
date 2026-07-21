@@ -30,7 +30,11 @@ export class OverpaymentRule extends BaseValidationRule {
 
     const totalOutstanding = studentProfile.outstandings
       .filter((o: any) => !o.isPaid)
-      .reduce((sum: number, o: any) => sum + (Number(o.amount) - Number(o.amountPaid || 0)), 0);
+      .reduce(
+        (sum: number, o: any) =>
+          sum + (Number(o.amount) - Number(o.amountPaid || 0)),
+        0,
+      );
 
     if (paymentData.amount > totalOutstanding) {
       return {

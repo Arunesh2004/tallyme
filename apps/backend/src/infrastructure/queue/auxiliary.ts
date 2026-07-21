@@ -16,7 +16,9 @@ export class DeadLetterQueue {
 
   async moveToDLQ(record: DeadLetterRecord): Promise<void> {
     // In reality, this would save to a specialized DLQ table or Redis stream
-    this.logger.error(`Job ${record.jobId} from ${record.queueName} moved to DLQ. Reason: ${record.errorReason}`);
+    this.logger.error(
+      `Job ${record.jobId} from ${record.queueName} moved to DLQ. Reason: ${record.errorReason}`,
+    );
   }
 }
 
@@ -25,7 +27,12 @@ export class DeadLetterQueue {
 export class DelayedJobScheduler {
   constructor(private readonly queueRegistry: any /* QueueRegistry */) {}
 
-  async schedule(queueName: string, eventName: string, payload: any, delayMs: number): Promise<void> {
+  async schedule(
+    queueName: string,
+    eventName: string,
+    payload: any,
+    delayMs: number,
+  ): Promise<void> {
     const queue = this.queueRegistry.getQueue(queueName);
     if (queue) {
       await queue.add(eventName, payload, { delay: delayMs });

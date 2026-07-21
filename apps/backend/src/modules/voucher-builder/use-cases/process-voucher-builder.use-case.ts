@@ -84,7 +84,10 @@ export class ProcessVoucherBuilderUseCase {
       details: { executionTimeMs: Date.now() - startTime } as any,
     };
 
-    const savedCandidate = await this.repository.saveVoucherResult(candidateData, logData);
+    const savedCandidate = await this.repository.saveVoucherResult(
+      candidateData,
+      logData,
+    );
 
     if (buildResult.status === VOUCHER_STATUS.VALIDATED) {
       await this.queue.addJob(TALLY_SYNC_QUEUE, 'sync-tally', {

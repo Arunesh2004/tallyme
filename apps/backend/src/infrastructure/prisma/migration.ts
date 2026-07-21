@@ -13,7 +13,8 @@ export class MigrationService {
 
   async getLatestMigration(): Promise<string | null> {
     try {
-      const result: any[] = await this.prisma.client.$queryRaw`SELECT migration_name FROM _prisma_migrations ORDER BY started_at DESC LIMIT 1`;
+      const result: any[] = await this.prisma.client
+        .$queryRaw`SELECT migration_name FROM _prisma_migrations ORDER BY started_at DESC LIMIT 1`;
       return result.length > 0 ? result[0].migration_name : null;
     } catch (e) {
       return null;

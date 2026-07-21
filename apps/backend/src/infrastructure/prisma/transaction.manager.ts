@@ -16,7 +16,7 @@ export class TransactionManager {
    */
   async runInTransaction<T>(
     callback: (tx: TransactionClient) => Promise<T>,
-    timeoutMs = 10000
+    timeoutMs = 10000,
   ): Promise<T> {
     return await this.prismaService.client.$transaction(
       async (tx: TransactionClient) => {
@@ -25,7 +25,7 @@ export class TransactionManager {
       {
         maxWait: timeoutMs,
         timeout: timeoutMs,
-      }
+      },
     );
   }
 }

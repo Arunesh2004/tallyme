@@ -29,8 +29,12 @@ export class MoneyVO extends ValueObject<MoneyProps> {
     super({ amount, currency });
   }
 
-  get amount(): IDecimal { return this.props.amount; }
-  get currency(): Currency { return this.props.currency; }
+  get amount(): IDecimal {
+    return this.props.amount;
+  }
+  get currency(): Currency {
+    return this.props.currency;
+  }
 
   public add(other: MoneyVO): MoneyVO {
     if (this.currency !== other.currency) {
@@ -51,7 +55,9 @@ export class EmailAddress extends ValueObject<EmailProps> {
     }
     super({ value: value.toLowerCase() });
   }
-  get value(): string { return this.props.value; }
+  get value(): string {
+    return this.props.value;
+  }
 }
 
 export interface GSTINProps {
@@ -66,7 +72,9 @@ export class GSTIN extends ValueObject<GSTINProps> {
     }
     super({ value: normalized });
   }
-  get value(): string { return this.props.value; }
+  get value(): string {
+    return this.props.value;
+  }
 }
 
 export interface PANProps {
@@ -81,5 +89,7 @@ export class PAN extends ValueObject<PANProps> {
     }
     super({ value: normalized });
   }
-  get value(): string { return this.props.value; }
+  get value(): string {
+    return this.props.value;
+  }
 }

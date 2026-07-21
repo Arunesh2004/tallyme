@@ -15,3 +15,12 @@ export class ERPConnectionException extends ERPDomainException {
     super(message, HttpStatus.SERVICE_UNAVAILABLE);
   }
 }
+
+export class ERPIdempotencyException extends ERPDomainException {
+  constructor(
+    message: string,
+    public readonly reason: 'DUPLICATE_RACE' | 'HASH_FAILURE' | 'DB_ERROR',
+  ) {
+    super(message, HttpStatus.CONFLICT);
+  }
+}

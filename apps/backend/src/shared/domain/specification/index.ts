@@ -23,22 +23,32 @@ export abstract class CompositeSpecification<T> implements ISpecification<T> {
 }
 
 export class AndSpecification<T> extends CompositeSpecification<T> {
-  constructor(private left: ISpecification<T>, private right: ISpecification<T>) {
+  constructor(
+    private left: ISpecification<T>,
+    private right: ISpecification<T>,
+  ) {
     super();
   }
 
   isSatisfiedBy(candidate: T): boolean {
-    return this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate);
+    return (
+      this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate)
+    );
   }
 }
 
 export class OrSpecification<T> extends CompositeSpecification<T> {
-  constructor(private left: ISpecification<T>, private right: ISpecification<T>) {
+  constructor(
+    private left: ISpecification<T>,
+    private right: ISpecification<T>,
+  ) {
     super();
   }
 
   isSatisfiedBy(candidate: T): boolean {
-    return this.left.isSatisfiedBy(candidate) || this.right.isSatisfiedBy(candidate);
+    return (
+      this.left.isSatisfiedBy(candidate) || this.right.isSatisfiedBy(candidate)
+    );
   }
 }
 

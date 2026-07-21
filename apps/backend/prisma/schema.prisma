@@ -29,10 +29,10 @@ model Role {
 }
 
 model Permission {
-  id          String   @id @default(uuid())
-  action      String   @unique // e.g., Voucher.Create
-  roles       Role[]
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  action    String   @unique // e.g., Voucher.Create
+  roles     Role[]
+  createdAt DateTime @default(now())
 }
 
 model Session {
@@ -48,26 +48,443 @@ model Session {
 // ... Additional Stubs for Student, Vendor, Voucher, Outbox ...
 // Stubs included to fulfill TDS Phase 1A request
 model Student {
-  id           String   @id @default(uuid())
-  enrollmentNo String   @unique
-  email        String?  @unique
+  id             String               @id @default(uuid())
+  enrollmentNo   String               @unique
+  email          String?              @unique
+  studentMatches StudentMatchResult[]
 }
 
 model Vendor {
-  id           String   @id @default(uuid())
-  gstin        String?  @unique
-  pan          String?  @unique
+  id            String        @id @default(uuid())
+  gstin         String?       @unique
+  pan           String?       @unique
+  vendorMatches VendorMatch[]
+}
+
+enum DocumentStatus {
+  UPLOADED
+  OCR_PROCESSING
+  OCR_FAILED
+  EXTRACTION_PROCESSING
+  EXTRACTION_FAILED
+  VENDOR_MATCHING
+  VENDOR_UNMATCHED
+  EXPENSE_ALLOCATING
+  MANUAL_REVIEW
+  VOUCHER_GENERATED
+  ERP_SYNCING
+  COMPLETED
+  DUPLICATE
+}
+
+model Document {
+  id              String         @id @default(uuid())
+  fileUrl         String
+  checksum        String
+  mimeType        String
+  uploadedBy      String
+  receivedAt      DateTime       @default(now())
+  source          String
+  status          DocumentStatus @default(UPLOADED)
+  confidenceScore Float?
+
+  invoiceCandidate InvoiceCandidate?
+  vendorMatch      VendorMatch?
+  allocation       ExpenseAllocation?
+  manualReview     ManualReviewRoute?
+  auditLogs        VendorSlipAudit[]
+}
+
+model InvoiceCandidate {
+  id             String    @id @default(uuid())
+  documentId     String    @unique
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  invoiceNumber  String?
+  date           DateTime?
+  subtotal       Decimal?  @db.Decimal(15, 2)
+  tax            Decimal?  @db.Decimal(15, 2)
+  total          Decimal?  @db.Decimal(15, 2)
+  extractedGstin String?
+  extractedPan   String?
+  extractedName  String?
+}
+
+model VendorMatch {
+  id         String   @id @default(uuid())
+  documentId String   @unique
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  vendorId   String
+  vendor     Vendor   @relation(fields: [vendorId], references: [id])
+  confidence Float
+  matchedAt  DateTime @default(now())
+}
+
+model ExpenseAllocation {
+  id             String                  @id @default(uuid())
+  documentId     String                  @unique
+  document       Document                @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  totalAllocated Decimal                 @db.Decimal(15, 2)
+  lineItems      ExpenseAllocationLine[]
+}
+
+model ExpenseAllocationLine {
+  id                  String            @id @default(uuid())
+  expenseAllocationId String
+  expenseAllocation   ExpenseAllocation @relation(fields: [expenseAllocationId], references: [id], onDelete: Cascade)
+  ledgerName          String
+  amount              Decimal           @db.Decimal(15, 2)
+}
+
+model ManualReviewRoute {
+  id         String    @id @default(uuid())
+  documentId String    @unique
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  reason     String
+  status     String    @default("PENDING") // PENDING, RESOLVED
+  assignedTo String?
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+}
+
+model VendorSlipAudit {
+  id         String   @id @default(uuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  action     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+}
+
+enum VoucherType {
+  Receipt
+  Payment
+  Journal
+  Purchase
+  Sales
+  Contra
+}
+
+enum VoucherStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Company {
+  id       String             @id @default(uuid())
+  name     String
+  vouchers VoucherCandidate[]
 }
 
 model VoucherCandidate {
-  id           String   @id @default(uuid())
-  amount       Decimal
-  status       String
+  id              String        @id @default(uuid())
+  companyId       String
+  company         Company       @relation(fields: [companyId], references: [id])
+  voucherNumber   String        @unique
+  voucherType     VoucherType
+  date            DateTime
+  narration       String?
+  partyLedgerName String?
+  isEdit          Boolean       @default(false)
+  status          VoucherStatus @default(PENDING)
+
+  entries    VoucherCandidateEntry[]
+  erpSyncJob ERPSyncJob?
+}
+
+model VoucherCandidateEntry {
+  id                 String  @id @default(uuid())
+  voucherCandidateId String
+  sequence           Int
+  ledgerName         String
+  amount             Decimal @db.Decimal(15, 2)
+  isDebit            Boolean
+  isParty            Boolean @default(false)
+
+  voucherCandidate VoucherCandidate @relation(fields: [voucherCandidateId], references: [id], onDelete: Cascade)
 }
 
 model OutboxEvent {
-  id           String   @id @default(uuid())
-  eventType    String
-  payload      String
-  processedAt  DateTime?
+  id          String    @id @default(uuid())
+  eventType   String
+  payload     String
+  processedAt DateTime?
 }
+
+enum ERPSyncStatus {
+  PENDING
+  SYNCING
+  SYNCED
+  FAILED_TEMPORARY
+  FAILED_PERMANENT
+  UNKNOWN
+  VERIFYING
+  MANUAL_REVIEW
+  CANCELLED
+  RETRY_PENDING
+}
+
+model ERPSyncJob {
+  id                   String           @id @default(uuid())
+  voucherCandidateId   String           @unique
+  voucherCandidate     VoucherCandidate @relation(fields: [voucherCandidateId], references: [id], onDelete: Cascade)
+  status               ERPSyncStatus    @default(PENDING)
+  attempts             Int              @default(0)
+  maxAttempts          Int              @default(5)
+  verificationAttempts Int              @default(0)
+  idempotencyHash      String           @unique
+  nextRetryAt          DateTime?
+  lastAttemptAt        DateTime?
+  lastVerificationAt   DateTime?
+  lastError            String?
+  erpReferenceId       String? // Tally's LASTVCHID
+  adapterCode          String // Removed ERPConnection/ERPAdapter mapping; store simple code e.g. TALLY_PRIME_V1
+  attemptsHistory      ERPSyncAttempt[]
+  stateTransitions     ERPSyncHistory[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+}
+
+model ERPSyncHistory {
+  id         String         @id @default(uuid())
+  jobId      String
+  job        ERPSyncJob     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  statusFrom ERPSyncStatus?
+  statusTo   ERPSyncStatus
+  reason     String?
+  createdAt  DateTime       @default(now())
+}
+
+model ERPSyncAttempt {
+  id             String     @id @default(uuid())
+  jobId          String
+  job            ERPSyncJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  payloadHash    String
+  payloadSize    Int? // Replaces requestPayload storing full XML
+  responseType   String? // E.g., SUCCESS, BUSINESS_ERROR, MALFORMED_XML
+  parserWarnings String[] // Replaces responsePayload storing full XML
+  requestTime    DateTime
+  responseTime   DateTime?
+  durationMs     Int?
+  success        Boolean
+  errorMessage   String?
+  createdAt      DateTime   @default(now())
+}
+
+// --- PHASE 9 STUDENT FEE AUTOMATION ---
+
+enum EmailDocumentStatus {
+  RECEIVED
+  PARSED
+  EXTRACTION_PROCESSING
+  EXTRACTION_FAILED
+  STUDENT_MATCHING
+  STUDENT_UNMATCHED
+  FEE_ALLOCATING
+  MANUAL_REVIEW
+  VOUCHER_GENERATED
+  ERP_SYNCING
+  COMPLETED
+  DUPLICATE
+}
+
+model EmailDocument {
+  id                String              @id @default(uuid())
+  messageId         String              @unique
+  subject           String?
+  sender            String?
+  receivedAt        DateTime
+  source            String
+  checksum          String
+  status            EmailDocumentStatus @default(RECEIVED)
+  retryCount        Int                 @default(0)
+  lastProcessedStep String?
+  confidenceScore   Float?
+  createdAt         DateTime            @default(now())
+
+  paymentCandidate StudentPaymentCandidate?
+  studentMatch     StudentMatchResult?
+  feeAllocation    StudentFeeAllocation?
+  manualReview     StudentManualReviewRoute?
+  auditLogs        StudentPaymentAudit[]
+}
+
+model StudentPaymentCandidate {
+  id                   String        @id @default(uuid())
+  documentId           String        @unique
+  document             EmailDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  paymentGateway       String?
+  gatewayTransactionId String?
+  utr                  String?
+  bankReference        String?
+  payerEmail           String?
+  payerPhone           String?
+  rawStudentName       String?
+  amount               Decimal?      @db.Decimal(15, 2)
+  paymentDate          DateTime?
+  extractionConfidence Float?
+}
+
+model StudentMatchResult {
+  id               String        @id @default(uuid())
+  documentId       String        @unique
+  document         EmailDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  studentId        String
+  student          Student       @relation(fields: [studentId], references: [id])
+  confidence       Float
+  matchingStrategy String
+  candidateList    Json?
+  matchedAt        DateTime      @default(now())
+}
+
+model StudentFeeAllocation {
+  id             String                     @id @default(uuid())
+  documentId     String                     @unique
+  document       EmailDocument              @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  totalAllocated Decimal                    @db.Decimal(15, 2)
+  allocationType String // EXACT, PARTIAL, ADVANCE
+  allocatedFees  StudentFeeAllocationLine[]
+}
+
+model StudentFeeAllocationLine {
+  id                     String               @id @default(uuid())
+  studentFeeAllocationId String
+  studentFeeAllocation   StudentFeeAllocation @relation(fields: [studentFeeAllocationId], references: [id], onDelete: Cascade)
+  outstandingFeeId       String
+  amount                 Decimal              @db.Decimal(15, 2)
+}
+
+model StudentManualReviewRoute {
+  id         String        @id @default(uuid())
+  documentId String        @unique
+  document   EmailDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  reason     String
+  status     String        @default("PENDING")
+  assignedTo String?
+  createdAt  DateTime      @default(now())
+  resolvedAt DateTime?
+}
+
+model StudentPaymentAudit {
+  id         String        @id @default(uuid())
+  documentId String
+  document   EmailDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  action     String
+  metadata   Json?
+  createdAt  DateTime      @default(now())
+}
+
+// ==========================================
+// SINGLETON CONFIGURATION ARCHITECTURE
+// ==========================================
+
+model SchoolConfiguration {
+  id            String   @id @default(uuid())
+  schoolName    String?
+  address       String?
+  phone         String?
+  email         String?
+  gst           String?
+  pan           String?
+  financialYear String?
+  timezone      String   @default("Asia/Kolkata")
+  logoUrl       String?
+  updatedAt     DateTime @updatedAt
+}
+
+model EmailIntegrationConfiguration {
+  id                   String   @id @default(uuid())
+  vendorMailbox        String?
+  studentMailbox       String?
+  provider             String?  // GOOGLE, MICROSOFT
+  clientId             String?
+  clientSecretEncrypted String?
+  refreshTokenEncrypted String?
+  syncIntervalMinutes  Int      @default(5)
+  lastSyncAt           DateTime?
+  status               String   @default("DISCONNECTED")
+  updatedAt            DateTime @updatedAt
+}
+
+model OCRIntegrationConfiguration {
+  id                   String   @id @default(uuid())
+  provider             String   @default("AZURE_DOCUMENT_INTELLIGENCE")
+  endpoint             String?
+  apiKeyEncrypted      String?
+  modelId              String?  @default("prebuilt-invoice")
+  confidenceThreshold  Float    @default(0.8)
+  status               String   @default("DISCONNECTED")
+  updatedAt            DateTime @updatedAt
+}
+
+model ERPIntegrationConfiguration {
+  id                   String   @id @default(uuid())
+  provider             String   @default("TALLY_PRIME")
+  host                 String?
+  port                 Int?
+  companyName          String?
+  timeoutMs            Int      @default(30000)
+  retryCount           Int      @default(3)
+  encoding             String   @default("utf-16le")
+  status               String   @default("DISCONNECTED")
+  updatedAt            DateTime @updatedAt
+}
+
+model LedgerMappingConfiguration {
+  id                   String   @id @default(uuid())
+  vendorLedger         String?
+  studentLedger        String?
+  gstLedger            String?
+  bankLedger           String?
+  cashLedger           String?
+  discountLedger       String?
+  feeCategories        Json?    // Stores mapping of fee types to ledger names
+  updatedAt            DateTime @updatedAt
+}
+
+model NotificationConfiguration {
+  id                   String   @id @default(uuid())
+  smtpHost             String?
+  smtpPort             Int?
+  smtpUser             String?
+  smtpPassEncrypted    String?
+  alertEmails          String[]
+  enableSystemAlerts   Boolean  @default(true)
+  updatedAt            DateTime @updatedAt
+}
+
+model SecurityConfiguration {
+  id                   String   @id @default(uuid())
+  jwtExpirationHours   Int      @default(24)
+  sessionTimeoutMins   Int      @default(60)
+  passwordPolicyRegex  String?
+  updatedAt            DateTime @updatedAt
+}
+
+model BackupConfiguration {
+  id                   String   @id @default(uuid())
+  scheduleCron         String?  // e.g. "0 0 * * *"
+  retentionDays        Int      @default(30)
+  destinationType      String?  // S3, LOCAL
+  destinationUrl       String?
+  updatedAt            DateTime @updatedAt
+}
+
+// ==========================================
+// INTEGRATION LOGS
+// ==========================================
+
+model IntegrationLog {
+  id            String   @id @default(uuid())
+  correlationId String?
+  provider      String   // e.g., TALLY, AZURE_OCR, GMAIL
+  operation     String   // e.g., SYNC_VOUCHER, ANALYZE_DOCUMENT
+  requestPayload  String?
+  responsePayload String?
+  latencyMs     Int?
+  status        String   // SUCCESS, ERROR
+  failureReason String?
+  createdAt     DateTime @default(now())
+}
+

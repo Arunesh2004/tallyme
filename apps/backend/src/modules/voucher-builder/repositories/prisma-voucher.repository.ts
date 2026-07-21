@@ -26,7 +26,7 @@ export class PrismaVoucherRepository implements IVoucherRepository {
           lines: { create: candidateData.lines },
           references: { create: candidateData.references },
           narrations: { create: candidateData.narrations },
-        }
+        },
       });
 
       if (logData) {
@@ -35,8 +35,8 @@ export class PrismaVoucherRepository implements IVoucherRepository {
           data: {
             voucherCandidateId: candidate.id,
             status: candidateData.validationStatus,
-            executionTimeMs: logData.details?.executionTimeMs || 0
-          }
+            executionTimeMs: logData.details?.executionTimeMs || 0,
+          },
         });
         logData.voucherValidationId = validation.id;
         await tx.voucherValidationLog.create({ data: logData });

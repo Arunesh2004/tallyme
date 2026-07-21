@@ -14,6 +14,6 @@ export const appConfig = registerAs('app', (): AppConfig => {
     name: env.APP_NAME,
     env: env.NODE_ENV,
     port: env.PORT,
-    apiPrefix: env.API_PREFIX
+    apiPrefix: env.API_PREFIX,
   };
 });

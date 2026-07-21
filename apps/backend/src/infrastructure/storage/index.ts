@@ -16,7 +16,11 @@ export interface FileMetadata {
 }
 
 export interface StorageProvider {
-  store(fileBuffer: Buffer, originalName: string, contentType: string): Promise<FileMetadata>;
+  store(
+    fileBuffer: Buffer,
+    originalName: string,
+    contentType: string,
+  ): Promise<FileMetadata>;
   retrieve(fileId: string): Promise<Buffer>;
   delete(fileId: string): Promise<void>;
 }
@@ -33,12 +37,16 @@ export class LocalStorageProvider implements StorageProvider {
     return originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
   }
 
-  async store(fileBuffer: Buffer, originalName: string, contentType: string): Promise<FileMetadata> {
+  async store(
+    fileBuffer: Buffer,
+    originalName: string,
+    contentType: string,
+  ): Promise<FileMetadata> {
     const checksum = this.generateChecksum(fileBuffer);
     const date = new Date();
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    
+
     const targetDir = path.join(this.baseDir, year, month);
     await fs.mkdir(targetDir, { recursive: true });
 
@@ -56,7 +64,7 @@ export class LocalStorageProvider implements StorageProvider {
       contentType,
       size: fileBuffer.length,
       provider: 'LOCAL',
-      path: fullPath
+      path: fullPath,
     };
   }
 

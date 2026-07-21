@@ -7,7 +7,7 @@ export type TenantId = Brand<string, 'TenantId'>;
 export enum Currency {
   INR = 'INR',
   USD = 'USD',
-  EUR = 'EUR'
+  EUR = 'EUR',
 }
 
 export interface IDecimal {
@@ -23,6 +23,6 @@ export interface IDecimal {
 export class Money {
   constructor(
     public readonly amount: IDecimal,
-    public readonly currency: Currency = Currency.INR
+    public readonly currency: Currency = Currency.INR,
   ) {}
 }

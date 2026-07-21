@@ -4,13 +4,12 @@ import { Result, fail, ok } from '../../../shared/domain/result';
 
 @Injectable()
 export class PromptInjectionFilter {
-  
   private readonly HEURISTICS = [
     /ignore previous instructions/i,
     /system directive:/i,
     /override/i,
     /you are now/i,
-    /forget all/i
+    /forget all/i,
   ];
 
   evaluate(rawOcrText: string): Result<boolean, string> {

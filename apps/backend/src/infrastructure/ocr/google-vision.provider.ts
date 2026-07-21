@@ -11,7 +11,7 @@ export class GoogleVisionOCRProvider implements OCRProvider {
 
   constructor(
     private readonly logger: ILogger,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     // this.client = new vision.ImageAnnotatorClient({ credentials: ... });
   }
@@ -23,12 +23,14 @@ export class GoogleVisionOCRProvider implements OCRProvider {
       // const [result] = await this.client.documentTextDetection(documentPath);
       // const fullTextAnnotation = result.fullTextAnnotation;
       // return fullTextAnnotation.text;
-      
+
       // Stubbing SDK call to keep codebase runnable without real GCP creds during testing
       return `STUBBED_OCR_TEXT_FOR:\nInvoice #INV-2023-01\nDate: 2023-10-01\nVendor: Acme Corp\nGSTIN: 27AADCB2230M1Z2\nAmount: 15000.00`;
     } catch (error: any) {
       this.logger.error(`Google Vision OCR failed`, error.stack);
-      throw new InternalServerErrorException('OCR Provider Failure', { cause: error });
+      throw new InternalServerErrorException('OCR Provider Failure', {
+        cause: error,
+      });
     }
   }
 }

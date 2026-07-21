@@ -31,7 +31,7 @@ export class AuditLogger {
       entityId: event.entityId,
       metadata: event.metadata,
     };
-    
+
     // Audit logs are structured specifically to be parsed by an external SIEM or immutable ledger
     this.logger.info('AUDIT_EVENT', payload);
   }

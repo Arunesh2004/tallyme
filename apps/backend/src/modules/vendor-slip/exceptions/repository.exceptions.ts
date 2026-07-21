@@ -1,5 +1,8 @@
 export class RepositoryError extends Error {
-  constructor(message: string, public readonly cause?: any) {
+  constructor(
+    message: string,
+    public readonly cause?: any,
+  ) {
     super(message);
     this.name = this.constructor.name;
   }
@@ -13,7 +16,10 @@ export class DuplicateDocumentError extends RepositoryError {
 
 export class DuplicateInvoiceError extends RepositoryError {
   constructor(vendorId: string, invoiceNumber: string, cause?: any) {
-    super(`Invoice ${invoiceNumber} already exists for vendor ${vendorId}`, cause);
+    super(
+      `Invoice ${invoiceNumber} already exists for vendor ${vendorId}`,
+      cause,
+    );
   }
 }
 

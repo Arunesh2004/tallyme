@@ -15,9 +15,9 @@ import { SyncTracker } from './adapters';
     XMLParser,
     VoucherMapper,
     ERPIdempotencyService,
-    SyncTracker
+    SyncTracker,
   ],
-  exports: ['ERPConnector']
+  exports: ['ERPConnector'],
 })
 export class ERPModule {}
 

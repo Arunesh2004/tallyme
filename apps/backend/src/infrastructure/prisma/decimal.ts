@@ -12,9 +12,11 @@ export class DecimalWrapper implements IDecimal {
     if (value instanceof DecimalWrapper) {
       this.value = value.value;
     } else if (typeof value === 'object' && 'toNumber' in value) {
-        this.value = new Prisma.Decimal(value.toString());
+      this.value = new Prisma.Decimal(value.toString());
     } else {
-      this.value = new Prisma.Decimal(value as string | number | Prisma.Decimal);
+      this.value = new Prisma.Decimal(
+        value as string | number | Prisma.Decimal,
+      );
     }
   }
 
@@ -31,15 +33,21 @@ export class DecimalWrapper implements IDecimal {
   }
 
   minus(other: IDecimal | string | number): IDecimal {
-    return new DecimalWrapper(this.value.minus(new DecimalWrapper(other).value));
+    return new DecimalWrapper(
+      this.value.minus(new DecimalWrapper(other).value),
+    );
   }
 
   times(other: IDecimal | string | number): IDecimal {
-    return new DecimalWrapper(this.value.times(new DecimalWrapper(other).value));
+    return new DecimalWrapper(
+      this.value.times(new DecimalWrapper(other).value),
+    );
   }
 
   div(other: IDecimal | string | number): IDecimal {
-    return new DecimalWrapper(this.value.dividedBy(new DecimalWrapper(other).value));
+    return new DecimalWrapper(
+      this.value.dividedBy(new DecimalWrapper(other).value),
+    );
   }
 
   equals(other: IDecimal | string | number): boolean {

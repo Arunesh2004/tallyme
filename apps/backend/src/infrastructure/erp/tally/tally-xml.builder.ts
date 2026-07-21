@@ -6,13 +6,21 @@ import { VoucherCandidate } from '../../../modules/vendor-slip/domain/services/v
 export class TallyXMLBuilder {
   buildVoucher(candidate: VoucherCandidate): string {
     // Escaping would happen here
-    const narration = candidate.narration.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    
+    const narration = candidate.narration
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
     let ledgersXml = '';
     for (const entry of candidate.entries) {
-      const ledgerName = entry.ledgerName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const amount = entry.isDebit ? `-${entry.amount.toNumber()}` : entry.amount.toNumber();
-      
+      const ledgerName = entry.ledgerName
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      const amount = entry.isDebit
+        ? `-${entry.amount.toNumber()}`
+        : entry.amount.toNumber();
+
       ledgersXml += `
         <ALLLEDGERENTRIES.LIST>
           <LEDGERNAME>${ledgerName}</LEDGERNAME>

@@ -52,24 +52,33 @@ export class PrismaMatchingRepository implements IMatchingRepository {
   }
 
   // New method for transactional save
-  async saveMatchingResult(candidateData: any, attemptData: any, matchesData: any[], conflictsData: any[]): Promise<any> {
+  async saveMatchingResult(
+    candidateData: any,
+    attemptData: any,
+    matchesData: any[],
+    conflictsData: any[],
+  ): Promise<any> {
     return this.prisma.$transaction(async (tx) => {
       const candidate = await tx.studentPaymentCandidate.create({
         data: candidateData,
       });
-      
+
       if (attemptData) {
         attemptData.studentPaymentCandidateId = candidate.id;
         await tx.matchingAttempt.create({ data: attemptData });
       }
-      
+
       if (matchesData && matchesData.length > 0) {
-        matchesData.forEach(m => m.studentPaymentCandidateId = candidate.id);
+        matchesData.forEach(
+          (m) => (m.studentPaymentCandidateId = candidate.id),
+        );
         await tx.studentMatch.createMany({ data: matchesData });
       }
-      
+
       if (conflictsData && conflictsData.length > 0) {
-        conflictsData.forEach(c => c.studentPaymentCandidateId = candidate.id);
+        conflictsData.forEach(
+          (c) => (c.studentPaymentCandidateId = candidate.id),
+        );
         await tx.matchingConflict.createMany({ data: conflictsData });
       }
       return candidate;

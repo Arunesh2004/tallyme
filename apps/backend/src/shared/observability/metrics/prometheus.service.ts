@@ -1,50 +1,39 @@
-// src/shared/observability/metrics/prometheus.service.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as client from 'prom-client';
+import { Injectable } from '@common';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter, Histogram } from 'prom-client';
 
 @Injectable()
-export class PrometheusService implements OnModuleInit {
-  private readonly registry = new client.Registry();
+export class PrometheusService {
+  constructor(
+    @InjectMetric('tallyme_vendor_docs_processed_total')
+    public readonly vendorDocsProcessed: Counter<string>,
 
-  public readonly httpRequestDuration = new client.Histogram({
-    name: 'http_request_duration_seconds',
-    help: 'Duration of HTTP requests in seconds',
-    labelNames: ['method', 'route', 'status_code'],
-    buckets: [0.1, 0.5, 1, 2, 5]
-  });
+    @InjectMetric('tallyme_student_payments_processed_total')
+    public readonly studentPaymentsProcessed: Counter<string>,
 
-  public readonly businessVouchersGenerated = new client.Counter({
-    name: 'tallyme_vouchers_generated_total',
-    help: 'Total number of vouchers successfully generated'
-  });
+    @InjectMetric('tallyme_erp_sync_success_total')
+    public readonly erpSyncSuccess: Counter<string>,
 
-  public readonly erpSyncSuccessRate = new client.Counter({
-    name: 'tallyme_erp_sync_success_total',
-    help: 'Total number of successful ERP syncs'
-  });
+    @InjectMetric('tallyme_erp_sync_failure_total')
+    public readonly erpSyncFailure: Counter<string>,
 
-  public readonly erpSyncFailureRate = new client.Counter({
-    name: 'tallyme_erp_sync_failure_total',
-    help: 'Total number of failed ERP syncs',
-    labelNames: ['reason']
-  });
+    @InjectMetric('tallyme_manual_review_total')
+    public readonly manualReviews: Counter<string>,
 
-  public readonly manualReviewCount = new client.Counter({
-    name: 'tallyme_manual_review_total',
-    help: 'Total number of items routed to manual review',
-    labelNames: ['module', 'reason']
-  });
+    @InjectMetric('tallyme_voucher_generation_latency_seconds')
+    public readonly voucherLatency: Histogram<string>,
 
-  onModuleInit() {
-    client.collectDefaultMetrics({ register: this.registry });
-    this.registry.registerMetric(this.httpRequestDuration);
-    this.registry.registerMetric(this.businessVouchersGenerated);
-    this.registry.registerMetric(this.erpSyncSuccessRate);
-    this.registry.registerMetric(this.erpSyncFailureRate);
-    this.registry.registerMetric(this.manualReviewCount);
+    @InjectMetric('tallyme_ocr_confidence')
+    public readonly ocrConfidence: Histogram<string>,
+  ) {}
+
+  incrementVendorDocs() {
+    this.vendorDocsProcessed.inc();
   }
 
-  async getMetrics(): Promise<string> {
-    return this.registry.metrics();
+  recordOcrConfidence(confidence: number) {
+    this.ocrConfidence.observe(confidence);
   }
+
+  // Add more helper methods as needed
 }

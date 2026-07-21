@@ -1,7 +1,11 @@
 // infrastructure/email/index.ts
 import { Injectable } from '@nestjs/common';
 import { PaymentCandidate } from '../../domain/entities';
-import { PaymentReference, TransactionId, PaymentAmount } from '../../domain/value-objects';
+import {
+  PaymentReference,
+  TransactionId,
+  PaymentAmount,
+} from '../../domain/value-objects';
 import { DecimalWrapper } from '../../../infrastructure/prisma';
 import { ILogger } from '../../../shared/observability';
 
@@ -11,7 +15,7 @@ export class EmailParser {
 
   parse(rawEmailContent: string): PaymentCandidate | null {
     this.logger.info('Parsing incoming payment email');
-    
+
     try {
       // Stub: Regex extraction of bank email template
       const reference = new PaymentReference('REF123');
@@ -26,7 +30,7 @@ export class EmailParser {
         amount,
         date,
         'John Doe',
-        'Tuition Fee Q1'
+        'Tuition Fee Q1',
       );
     } catch (e: any) {
       this.logger.error('Failed to parse email', e.stack);
