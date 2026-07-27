@@ -14,11 +14,7 @@ export class VoucherMapperService {
     // 1. Map fields
     const dto = plainToInstance(TallyVoucherDTO, {
       voucherNumber: internalData.voucherNumber,
-      date:
-        (internalData.date instanceof Date 
-          ? internalData.date.toISOString().split('T')[0].replace(/-/g, '') 
-          : internalData.date) ||
-        new Date().toISOString().split('T')[0].replace(/-/g, ''), // Default format YYYYMMDD
+      date: this.formatDateForTally(internalData.date),
       voucherType: internalData.voucherType || 'Receipt',
       companyId: internalData.companyId,
       companyName: internalData.companyName,
@@ -64,5 +60,30 @@ export class VoucherMapperService {
     }
 
     return dto;
+  }
+
+  /**
+   * Formats a date to Tally Prime compatible format: DD-MM-YYYY
+   * Tally Prime is strict about date format and will reject other formats.
+   */
+  private formatDateForTally(date: any): string {
+    if (!date) {
+      date = new Date();
+    }
+
+    const d = date instanceof Date ? date : new Date(date);
+
+    // Validate date is a valid Date object
+    if (isNaN(d.getTime())) {
+      throw new ERPValidationException(
+        `Invalid date provided: ${date}. Expected Date object or ISO string.`,
+      );
+    }
+
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+
+    return `${day}-${month}-${year}`;
   }
 }
