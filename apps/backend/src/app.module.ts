@@ -15,6 +15,7 @@ import {
   mailConfig,
   validateEnv,
 } from './core/config';
+import { aiConfig } from './shared/config/ai.config';
 import { LoggerModule } from './core/logger/logger.module';
 import { ContextModule } from './core/context/context.module';
 import { PrismaModule } from './infrastructure/database/prisma.module';
@@ -30,8 +31,19 @@ import { StudentMatchingModule } from './modules/student-matching/student-matchi
 import { FeeValidationModule } from './modules/fee-validation/fee-validation.module';
 import { VoucherBuilderModule } from './modules/voucher-builder/voucher-builder.module';
 import { ERPConnectorModule } from './modules/erp-connector/erp-connector.module';
-import { OperationsPortalModule } from './modules/operations-portal/operations-portal.module';
 import { ObservabilityModule } from './shared/observability/observability.module';
+import { VendorSlipModule } from './modules/vendor-slip/vendor-slip.module';
+// import { StudentFeeModule } from './modules/student-fee/student-fee.module';
+import { OperationsModule } from './modules/operations/operations.module';
+import { FilesModule } from './modules/files/files.module';
+// import { EnterpriseAccountingIntelligenceModule } from './modules/accounting-intelligence/enterprise-accounting-intelligence.module';
+
+import { OrganizationModule } from './modules/organization/organization.module';
+import { AuditModule } from './modules/audit/audit.module';
+import { EventsModule } from './modules/events/events.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BackupModule } from './modules/backup/backup.module';
+import { AIGovernanceModule } from './modules/ai-governance/ai-governance.module';
 
 @Module({
   imports: [
@@ -49,6 +61,7 @@ import { ObservabilityModule } from './shared/observability/observability.module
         jwtConfig,
         securityConfig,
         mailConfig,
+        aiConfig,
       ],
     }),
     PrometheusModule.register(),
@@ -73,8 +86,18 @@ import { ObservabilityModule } from './shared/observability/observability.module
     FeeValidationModule,
     VoucherBuilderModule,
     ERPConnectorModule,
-    OperationsPortalModule,
+    OperationsModule,
     ObservabilityModule,
+    VendorSlipModule,
+    // StudentFeeModule,
+    FilesModule,
+    // EnterpriseAccountingIntelligenceModule,
+    EventsModule,
+    OrganizationModule,
+    AuditModule,
+    ScheduleModule.forRoot(),
+    BackupModule,
+    AIGovernanceModule,
   ],
   providers: [
     {

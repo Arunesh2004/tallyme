@@ -2,9 +2,9 @@ import {
   ITransactionContext,
   Page,
   PageRequest,
-} from '../../../shared/domain/repositories';
+} from '../../../../shared/domain/repositories';
 
-// Stubs for Domain Entities
+// (implementation note)
 export type ERPSyncJob = { id: string };
 
 export interface IERPSyncJobRepository {

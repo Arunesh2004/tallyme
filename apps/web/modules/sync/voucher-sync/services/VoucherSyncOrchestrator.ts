@@ -16,7 +16,7 @@ export class VoucherSyncOrchestrator {
   }
 
   public async syncVoucher(voucherId: string, organizationId: string, correlationId: string): Promise<void> {
-    logger.info(`Starting sync for voucher ${voucherId}`, { correlationId });
+    logger.info({ correlationId }, `Starting sync for voucher ${voucherId}`);
     
     // 1. Load the Voucher
     const voucher = await this.loader.load(voucherId, organizationId);

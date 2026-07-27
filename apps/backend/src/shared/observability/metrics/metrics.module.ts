@@ -38,6 +38,14 @@ import { PrometheusService } from './prometheus.service';
       help: 'Confidence score of OCR extraction',
       buckets: [0, 20, 50, 75, 90, 95, 99, 100],
     }),
+    makeCounterProvider({
+      name: 'tallyme_queue_active_jobs',
+      help: 'Total number of active BullMQ jobs',
+    }),
+    makeCounterProvider({
+      name: 'tallyme_queue_failed_jobs',
+      help: 'Total number of failed BullMQ jobs',
+    }),
   ],
   exports: [PrometheusService],
 })

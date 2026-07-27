@@ -11,6 +11,12 @@ export class PrismaMailRepository implements IMailRepository {
     private readonly logger: LoggerService,
   ) {}
 
+  async findById(id: string): Promise<IncomingEmail | null> {
+    return this.prisma.incomingEmail.findUnique({
+      where: { id },
+    });
+  }
+
   async emailExists(messageId: string): Promise<boolean> {
     const count = await this.prisma.incomingEmail.count({
       where: { messageId },

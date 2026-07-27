@@ -7,7 +7,7 @@ export abstract class BaseERPAdapter implements IERPAdapter {
   abstract connect(): Promise<boolean>;
   abstract disconnect(): Promise<void>;
   abstract healthCheck(): Promise<boolean>;
-  abstract buildPayload(voucherData: TallyVoucherDTO): any;
+  abstract buildPayload(voucherData: TallyVoucherDTO): Promise<any>;
   abstract sendVoucher(
     payload: any,
     context: ERPRequestContext,

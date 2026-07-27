@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 import { EnvConfig } from './env.schema';
 
 export interface AIConfig {
-  provider: 'openai' | 'anthropic';
+  provider: 'openai' | 'anthropic' | 'gemini';
   apiKey: string;
   model: string;
   timeoutMs: number;

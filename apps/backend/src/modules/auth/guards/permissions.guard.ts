@@ -7,18 +7,10 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
+import { SetMetadata } from '@nestjs/common';
 export const PERMISSIONS_KEY = 'permissions';
-export const RequirePermissions = (...permissions: string[]) => {
-  return (
-    target: any,
-    key?: string | symbol,
-    descriptor?: TypedPropertyDescriptor<any>,
-  ) => {
-    Reflector.createDecorator<string[]>()({
-      transform: (value) => value,
-    })(target, key, descriptor);
-  };
-};
+export const RequirePermissions = (...permissions: string[]) =>
+  SetMetadata(PERMISSIONS_KEY, permissions);
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

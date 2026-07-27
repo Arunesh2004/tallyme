@@ -4,6 +4,8 @@ export interface IVoucherRepository {
   logValidation(log: any): Promise<void>;
   logAttempt(attempt: any): Promise<void>;
   saveVoucherResult(candidateData: any, logData: any): Promise<any>;
+  findFeeAllocationCandidateById(id: string): Promise<any>;
+  checkCompanyExists(id: string): Promise<boolean>;
 }
 
 export interface VoucherLineItem {

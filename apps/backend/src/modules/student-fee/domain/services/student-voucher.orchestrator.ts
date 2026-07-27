@@ -2,19 +2,16 @@
 import { Injectable } from '@nestjs/common';
 import { Result, fail, ok } from '../../../../shared/domain/result';
 import { FeeAllocation } from '../entities';
-import {
-  VoucherBuilder,
-  VoucherCandidate,
-  VoucherEntry,
-} from '../../vendor-slip/domain/services/voucher.service';
-import { EventPublisher } from '../../../../shared/events';
-import { VoucherGenerated } from '../events';
-import * as crypto from 'crypto';
+import { IQueueService } from '../../../../infrastructure/queue/queue.interfaces';
+import { QUEUE_PROVIDER } from '../../../../infrastructure/queue/queue.constants';
+import { Inject } from '@nestjs/common';
+import { VOUCHER_BUILDER_QUEUE } from '../../../voucher-builder/constants/voucher.constants';
+import { CompanyContextService } from '../../../../core/context/company-context.service';
 
 @Injectable()
 export class StudentVoucherMappingPolicy {
   getBankLedger(paymentMethod: string): string {
-    return 'Bank Account'; // Stub: Map based on gateway
+    return paymentMethod;
   }
 }
 
@@ -28,10 +25,10 @@ export class StudentNarrationPolicy {
 @Injectable()
 export class StudentVoucherOrchestrator {
   constructor(
-    private readonly voucherBuilder: VoucherBuilder,
+    @Inject(QUEUE_PROVIDER) private readonly queueService: IQueueService,
     private readonly mappingPolicy: StudentVoucherMappingPolicy,
     private readonly narrationPolicy: StudentNarrationPolicy,
-    private readonly eventPublisher: EventPublisher,
+    private readonly companyContext: CompanyContextService,
   ) {}
 
   async orchestrate(
@@ -39,65 +36,40 @@ export class StudentVoucherOrchestrator {
     bankLedger: string,
     studentName: string,
     ref: string,
-  ): Promise<Result<VoucherCandidate, string>> {
-    const entries: VoucherEntry[] = [];
-    let totalCredit = 0;
+    companyId: string,
+  ): Promise<Result<any, string>> {
+    const allocationBreakdown = allocations.map((a) => ({
+      feeHeadName: a.outstandingFeeId,
+      allocated: a.allocatedAmount.amount.toNumber(),
+    }));
 
-    // Credit Fee Heads
-    for (const alloc of allocations) {
-      // Pass outstandingFeeId as Ledger Name stub
-      entries.push(
-        new VoucherEntry(
-          alloc.outstandingFeeId,
-          alloc.allocatedAmount.amount,
-          false,
-        ),
-      );
-      totalCredit += alloc.allocatedAmount.amount.toNumber();
-    }
-
-    // Debit Bank Ledger (Total Amount Received)
-    // Creating manual ExpenseAllocation stub to leverage existing VoucherBuilder signature,
-    // or manually invoking the underlying VoucherValidator directly.
-    // The existing VoucherBuilder expects an ExpenseAllocation (for Purchases).
-    // For Receipts, we bypass `build` and instantiate directly, relying on `VoucherValidator`.
-
-    entries.push(
-      new VoucherEntry(
-        bankLedger,
-        { toNumber: () => totalCredit } as any,
-        true,
-      ),
+    const totalCredit = allocationBreakdown.reduce(
+      (sum, a) => sum + a.allocated,
+      0,
     );
 
-    const candidate = new VoucherCandidate(
-      crypto.randomUUID(),
-      allocations[0].studentPaymentId,
-      'Receipt',
-      new Date(),
-      this.narrationPolicy.generate(studentName, ref),
-      entries,
-    );
-
-    // Reuse the exact VoucherValidator built in Phase 1E via the VoucherBuilder instance or injected validator
-    // Because the prompt says "Reuse existing VoucherBuilder and VoucherValidator",
-    // and they enforce Debit=Credit, this perfectly guards the Receipt creation.
-
-    // Stubbing internal validation pass assuming Validator is injected
-
-    const event = new VoucherGenerated(
-      {
-        eventId: crypto.randomUUID(),
-        correlationId: crypto.randomUUID(),
-        eventType: 'VoucherGenerated',
-        timestamp: new Date(),
-        tenantId: 'DEFAULT',
+    const payload = {
+      voucherType: 'RECEIPT',
+      companyId: companyId,
+      allocationData: {
+        allocationBreakdown,
+        remainingAmount: 0, // Simplified for now
       },
-      { voucherId: candidate.id },
+      paymentData: {
+        amount: totalCredit,
+        reference: ref,
+        bankLedger,
+      },
+      student: { name: studentName },
+    };
+
+    // Dispatch to Shared Accounting Engine via Queue
+    await this.queueService.addJob(
+      VOUCHER_BUILDER_QUEUE,
+      'build-receipt-voucher',
+      payload,
     );
 
-    await this.eventPublisher.publish(event); // Triggers BullMQ
-
-    return ok(candidate);
+    return ok({ status: 'QUEUED' });
   }
 }

@@ -9,7 +9,7 @@ export class RedisHealthIndicator {
     try {
       const result = await this.redisService.ping();
       return result === 'PONG';
-    } catch (error) {
+    } catch (error: any) {
       return false;
     }
   }

@@ -69,13 +69,3 @@ export interface EventBus
   extends EventPublisher, EventSubscriber, EventDispatcher {}
 
 // index.ts
-export * from './EventMetadata';
-export * from './Event';
-export * from './DomainEvent';
-export * from './IntegrationEvent';
-export * from './EventEnvelope';
-export * from './EventHandler';
-export * from './EventPublisher';
-export * from './EventSubscriber';
-export * from './EventDispatcher';
-export * from './EventBus';

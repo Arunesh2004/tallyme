@@ -5,6 +5,7 @@ import { LoggerService } from '../../core/logger/logger.service';
 import { IQueueService } from './queue.interfaces';
 import { REDIS_CLIENT } from '../cache/redis.constants';
 import { ModuleRef } from '@nestjs/core';
+import { RequestContextService } from '../../core/context/request-context.service';
 
 @Injectable()
 export class BullMqService
@@ -47,6 +48,7 @@ export class BullMqService
 
     const queue = new Queue(queueName, {
       connection: redisClient,
+      prefix: this.configService.get<string>('redis.keyPrefix') + 'bull',
       defaultJobOptions: this.configService.get('queue.defaultJobOptions'),
     });
 
@@ -66,12 +68,14 @@ export class BullMqService
   ): Promise<void> {
     const queue = this.getOrCreateQueue(queueName);
     try {
-      await queue.add(jobName, data, opts);
+      const correlationId = RequestContextService.getCorrelationId();
+      const enrichedData = correlationId ? { ...data, correlationId } : data;
+      await queue.add(jobName, enrichedData, opts);
       this.logger.debug(
         `Added job ${jobName} to queue ${queueName}`,
         'BullMqService',
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to add job ${jobName} to queue ${queueName}`,
         (error as Error).stack,
@@ -79,5 +83,26 @@ export class BullMqService
       );
       throw error;
     }
+  }
+
+  async getJobCounts(queueName: string): Promise<{
+    waiting: number;
+    active: number;
+    failed: number;
+    delayed: number;
+  }> {
+    const queue = this.getOrCreateQueue(queueName);
+    const counts = await queue.getJobCounts(
+      'waiting',
+      'active',
+      'failed',
+      'delayed',
+    );
+    return {
+      waiting: counts.waiting,
+      active: counts.active,
+      failed: counts.failed,
+      delayed: counts.delayed,
+    };
   }
 }

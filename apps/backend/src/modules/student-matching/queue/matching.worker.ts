@@ -22,7 +22,7 @@ export class MatchingWorker extends WorkerHost {
     try {
       await this.useCase.execute(job.data.candidateId);
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Matching failed for candidateId ${job.data.candidateId}`,
         (error as Error).stack,

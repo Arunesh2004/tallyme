@@ -4,8 +4,11 @@ import {
   InvoiceDate,
   InvoiceAmount,
   ConfidenceScore,
+  ExtractedVendorName,
+  ExtractedSubtotal,
+  ExtractedTax,
+  ExtractedGSTIN,
 } from '../value-objects';
-import { GSTIN } from '../../../../shared/domain/value-objects';
 
 export class InvoiceDocument {
   constructor(
@@ -20,12 +23,22 @@ export class InvoiceCandidate {
   constructor(
     public readonly id: string,
     public readonly documentId: string,
-    public readonly invoiceNumber: InvoiceNumber,
-    public readonly invoiceDate: InvoiceDate,
-    public readonly totalAmount: InvoiceAmount,
-    public readonly extractedGstin: GSTIN | null,
+    public readonly extractedVendorName: ExtractedVendorName | null,
+    public readonly invoiceNumber: InvoiceNumber | null,
+    public readonly invoiceDate: InvoiceDate | null,
+    public readonly extractedSubtotal: ExtractedSubtotal | null,
+    public readonly extractedTax: ExtractedTax | null,
+    public readonly totalAmount: InvoiceAmount | null,
+    public readonly extractedGstin: ExtractedGSTIN | null,
     public readonly confidence: ConfidenceScore,
-    public status: 'EXTRACTED' | 'MATCHED' | 'REVIEW',
+    public status:
+      | 'PENDING_EXTRACTION'
+      | 'EXTRACTED'
+      | 'MANUAL_REVIEW_REQUIRED'
+      | 'APPROVED'
+      | 'QUEUED'
+      | 'SYNCED'
+      | 'FAILED',
   ) {}
 }
 
@@ -42,7 +55,7 @@ export class ExpenseAllocation {
   constructor(
     public readonly id: string,
     public readonly matchId: string,
-    public readonly lineItems: any[], // Stub
+    public readonly lineItems: any[], // (implementation note)
     public readonly totalAllocated: InvoiceAmount,
   ) {}
 }

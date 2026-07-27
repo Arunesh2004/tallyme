@@ -25,7 +25,7 @@ export class MatchingWorker {
     });
 
     this.worker.on('failed', (job, err) => {
-      logger.error(`Matching Job ${job?.id} failed`, { error: err.message });
+      logger.error({ error: err.message }, `Matching Job ${job?.id} failed`);
     });
   }
 

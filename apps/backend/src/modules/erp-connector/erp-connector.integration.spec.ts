@@ -6,7 +6,11 @@ import { ERPConnectorEngine } from './services/connector.engine';
 import { ERPConnectionManager } from './services/connection.manager';
 import { LoggerService } from '../../core/logger/logger.service';
 import { QUEUE_PROVIDER } from '../../infrastructure/queue/queue.constants';
+import { PrismaService } from '../../infrastructure/database/prisma.service';
 import { ERPTransportException } from './exceptions/erp-transport.exception';
+import { TallyMasterValidationEngine } from '../accounting-intelligence/validation/tally-master-validation.engine';
+import { ApprovalWorkflowEngine } from '../accounting-intelligence/governance/approval-workflow.engine';
+import { AccountingDecisionAuditService } from '../accounting-intelligence/decision-audit/accounting-decision-audit.service';
 
 describe('ERP Connector Integration Suite', () => {
   let processUseCase: ProcessERPSyncUseCase;
@@ -38,6 +42,20 @@ describe('ERP Connector Integration Suite', () => {
     getConnectionAndAdapter: jest.fn(),
   };
 
+  const mockValidationEngine = {
+    validate: jest
+      .fn()
+      .mockResolvedValue({ valid: true, missingMasters: [], warnings: [] }),
+  };
+
+  const mockApprovalEngine = {
+    createApprovalRequest: jest.fn(),
+  };
+
+  const mockAuditService = {
+    logDecision: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -49,9 +67,30 @@ describe('ERP Connector Integration Suite', () => {
         { provide: QUEUE_PROVIDER, useValue: mockQueue },
         { provide: LoggerService, useValue: mockLogger },
         {
+          provide: PrismaService,
+          useValue: {
+            $transaction: jest.fn((cb) => cb({})),
+            batchSyncItem: { findMany: jest.fn().mockResolvedValue([]) },
+            voucherCandidate: {
+              findUnique: jest.fn().mockResolvedValue({
+                companyId: 'comp-1',
+                voucherType: 'JOURNAL',
+                date: new Date(),
+                entries: [],
+              }),
+            },
+          },
+        },
+        {
           provide: ERPConnectionManager,
           useValue: mockConnectionManager,
         },
+        {
+          provide: TallyMasterValidationEngine,
+          useValue: mockValidationEngine,
+        },
+        { provide: ApprovalWorkflowEngine, useValue: mockApprovalEngine },
+        { provide: AccountingDecisionAuditService, useValue: mockAuditService },
       ],
     }).compile();
 

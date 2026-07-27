@@ -13,7 +13,10 @@ import { RazorpayParser } from './parsers/razorpay.parser';
 import { GenericParser } from './parsers/generic.parser';
 import { ProcessPaymentEmailUseCase } from './use-cases/process-payment-email.use-case';
 import { PaymentParserController } from './controllers/parser.controller';
+
 import { BullModule } from '@nestjs/bullmq';
+
+import { isWorkerMode } from '../../shared/utils/runtime-mode';
 
 @Module({
   imports: [
@@ -21,7 +24,7 @@ import { BullModule } from '@nestjs/bullmq';
       name: PAYMENT_CANDIDATE_QUEUE,
     }),
   ],
-  controllers: [PaymentParserController],
+  controllers: isWorkerMode ? [] : [PaymentParserController],
   providers: [
     {
       provide: PAYMENT_PARSER_REPOSITORY,
@@ -36,6 +39,9 @@ import { BullModule } from '@nestjs/bullmq';
     GenericParser,
     ProcessPaymentEmailUseCase,
   ],
-  exports: [PAYMENT_PARSER_REPOSITORY],
+  exports: [
+    PAYMENT_PARSER_REPOSITORY,
+    ProcessPaymentEmailUseCase,
+  ],
 })
 export class PaymentParserModule {}

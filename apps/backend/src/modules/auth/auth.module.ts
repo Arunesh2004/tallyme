@@ -6,10 +6,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { PrismaModule } from '../../infrastructure/prisma/prisma.module';
+import { PrismaModule } from '../../infrastructure/database/prisma.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { SecurityConfig } from '../../shared/config/security.config';
+import { BcryptPasswordHasher } from './providers/bcrypt-password.hasher';
+import { JwtTokenProvider } from './providers/jwt-token.provider';
+
+import { isWorkerMode } from '../../shared/utils/runtime-mode';
 
 @Module({
   imports: [
@@ -19,16 +23,26 @@ import { SecurityConfig } from '../../shared/config/security.config';
       useFactory: async (configService: ConfigService) => {
         const security = configService.get<SecurityConfig>('security');
         return {
-          secret: security?.jwtSecret || 'STUB_SECRET',
-          signOptions: { expiresIn: security?.jwtExpiresIn || '15m' },
+          secret:
+            security?.jwtSecret ||
+            process.env.JWT_SECRET ||
+            'CHANGE_ME_IN_PRODUCTION',
+          signOptions: { expiresIn: (security?.jwtExpiry || '15m') as any },
         };
       },
       inject: [ConfigService],
     }),
     PrismaModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, PermissionsGuard],
+  controllers: isWorkerMode ? [] : [AuthController],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    PermissionsGuard,
+    BcryptPasswordHasher,
+    JwtTokenProvider,
+  ],
   exports: [AuthService, JwtAuthGuard, PermissionsGuard],
 })
 export class AuthModule {}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../../shared/db/prisma';
-import { StockItemCreated } from '../../../../modules/inventory/shared/events/InventoryEvents';
+import { prisma } from '@/shared/db/prisma';
+import { StockItemCreated } from '@/modules/inventory/shared/events/InventoryEvents';
 import { EventStatus } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 

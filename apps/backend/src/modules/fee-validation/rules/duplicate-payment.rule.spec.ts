@@ -37,10 +37,8 @@ describe('DuplicatePaymentRule', () => {
       expect.objectContaining({
         where: expect.objectContaining({
           studentPaymentCandidate: {
-            paymentCandidate: {
-              OR: [{ transactionId: 'TX123' }, { utr: undefined }],
-              gateway: 'razorpay',
-            },
+            OR: [{ gatewayTransactionId: 'TX123' }, { utr: undefined }],
+            paymentGateway: 'razorpay',
           },
           validationStatus: {
             not: 'INVALID',

@@ -16,7 +16,7 @@ import { InfrastructureException } from '../../../../shared/exceptions/Infrastru
 export class PrismaVoucherCandidateRepository implements IVoucherCandidateRepository {
   constructor(private readonly prisma: PrismaService) {}
   private getClient(tx?: ITransactionContext): any {
-    return tx ? (tx as unknown as TransactionClient) : this.prisma.client;
+    return tx ? (tx as unknown as TransactionClient) : this.prisma;
   }
 
   async saveBalancedVoucher(
@@ -38,16 +38,44 @@ export class PrismaVoucherCandidateRepository implements IVoucherCandidateReposi
   }
 
   async findPendingERPSync(): Promise<VoucherCandidate[]> {
-    return [];
+    try {
+      const raw = await this.getClient().voucherCandidate.findMany({
+        where: { status: 'PENDING' },
+        take: 20,
+      });
+      return raw.map((r: any) => VoucherMapper.toDomain(r));
+    } catch (e) {
+      throw new InfrastructureException('Database error', e);
+    }
   }
+
   async markVoucherAsSynced(
     id: string,
     erpRef: string,
     tx: ITransactionContext,
-  ): Promise<void> {}
+  ): Promise<void> {
+    try {
+      await this.getClient(tx).voucherCandidate.update({
+        where: { id },
+        data: { status: 'COMPLETED' },
+      });
+    } catch (e) {
+      throw new InfrastructureException('Database error', e);
+    }
+  }
+
   async markVoucherAsFailed(
     id: string,
     reason: string,
     tx: ITransactionContext,
-  ): Promise<void> {}
+  ): Promise<void> {
+    try {
+      await this.getClient(tx).voucherCandidate.update({
+        where: { id },
+        data: { status: 'FAILED' },
+      });
+    } catch (e) {
+      throw new InfrastructureException('Database error', e);
+    }
+  }
 }

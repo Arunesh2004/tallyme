@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import {
   ERP_REPOSITORY,
   ERP_SYNC_QUEUE,
@@ -16,6 +16,7 @@ import { ERPRetryService } from './services/retry.service';
 import { ERPConnectorEngine } from './services/connector.engine';
 import { ProcessERPSyncUseCase } from './use-cases/process-erp-sync.use-case';
 import { ERPController } from './controllers/erp.controller';
+import { TallyOrganizationController } from './controllers/tally-organization.controller';
 import { ERPSyncWorker } from './queue/erp-sync.worker';
 import { BullModule } from '@nestjs/bullmq';
 import { TallyXmlBuilderService } from './services/xml-builder.service';
@@ -25,6 +26,52 @@ import { TallyXmlParserService } from './services/xml-parser.service';
 import { ERPIdempotencyService } from './services/idempotency.service';
 import { VerifyERPSyncUseCase } from './use-cases/verify-erp-sync.use-case';
 import { ERPVerifyWorker } from './queue/erp-verify.worker';
+import { ConfigCompanyResolver } from './services/company-resolver.service';
+import { TallyMasterXmlBuilder } from './services/tally-master-xml.builder';
+import { TallyMasterIntelligenceService } from './services/tally-master-intelligence.service';
+import { TallyDiscoveryAdapter } from './services/tally-discovery.adapter';
+import { EnterpriseAccountingIntelligenceModule } from '../accounting-intelligence/enterprise-accounting-intelligence.module';
+import { TallyERPManagementAdapter } from './infrastructure/tally/tally-master-management.adapter';
+
+import { isWorkerMode } from '../../shared/utils/runtime-mode';
+
+const controllers = isWorkerMode
+  ? []
+  : [ERPController, TallyOrganizationController];
+const providers: any[] = [
+  {
+    provide: ERP_REPOSITORY,
+    useClass: PrismaERPRepository,
+  },
+  {
+    provide: VOUCHER_REPOSITORY,
+    useClass: PrismaVoucherCandidateRepository,
+  },
+  ConfigCompanyResolver,
+  TallyTransportService,
+  VoucherMapperService,
+  TallyXmlBuilderService,
+  TallyXmlParserService,
+  TallyPrimeAdapter,
+  ERPAdapterFactory,
+  ERPConnectionManager,
+  ERPPayloadBuilder,
+  ERPResponseParser,
+  ERPHealthService,
+  ERPRetryService,
+  ERPIdempotencyService,
+  ERPConnectorEngine,
+  ProcessERPSyncUseCase,
+  VerifyERPSyncUseCase,
+  TallyMasterXmlBuilder,
+  TallyMasterIntelligenceService,
+  TallyDiscoveryAdapter,
+  TallyERPManagementAdapter,
+];
+
+if (isWorkerMode) {
+  providers.push(ERPSyncWorker, ERPVerifyWorker);
+}
 
 @Module({
   imports: [
@@ -34,34 +81,17 @@ import { ERPVerifyWorker } from './queue/erp-verify.worker';
     BullModule.registerQueue({
       name: 'erp-verify-queue',
     }),
+    forwardRef(() => EnterpriseAccountingIntelligenceModule),
   ],
-  controllers: [ERPController],
-  providers: [
-    {
-      provide: ERP_REPOSITORY,
-      useClass: PrismaERPRepository,
-    },
-    {
-      provide: VOUCHER_REPOSITORY,
-      useClass: PrismaVoucherCandidateRepository,
-    },
+  controllers,
+  providers,
+  exports: [
+    TallyMasterIntelligenceService,
     TallyTransportService,
-    VoucherMapperService,
-    TallyXmlBuilderService,
-    TallyXmlParserService,
-    TallyPrimeAdapter,
-    ERPAdapterFactory,
-    ERPConnectionManager,
-    ERPPayloadBuilder,
-    ERPResponseParser,
-    ERPHealthService,
-    ERPRetryService,
-    ERPIdempotencyService,
-    ERPConnectorEngine,
-    ProcessERPSyncUseCase,
-    VerifyERPSyncUseCase,
-    ERPSyncWorker,
-    ERPVerifyWorker,
+    TallyDiscoveryAdapter,
+    TallyERPManagementAdapter,
+    ERP_REPOSITORY,
+    VOUCHER_REPOSITORY,
   ],
 })
 export class ERPConnectorModule {}

@@ -15,6 +15,25 @@ import { BullModule } from '@nestjs/bullmq';
 import { StudentModule } from '../student/student.module';
 import { PaymentParserModule } from '../payment-parser/payment-parser.module';
 
+import { isWorkerMode } from '../../shared/utils/runtime-mode';
+
+const controllers = isWorkerMode ? [] : [MatchingController];
+const providers: any[] = [
+  {
+    provide: MATCHING_REPOSITORY,
+    useClass: PrismaMatchingRepository,
+  },
+  MatchingEngine,
+  ConflictDetector,
+  AdmissionNumberRule,
+  StudentNameRule,
+  ProcessMatchingUseCase,
+];
+
+if (isWorkerMode) {
+  providers.push(MatchingWorker);
+}
+
 @Module({
   imports: [
     StudentModule,
@@ -23,18 +42,7 @@ import { PaymentParserModule } from '../payment-parser/payment-parser.module';
       name: STUDENT_MATCHING_QUEUE,
     }),
   ],
-  controllers: [MatchingController],
-  providers: [
-    {
-      provide: MATCHING_REPOSITORY,
-      useClass: PrismaMatchingRepository,
-    },
-    MatchingEngine,
-    ConflictDetector,
-    AdmissionNumberRule,
-    StudentNameRule,
-    ProcessMatchingUseCase,
-    MatchingWorker,
-  ],
+  controllers,
+  providers,
 })
 export class StudentMatchingModule {}

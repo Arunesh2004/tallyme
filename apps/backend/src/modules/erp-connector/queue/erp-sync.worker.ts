@@ -14,19 +14,28 @@ export class ERPSyncWorker extends WorkerHost {
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
+    let syncJobId = job.data.jobId;
+
+    if (!syncJobId && job.data.voucherCandidateId) {
+      const newJob = await this.useCase.createJob(job.data.voucherCandidateId);
+      syncJobId = newJob.id;
+      // Note: we can't await job.updateData in BullMQ inside process without specific setup,
+      // but passing syncJobId to execute is enough for this execution
+    }
+
     this.logger.log(
       {
         message: 'Processing ERP sync job',
-        jobId: job.data.jobId,
+        jobId: syncJobId,
         attempt: job.attemptsMade,
       },
       'ERPSyncWorker',
     );
 
     try {
-      await this.useCase.execute(job.data.jobId, job.attemptsMade || 1);
+      await this.useCase.execute(syncJobId, job.attemptsMade || 1);
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         {
           message: 'ERP Sync job threw error, delegating to BullMQ retry',

@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { IPasswordHasher } from '../interfaces/password-hasher.interface';
+
+const SALT_ROUNDS = 12;
 
 @Injectable()
 export class BcryptPasswordHasher implements IPasswordHasher {
   async hash(password: string): Promise<string> {
-    // Infrastructure abstraction implemented here.
-    // Actual bcrypt call omitted as per milestone limits.
-    return `hashed_${password}`;
+    return bcrypt.hash(password, SALT_ROUNDS);
   }
 
   async compare(password: string, hash: string): Promise<boolean> {
-    return `hashed_${password}` === hash;
+    return bcrypt.compare(password, hash);
   }
 }

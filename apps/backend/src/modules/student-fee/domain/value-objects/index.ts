@@ -1,8 +1,8 @@
 // value-objects/index.ts
-import { ValueObject } from '../../../shared/domain';
-import { ValidationException } from '../../../shared/exceptions/ValidationException';
-import { IDecimal } from '../../../shared/types';
-import { DecimalWrapper } from '../../../infrastructure/prisma';
+import { ValueObject } from '../../../../shared/domain';
+import { ValidationException } from '../../../../shared/exceptions/ValidationException';
+import { IDecimal } from '../../../../shared/types';
+import { DecimalWrapper } from '../../../../infrastructure/prisma';
 
 export class PaymentReference extends ValueObject<{ value: string }> {
   constructor(value: string) {

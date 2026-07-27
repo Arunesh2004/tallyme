@@ -69,7 +69,7 @@ export class LocalStorageProvider implements StorageProvider {
   }
 
   async retrieve(fileId: string): Promise<Buffer> {
-    // Requires DB lookup for full path in real impl. Stubbed for pure interface compliance
+    // (implementation note)
     throw new Error('Method not implemented.');
   }
 

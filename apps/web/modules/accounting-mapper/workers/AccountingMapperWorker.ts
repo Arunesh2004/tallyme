@@ -1,5 +1,5 @@
 import { Worker, Job } from 'bullmq';
-import { logger } from '../../../../shared/logging/logger';
+import { logger } from '@/shared/logging/logger';
 import { AccountingMapperOrchestrator } from '../services/AccountingMapperOrchestrator';
 
 export class AccountingMapperWorker {
@@ -29,7 +29,7 @@ export class AccountingMapperWorker {
     });
 
     this.worker.on('failed', (job, err) => {
-      logger.error(`Mapper Job ${job?.id} failed`, { error: err.message });
+      logger.error({ error: err.message }, `Mapper Job ${job?.id} failed`);
     });
   }
 

@@ -24,7 +24,7 @@ export class PrismaExpenseAllocationRepository implements IExpenseAllocationRepo
       } else {
         return await this._createAtomic(data, client);
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new DuplicateInvoiceError(

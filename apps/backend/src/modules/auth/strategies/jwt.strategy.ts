@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UnauthenticatedException } from '../exceptions/auth.exceptions';
 import { LoggerService } from '../../../core/logger/logger.service';
+import { RequestContextService } from '../../../core/context/request-context.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -30,12 +31,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // Extracted payload directly translates to CurrentUser interface context
-    return {
+    const user = {
       id: payload.sub,
       email: payload.email,
       roles: payload.roles || [],
       permissions: payload.permissions || [],
       tenantId: payload.tenantId,
     };
+
+    const ctx = RequestContextService.getContext();
+    if (ctx) {
+      ctx.userId = user.id;
+      ctx.tenantId = user.tenantId;
+    }
+
+    return user;
   }
 }

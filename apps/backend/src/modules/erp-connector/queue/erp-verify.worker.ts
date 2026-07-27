@@ -26,7 +26,7 @@ export class ERPVerifyWorker extends WorkerHost {
     try {
       await this.useCase.execute(job.data.jobId, job.attemptsMade || 1);
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         {
           message: 'ERP Verify job threw error, delegating to BullMQ retry',

@@ -88,7 +88,7 @@ export class PrismaVendorRepository implements IVendorRepository {
       return await this.prisma.vendor.create({
         data,
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new UniqueConstraintViolationError(
@@ -108,7 +108,7 @@ export class PrismaVendorRepository implements IVendorRepository {
         where: { id },
         data,
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
           throw new VendorNotFoundError(`ID: ${id}`);
@@ -124,7 +124,7 @@ export class PrismaVendorRepository implements IVendorRepository {
         where: { id },
         data: { deletedAt: new Date() },
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
           throw new VendorNotFoundError(`ID: ${id}`);
@@ -155,7 +155,7 @@ export class PrismaVendorLedgerProfileRepository implements IVendorLedgerProfile
           ...data,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2003') {
           // Foreign key constraint failed

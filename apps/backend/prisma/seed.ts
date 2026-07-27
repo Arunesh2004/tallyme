@@ -11,6 +11,7 @@ async function main() {
     update: {},
     create: {
       admissionNumber: 'ADM-2026-001',
+      enrollmentNo: 'ENR-2026-001',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',

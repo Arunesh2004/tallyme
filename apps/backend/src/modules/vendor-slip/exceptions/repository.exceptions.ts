@@ -23,6 +23,15 @@ export class DuplicateInvoiceError extends RepositoryError {
   }
 }
 
+export class DuplicatePaymentError extends RepositoryError {
+  constructor(systemId: string, transactionId: string, cause?: any) {
+    super(
+      `Payment ${transactionId} already exists in system ${systemId}`,
+      cause,
+    );
+  }
+}
+
 export class VendorNotFoundError extends RepositoryError {
   constructor(identifier: string, cause?: any) {
     super(`Vendor not found with identifier: ${identifier}`, cause);

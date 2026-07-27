@@ -1,1 +1,1 @@
-{"name": "@tallyme/database", "version": "1.0.0", "scripts": {"build": "prisma generate"}}
+{"name": "@tallyme/database", "version": "1.0.0", "scripts": {}}

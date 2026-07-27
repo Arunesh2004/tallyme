@@ -25,7 +25,7 @@ export class ReconciliationWorker {
     });
 
     this.worker.on('failed', (job, err) => {
-      logger.error(`Reconciliation Job ${job?.id} failed`, { error: err.message });
+      logger.error({ error: err.message }, `Reconciliation Job ${job?.id} failed`);
     });
   }
 

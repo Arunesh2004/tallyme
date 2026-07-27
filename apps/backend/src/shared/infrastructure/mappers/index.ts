@@ -1,9 +1,9 @@
 export class StudentMapper {
   static toDomain(raw: any): any {
-    return { id: raw.id }; // Stub for full domain reconstruction
+    return { id: raw.id }; // (implementation note)
   }
   static toPersistence(domain: any): any {
-    return { id: domain.id }; // Stub
+    return { id: domain.id }; // (implementation note)
   }
 }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@common';
+import { Injectable } from '@nestjs/common';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Counter, Histogram } from 'prom-client';
 
@@ -25,6 +25,12 @@ export class PrometheusService {
 
     @InjectMetric('tallyme_ocr_confidence')
     public readonly ocrConfidence: Histogram<string>,
+
+    @InjectMetric('tallyme_queue_active_jobs')
+    public readonly queueActiveJobs: Counter<string>,
+
+    @InjectMetric('tallyme_queue_failed_jobs')
+    public readonly queueFailedJobs: Counter<string>,
   ) {}
 
   incrementVendorDocs() {
@@ -36,4 +42,8 @@ export class PrometheusService {
   }
 
   // Add more helper methods as needed
+  async getMetrics(): Promise<string> {
+    const { register } = await import('prom-client');
+    return register.metrics();
+  }
 }

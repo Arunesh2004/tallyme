@@ -18,20 +18,12 @@ export const redisProvider: Provider = {
       port,
       password,
       db,
-      keyPrefix,
       lazyConnect: true, // Let the service handle connection during onModuleInit
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
       retryStrategy: (times: number) => {
         const delay = Math.min(times * 50, 2000);
-        if (times > 5) {
-          logger.error(
-            'Redis retry strategy exhausted after 5 attempts',
-            undefined,
-            'RedisProvider',
-          );
-          return null; // Stop retrying
-        }
-        return delay;
+        return delay; // Never stop retrying to prevent BullMQ crashes
       },
     });
 

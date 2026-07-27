@@ -6,11 +6,14 @@ import { Inject } from '@nestjs/common';
 import { MAIL_REPOSITORY } from '../constants/mail.constants';
 import { IMailRepository } from '../interfaces/mail.interfaces';
 
+import { MailProcessingService } from '../services/mail-processing.service';
+
 @Processor(MAIL_PROCESSING_QUEUE)
 export class MailWorker extends WorkerHost {
   constructor(
     private readonly logger: LoggerService,
     @Inject(MAIL_REPOSITORY) private readonly repository: IMailRepository,
+    private readonly mailProcessingService: MailProcessingService,
   ) {
     super();
   }
@@ -24,8 +27,7 @@ export class MailWorker extends WorkerHost {
     await this.repository.updateStatus(job.data.emailId, 'PROCESSING');
 
     try {
-      // Future: AI parsing, OCR, vendor matching
-      // For now, it just succeeds.
+      await this.mailProcessingService.processEmailJob(job.data.emailId);
 
       await this.repository.updateStatus(job.data.emailId, 'COMPLETED');
       await this.repository.logProcessing(
@@ -35,7 +37,7 @@ export class MailWorker extends WorkerHost {
       );
 
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       await this.repository.updateStatus(job.data.emailId, 'FAILED');
       await this.repository.logProcessing(
         job.data.emailId,

@@ -3,6 +3,8 @@ import { FeeAllocationCandidate } from '@prisma/client';
 export interface IFeeValidationRepository {
   saveCandidate(data: any): Promise<FeeAllocationCandidate>;
   findCandidateById(id: string): Promise<FeeAllocationCandidate | null>;
+  findStudentPaymentCandidateById(id: string): Promise<any>;
+  getStudentOutstandings(studentId: string): Promise<any[]>;
   logValidation(log: any): Promise<void>;
   saveException(exception: any): Promise<void>;
   saveValidationResult(

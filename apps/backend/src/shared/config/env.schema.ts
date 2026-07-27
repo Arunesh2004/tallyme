@@ -44,8 +44,13 @@ export const envSchema = z.object({
   GMAIL_ACCOUNT: z.string().email(),
 
   // AI
-  AI_PROVIDER: z.enum(['openai', 'anthropic']).default('openai'),
+  AI_PROVIDER: z.enum(['openai', 'anthropic', 'gemini']).default('gemini'),
   AI_API_KEY: z.string().min(1),
+  
+  // OCR
+  OCR_PROVIDER: z.enum(['auto', 'azure', 'gemini']).default('auto'),
+  AZURE_OCR_ENDPOINT: z.string().url().optional(),
+  AZURE_OCR_KEY: z.string().optional(),
   AI_MODEL: z.string().default('gpt-4'),
   AI_TIMEOUT_MS: z
     .string()
@@ -83,6 +88,10 @@ export const envSchema = z.object({
     .string()
     .length(32, { message: 'Encryption key must be exactly 32 bytes' }),
   CORS_ORIGINS: z.string().default('*'),
+  WEBHOOK_SECRET: z.string().min(16).optional(),
+
+  // Observability
+  SENTRY_DSN: z.string().url().optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

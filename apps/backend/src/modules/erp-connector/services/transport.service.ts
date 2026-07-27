@@ -120,7 +120,7 @@ export class TallyTransportService {
         transportResultLabel,
       );
       throw new ERPTransportException(
-        `Failed to connect to Tally: ${error.message}`,
+        `Failed to connect to Tally: ${(error as any).message}`,
         code,
       );
     } finally {

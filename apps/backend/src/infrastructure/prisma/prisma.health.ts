@@ -15,10 +15,10 @@ export class PrismaHealthIndicator {
     const start = Date.now();
     try {
       // Execute a simple query to verify connection
-      await this.prisma.client.$queryRaw`SELECT 1`;
+      await this.prisma.$queryRaw`SELECT 1`;
       const latencyMs = Date.now() - start;
       return { status: 'UP', latencyMs };
-    } catch (error) {
+    } catch (error: any) {
       return {
         status: 'DOWN',
         latencyMs: Date.now() - start,

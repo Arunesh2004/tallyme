@@ -21,7 +21,7 @@ export class VoucherSyncHandler implements SyncHandler {
       return null;
     }
 
-    return voucher.payload;
+    return voucher;
   }
 
   public buildXml(aggregate: any, companyName: string): string {

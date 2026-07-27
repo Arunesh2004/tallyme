@@ -22,7 +22,7 @@ export class ValidationWorker extends WorkerHost {
     try {
       await this.useCase.execute(job.data.studentPaymentCandidateId);
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Validation failed for candidate ${job.data.studentPaymentCandidateId}`,
         (error as Error).stack,

@@ -2,6 +2,7 @@ import { IncomingEmail, EmailAttachment } from '@prisma/client';
 
 export interface IMailRepository {
   saveEmail(data: Partial<IncomingEmail>): Promise<IncomingEmail>;
+  findById(id: string): Promise<IncomingEmail | null>;
   emailExists(messageId: string): Promise<boolean>;
   updateStatus(id: string, status: string): Promise<void>;
   logProcessing(

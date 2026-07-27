@@ -15,9 +15,12 @@ export class VoucherMapperService {
     const dto = plainToInstance(TallyVoucherDTO, {
       voucherNumber: internalData.voucherNumber,
       date:
-        internalData.date ||
+        (internalData.date instanceof Date 
+          ? internalData.date.toISOString().split('T')[0].replace(/-/g, '') 
+          : internalData.date) ||
         new Date().toISOString().split('T')[0].replace(/-/g, ''), // Default format YYYYMMDD
       voucherType: internalData.voucherType || 'Receipt',
+      companyId: internalData.companyId,
       companyName: internalData.companyName,
       partyLedgerName: internalData.partyLedgerName,
       isEdit: internalData.isEdit || false,

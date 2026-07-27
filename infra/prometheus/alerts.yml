@@ -1,0 +1,192 @@
+groups:
+  # =========================================================================
+  # API Alerts
+  # =========================================================================
+  - name: tallyme.api
+    rules:
+      - alert: APIHighErrorRate
+        expr: rate(http_request_duration_seconds_count{status=~"5.."}[5m]) / rate(http_request_duration_seconds_count[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          team: engineering
+        annotations:
+          summary: "API error rate above 5%"
+          description: "Error rate is {{ $value | humanizePercentage }} for the last 5 minutes"
+
+      - alert: APIHighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API P95 latency above 2 seconds"
+          description: "P95 latency: {{ $value | humanizeDuration }}"
+
+      - alert: APIDown
+        expr: up{job="tallyme-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: engineering
+        annotations:
+          summary: "TallyMe API is DOWN"
+          description: "The API server has been unreachable for more than 1 minute"
+
+  # =========================================================================
+  # Worker Alerts
+  # =========================================================================
+  - name: tallyme.worker
+    rules:
+      - alert: WorkerDown
+        expr: up{job="tallyme-worker"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "TallyMe Worker is DOWN"
+          description: "The background worker has been unreachable for more than 2 minutes"
+
+  # =========================================================================
+  # Queue / BullMQ Alerts
+  # =========================================================================
+  - name: tallyme.queue
+    rules:
+      - alert: HighQueueFailures
+        expr: increase(bullmq_failed_jobs_total[10m]) > 10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High BullMQ job failures — {{ $labels.queue }}"
+          description: "{{ $value }} jobs failed in the last 10 minutes on queue {{ $labels.queue }}"
+
+      - alert: DeadLetterQueueGrowing
+        expr: bullmq_queue_waiting{queue="dead-letter-queue"} > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Dead Letter Queue has pending jobs"
+          description: "{{ $value }} jobs are in the Dead Letter Queue"
+
+      - alert: QueueBacklogHigh
+        expr: bullmq_queue_waiting > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Queue backlog is high — {{ $labels.queue }}"
+          description: "{{ $value }} jobs waiting on {{ $labels.queue }}"
+
+  # =========================================================================
+  # Database Alerts
+  # =========================================================================
+  - name: tallyme.database
+    rules:
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL is DOWN"
+
+      - alert: DatabaseHighConnections
+        expr: pg_stat_activity_count > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High PostgreSQL connection count"
+          description: "{{ $value }} active connections"
+
+      - alert: DatabaseSlowQueries
+        expr: rate(pg_stat_statements_mean_time_ms[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow PostgreSQL queries detected"
+
+  # =========================================================================
+  # Redis Alerts
+  # =========================================================================
+  - name: tallyme.redis
+    rules:
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is DOWN"
+          description: "Redis has been unreachable for more than 1 minute — queue processing will halt"
+
+      - alert: RedisHighMemory
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory usage above 85%"
+
+  # =========================================================================
+  # ERP / Tally Alerts
+  # =========================================================================
+  - name: tallyme.erp
+    rules:
+      - alert: ERPHighFailureRate
+        expr: increase(tallyme_erp_sync_failures_total[15m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High ERP sync failure rate"
+          description: "{{ $value }} ERP sync failures in the last 15 minutes"
+
+  # =========================================================================
+  # Authentication Alerts
+  # =========================================================================
+  - name: tallyme.auth
+    rules:
+      - alert: HighAuthFailureRate
+        expr: rate(http_request_duration_seconds_count{status="401"}[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High authentication failure rate"
+          description: "{{ $value }} failed auth requests/second — possible brute force attack"
+
+  # =========================================================================
+  # System Alerts
+  # =========================================================================
+  - name: tallyme.system
+    rules:
+      - alert: HighCPU
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU at {{ $value | humanize }}% on {{ $labels.instance }}"
+
+      - alert: HighMemory
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage"
+          description: "Memory at {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+
+      - alert: DiskSpaceLow
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space critically low"
+          description: "Less than 10% disk remaining on {{ $labels.instance }}"

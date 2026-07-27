@@ -28,7 +28,7 @@ export class VoucherWorker {
     });
 
     this.worker.on('failed', (job, err) => {
-      logger.error(`Voucher Generation Job ${job?.id} failed`, { error: err.message });
+      logger.error({ error: err.message }, `Voucher Generation Job ${job?.id} failed`);
     });
   }
 

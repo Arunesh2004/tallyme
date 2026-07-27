@@ -1,0 +1,1 @@
+import { withAuth } from "next-auth/middleware"; export default withAuth({ pages: { signIn: "/login", }, }); export const config = { matcher: [ "/dashboard/:path*", "/audit/:path*", "/erp-sync/:path*", "/reviews/:path*", "/api/v1/inventory/:path*", "/api/v1/ledgers/:path*", "/api/v1/masters/:path*", "/api/v1/ocr/:path*", "/api/v1/students/:path*", "/api/v1/vouchers/:path*" ] }; 

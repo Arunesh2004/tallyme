@@ -11,6 +11,7 @@ import { DuplicateEmailException } from '../exceptions/mail.exceptions';
 import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
 import { EmailProcessingStatus } from '@prisma/client';
+import { ProcessPaymentEmailUseCase } from '../../payment-parser/use-cases/process-payment-email.use-case';
 
 @Injectable()
 export class MailProcessingService {
@@ -20,6 +21,7 @@ export class MailProcessingService {
     private readonly storage: MailStorageService,
     @Inject(QUEUE_PROVIDER) private readonly queue: IQueueService,
     private readonly logger: LoggerService,
+    private readonly paymentEmailUseCase: ProcessPaymentEmailUseCase,
   ) {}
 
   async processRawEmail(rawEmail: any): Promise<void> {
@@ -52,7 +54,7 @@ export class MailProcessingService {
     const attachmentsData: any[] = [];
     if (parsed.attachments && parsed.attachments.length > 0) {
       for (const att of parsed.attachments) {
-        const path = await this.storage.storeAttachment(
+        const stored = await this.storage.storeAttachment(
           att.filename,
           att.buffer,
         );
@@ -60,7 +62,8 @@ export class MailProcessingService {
           filename: att.filename,
           contentType: att.contentType,
           sizeBytes: att.sizeBytes,
-          storagePath: path,
+          storagePath: stored.path,
+          checksum: stored.checksum,
         });
       }
     }
@@ -87,5 +90,15 @@ export class MailProcessingService {
       `Email stored successfully and queued: ${emailRecord.id}`,
       'MailProcessingService',
     );
+  }
+
+  async processEmailJob(emailId: string): Promise<void> {
+    const email = await this.repository.findById(emailId);
+    if (!email) {
+      throw new Error(`Email not found: ${emailId}`);
+    }
+
+    // Delegate to parser orchestration
+    await this.paymentEmailUseCase.execute(email);
   }
 }

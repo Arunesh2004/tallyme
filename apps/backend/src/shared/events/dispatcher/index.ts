@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { EventDispatcher, Event } from '../contracts/index';
 import { HandlerRegistry } from '../abstractions'; // Actually from registry, bundled above
 
@@ -23,11 +24,11 @@ export class InMemoryEventDispatcher implements EventDispatcher {
       handlers
         .filter((handler) => handler.canHandle(event))
         .map((handler) =>
-          handler.handle(event).catch((err) => {
-            // In a real system, you'd inject a Logger here
-            console.error(
+          handler.handle(event).catch((err: any) => {
+            Logger.error(
               `Async dispatch failed for event ${event.metadata.eventType}`,
               err,
+              'EventDispatcher',
             );
           }),
         ),

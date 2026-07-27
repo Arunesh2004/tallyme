@@ -31,7 +31,7 @@ export class PrismaService
         'Successfully established connection to PostgreSQL',
         'PrismaService',
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         'Failed to establish connection to PostgreSQL',
         (error as Error).stack,

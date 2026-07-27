@@ -33,7 +33,3 @@ export interface OutboxMapper {
 }
 
 // index.ts
-export * from './OutboxEvent';
-export * from './OutboxRepository';
-export * from './OutboxSerializer';
-export * from './OutboxMapper';

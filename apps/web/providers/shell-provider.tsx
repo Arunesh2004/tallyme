@@ -29,7 +29,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         isSidebarCollapsed,
         toggleSidebar,
         isMobileDrawerOpen,
-        setMobileDrawerOpen,
+        setMobileDrawerOpen: setIsMobileDrawerOpen,
       }}
     >
       {children}

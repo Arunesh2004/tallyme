@@ -39,7 +39,7 @@ export class ProcessPaymentEmailUseCase {
     try {
       candidateDomain = await parser.parse(email);
       isSuccess = true;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Parser failed for email ${email.id}`,
         (error as Error).stack,

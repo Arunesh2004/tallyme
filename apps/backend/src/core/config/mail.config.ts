@@ -1,11 +1,11 @@
 import { registerAs } from '@nestjs/config';
 
 export const mailConfig = registerAs('mail', () => ({
-  gmail: {
-    clientId: process.env.GMAIL_CLIENT_ID,
-    clientSecret: process.env.GMAIL_CLIENT_SECRET,
-    redirectUri: process.env.GMAIL_REDIRECT_URI,
-    refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+  imap: {
+    user: process.env.GMAIL_ADDRESS,
+    pass: process.env.GMAIL_APP_PASSWORD,
+    host: process.env.IMAP_HOST || 'imap.gmail.com',
+    port: parseInt(process.env.IMAP_PORT || '993', 10),
   },
   storage: {
     path: process.env.MAIL_STORAGE_PATH || './storage/attachments',

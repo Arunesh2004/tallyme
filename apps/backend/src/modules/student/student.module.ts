@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { StudentController } from './controllers/student.controller';
+import { StudentImportController } from './controllers/student-import.controller';
 import { STUDENT_REPOSITORY } from './interfaces/student.repository.interface';
 import { PrismaStudentRepository } from './repositories/prisma-student.repository';
 import {
@@ -10,8 +11,10 @@ import {
   ArchiveStudentUseCase,
 } from './use-cases';
 
+import { isWorkerMode } from '../../shared/utils/runtime-mode';
+
 @Module({
-  controllers: [StudentController],
+  controllers: isWorkerMode ? [] : [StudentController, StudentImportController],
   providers: [
     {
       provide: STUDENT_REPOSITORY,

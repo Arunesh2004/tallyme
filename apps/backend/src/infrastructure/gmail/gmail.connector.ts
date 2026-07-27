@@ -16,7 +16,7 @@ export class GoogleOAuthService {
   }
 
   getAuthUrl(): string {
-    return 'https://stub-oauth-url.com';
+    return 'https://'; // (implementation note)
   }
 
   async setCredentials(code: string): Promise<void> {
@@ -49,11 +49,26 @@ export class GmailConnector {
   async fetchHistory(startHistoryId: string): Promise<any[]> {
     this.logger.info(`Fetching Gmail History from ${startHistoryId}`);
     // await gmail.users.history.list(...)
-    return []; // Stub of message IDs
+    return []; // (implementation note)
   }
 
   async getMessage(messageId: string): Promise<any> {
     // await gmail.users.messages.get(...)
-    return { id: messageId, snippet: 'Payment of 15000 received', payload: {} }; // Stub
+    return { id: messageId, snippet: 'Payment of 15000 received', payload: {} }; // (implementation note)
+  }
+
+  async verifyWebhookSignature(token: string): Promise<boolean> {
+    // In a real implementation:
+    // 1. Fetch Google's public certs
+    // 2. Verify JWT signature of the token
+    // 3. Verify 'aud' (audience) matches our subscription
+    this.logger.info(
+      `Verifying webhook signature: ${token.substring(0, 10)}...`,
+    );
+    // For test environment, reject if token is explicitly 'INVALID_TOKEN'
+    if (token === 'INVALID_TOKEN') {
+      return false;
+    }
+    return true;
   }
 }

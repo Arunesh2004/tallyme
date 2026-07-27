@@ -16,7 +16,7 @@ import { InfrastructureException } from '../../../../shared/exceptions/Infrastru
 export class PrismaERPSyncJobRepository implements IERPSyncJobRepository {
   constructor(private readonly prisma: PrismaService) {}
   private getClient(tx?: ITransactionContext): any {
-    return tx ? (tx as unknown as TransactionClient) : this.prisma.client;
+    return tx ? (tx as unknown as TransactionClient) : this.prisma;
   }
 
   async registerSyncAttempt(

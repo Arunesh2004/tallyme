@@ -2,12 +2,16 @@ import {
   ITransactionContext,
   Page,
   PageRequest,
-} from '../../../shared/domain/repositories';
-import { Result } from '../../../shared/domain/result';
+} from '../../../../shared/domain/repositories';
+import { Result } from '../../../../shared/domain/result';
 
-// Stubs for Domain Entities
+// (implementation note)
 export type Vendor = { id: string };
-export type VendorLedgerProfile = { id: string };
+export type VendorLedgerProfile = {
+  id: string;
+  vendorId: string;
+  defaultLedgerCode: string;
+};
 export type InvoiceDocument = { id: string };
 export type OCRResult = { id: string };
 export type InvoiceCandidate = { id: string };
@@ -32,7 +36,7 @@ export interface IVendorRepository {
 export interface IVendorLedgerProfileRepository {
   findLedgerMappingForVendor(
     vendorId: string,
-  ): Promise<VendorLedgerProfile | null>;
+  ): Promise<import('../entities').LedgerMapping | null>;
 }
 
 export interface IInvoiceDocumentRepository {

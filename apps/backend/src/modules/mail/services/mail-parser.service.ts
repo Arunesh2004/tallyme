@@ -11,9 +11,10 @@ export class MailParserService {
     try {
       this.logger.debug('Parsing raw email content', 'MailParserService');
       // Abstraction of parsing logic (e.g. mailparser library)
+      if (!rawEmailContent.from) throw new Error('Email missing sender');
       return {
         messageId: rawEmailContent.messageId || `msg_${Date.now()}`,
-        sender: rawEmailContent.from || 'unknown@sender.com',
+        sender: rawEmailContent.from,
         receiver: rawEmailContent.to || 'billing@tallyme.com',
         subject: rawEmailContent.subject || 'No Subject',
         timestamp: new Date(),
@@ -21,7 +22,7 @@ export class MailParserService {
         htmlText: rawEmailContent.html || '',
         attachments: [],
       };
-    } catch (error) {
+    } catch (error: any) {
       throw new EmailParsingException('Invalid email format', error as Error);
     }
   }

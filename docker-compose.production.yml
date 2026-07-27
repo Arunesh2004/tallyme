@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tallyme}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-securepass}
+      POSTGRES_DB: ${POSTGRES_DB:-tallyme_prod}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tallyme"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  backend:
+    build: 
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-tallyme}:${POSTGRES_PASSWORD:-securepass}@postgres:5432/${POSTGRES_DB:-tallyme_prod}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  worker:
+    build: 
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    command: ["node", "dist/workers/worker.main.js"]
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-tallyme}:${POSTGRES_PASSWORD:-securepass}@postgres:5432/${POSTGRES_DB:-tallyme_prod}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    image: tallyme-frontend:latest
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.tallyme.com
+    ports:
+      - "80:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

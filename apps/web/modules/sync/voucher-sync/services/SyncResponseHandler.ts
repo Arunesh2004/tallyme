@@ -49,7 +49,7 @@ export class SyncResponseHandler {
           status: nextStatus,
           completedAt: new Date(),
           duration: response.durationMs,
-          response: response.rawResponse || {},
+          response: response.rawResponse as any,
           error: response.errorMessage
         }
       });
@@ -88,7 +88,7 @@ export class SyncResponseHandler {
           data: {
             type: 'VOUCHER_SYNC_FAILURE',
             reason: response.errorMessage || 'Max retries exceeded or non-retryable failure.',
-            payload: { voucherId, sessionId, response },
+            payload: { voucherId, sessionId, response: response as any },
             organizationId
           }
         });

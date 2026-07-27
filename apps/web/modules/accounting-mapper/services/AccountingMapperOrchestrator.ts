@@ -2,8 +2,8 @@ import { LedgerResolver } from './LedgerResolver';
 import { AccountingTransactionBuilder } from './AccountingTransactionBuilder';
 import { AccountingTransactionRepository } from './AccountingTransactionRepository';
 import { StudentFeeMappingProfile } from '../mapping-profiles/StudentFeeMappingProfile';
-import { logger } from '../../../../shared/logging/logger';
-import { prisma } from '../../../../shared/db/prisma';
+import { logger } from '@/shared/logging/logger';
+import { prisma } from '@/shared/db/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import { EventStatus } from '@prisma/client';
 
@@ -49,7 +49,7 @@ export class AccountingMapperOrchestrator {
   }
 
   private async handleMappingFailure(eventId: string, eventType: string, payload: any, reason: string, organizationId: string): Promise<void> {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       const review = await tx.manualReview.create({
         data: {
           type: 'ACCOUNTING_MAPPING_FAILURE',

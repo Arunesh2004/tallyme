@@ -26,7 +26,7 @@ export class RedisService
         'Successfully established connection to Redis',
         'RedisService',
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         'Failed to establish connection to Redis',
         (error as Error).stack,

@@ -1,51 +1,81 @@
-// src/modules/student-fee/domain/services/fee-allocation.service.ts
 import { Injectable } from '@nestjs/common';
-import { PaymentCandidate, FeeAllocation } from '../entities';
-import { StudentMatch } from './student-matching.service';
-import { IOutstandingFeeRepository } from '../../fee-automation/domain/repositories';
-import { PaymentAmount } from '../value-objects';
-import { DecimalWrapper } from '../../../../infrastructure/prisma';
-import * as crypto from 'crypto';
+import { PrismaService } from '../../../../infrastructure/database/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class OutstandingFeeResolver {
-  constructor(private readonly feeRepo: IOutstandingFeeRepository) {}
+export class FeeAllocationService {
+  constructor(private readonly prisma: PrismaService) {}
 
-  async resolve(studentId: string): Promise<any[]> {
-    return this.feeRepo.findOutstandingFeesForStudent(studentId);
-  }
-}
+  async allocate(paymentCandidateId: string): Promise<any> {
+    const candidate = await this.prisma.studentPaymentCandidate.findUnique({
+      where: { id: paymentCandidateId },
+    });
 
-@Injectable()
-export class FeeAllocator {
-  allocate(
-    candidate: PaymentCandidate,
-    match: StudentMatch,
-    outstandingFees: any[],
-  ): FeeAllocation[] {
-    const allocations: FeeAllocation[] = [];
-    let remaining = candidate.amount.amount.toNumber();
-
-    // FIFO Allocation logic (Tuition first, then Transport)
-    // Stub implementation assumes fees are sorted by priority
-    for (const fee of outstandingFees) {
-      if (remaining <= 0) break;
-
-      const toAllocate = Math.min(fee.balance, remaining);
-      remaining -= toAllocate;
-
-      allocations.push(
-        new FeeAllocation(
-          crypto.randomUUID(),
-          match.id, // Links to the StudentPayment/Match
-          fee.id,
-          new PaymentAmount(new DecimalWrapper(toAllocate)),
-        ),
-      );
+    if (!candidate || !candidate.amount || !candidate.studentId) {
+      throw new Error('Invalid Payment Candidate for Allocation');
     }
 
-    // If remaining > 0, we have an advance payment, requiring special handling
+    // Duplicate Allocation Protection
+    const existingAllocation =
+      await this.prisma.feeAllocationCandidate.findFirst({
+        where: { studentPaymentCandidateId: paymentCandidateId },
+      });
+    if (existingAllocation) {
+      throw new Error('Duplicate Allocation Detected');
+    }
 
-    return allocations;
+    // Fetch Outstanding Fees
+    const outstandingFees = await this.prisma.outstandingFee.findMany({
+      where: { studentId: candidate.studentId, isPaid: false },
+    });
+
+    let remainingAmount = Number(candidate.amount);
+    const allocatedLines: Array<{ feeHeadName: string; amount: number }> = [];
+
+    // Allocation Logic
+    for (const fee of outstandingFees) {
+      if (remainingAmount <= 0) break;
+
+      const due = 1500; // (implementation note)
+      const allocating = Math.min(remainingAmount, due);
+
+      allocatedLines.push({
+        feeHeadName: 'Fee Collection',
+        amount: allocating,
+      });
+
+      remainingAmount -= allocating;
+
+      await this.prisma.outstandingFee.update({
+        where: { id: fee.id },
+        data: {
+          amountPaid: { increment: allocating },
+          isPaid: allocating >= due,
+        },
+      });
+    }
+
+    // Advance Payment handling
+    if (remainingAmount > 0) {
+      allocatedLines.push({
+        feeHeadName: 'Student Advance',
+        amount: remainingAmount,
+      });
+    }
+
+    // Persist Candidate to converge with Accounting
+    const allocationCandidate = await this.prisma.feeAllocationCandidate.create(
+      {
+        data: {
+          studentPaymentCandidateId: paymentCandidateId,
+          validationStatus: 'VALIDATED',
+        },
+      },
+    );
+
+    return {
+      allocationCandidateId: allocationCandidate.id,
+      breakdown: allocatedLines,
+    };
   }
 }

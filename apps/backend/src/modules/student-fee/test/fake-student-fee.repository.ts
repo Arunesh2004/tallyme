@@ -120,7 +120,7 @@ export class FakeStudentFeeRepository extends PrismaStudentFeeRepository {
     return audit;
   }
 
-  async findStudentById(id: string) {
+  async findStudentById(id: string): Promise<any> {
     return this.students.find((s) => s.id === id) || null;
   }
 

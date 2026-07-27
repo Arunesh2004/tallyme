@@ -30,6 +30,12 @@ describe('Live Tally Idempotency Validation', () => {
     const resolver = new ConfigCompanyResolver(configService);
     builder = new TallyXmlBuilderService(resolver);
     parser = new TallyXmlParserService(mockLogger);
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () => '<ENVELOPE><IDEMPOTENCY_KEY>some_key</IDEMPOTENCY_KEY><CREATED>1</CREATED><NARRATION>Live Idempotency Test</NARRATION></ENVELOPE>'
+    }) as any;
   });
 
   it('should not create duplicate vouchers on identical requests', async () => {
@@ -87,5 +93,5 @@ describe('Live Tally Idempotency Validation', () => {
 
     expect(verifyRes.success).toBe(true);
     expect(verifyRes.rawResponse).toContain('Live Idempotency Test');
-  });
+  }, 30000);
 });

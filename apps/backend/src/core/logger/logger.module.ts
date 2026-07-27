@@ -23,8 +23,9 @@ import { RequestContextService } from '../context/request-context.service';
               crypto.randomUUID(),
             customProps: (req: any, res: any) => {
               return {
-                userId: req.user?.id,
-                companyId: req.user?.companyId,
+                userId: req.user?.id || req.user?.sub,
+                companyId: req.user?.companyId || req.headers['x-company-id'],
+                organizationId: req.headers['x-organization-id'],
                 workerId: process.env.WORKER_ID || 'web-api-1',
                 erpJobId: req.headers['x-erp-job-id'],
               };

@@ -27,13 +27,11 @@ export class DuplicatePaymentRule extends BaseValidationRule {
       await this.prisma.feeAllocationCandidate.findFirst({
         where: {
           studentPaymentCandidate: {
-            paymentCandidate: {
-              OR: [
-                { transactionId: paymentData.transactionId || undefined },
-                { utr: paymentData.utr || undefined },
-              ],
-              gateway: paymentData.gateway || undefined,
-            },
+            OR: [
+              { gatewayTransactionId: paymentData.transactionId || undefined },
+              { utr: paymentData.utr || undefined },
+            ],
+            paymentGateway: paymentData.gateway || undefined,
           },
           validationStatus: {
             not: 'INVALID',

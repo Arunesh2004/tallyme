@@ -28,8 +28,8 @@ export class PrismaMatchingRepository implements IMatchingRepository {
   }
 
   async findCandidateByPaymentId(paymentCandidateId: string): Promise<any> {
-    return this.prisma.studentPaymentCandidate.findUnique({
-      where: { paymentCandidateId },
+    return this.prisma.paymentCandidate.findFirst({
+      where: { id: paymentCandidateId },
     });
   }
 

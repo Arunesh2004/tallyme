@@ -20,12 +20,41 @@ export class PrismaVoucherRepository implements IVoucherRepository {
   // New method for transactional save
   async saveVoucherResult(candidateData: any, logData: any): Promise<any> {
     return this.prisma.$transaction(async (tx) => {
+      // Idempotency check: If batchSyncItemId exists and already has a voucher, return it
+      if (candidateData.batchSyncItemId) {
+        const batchItem = await tx.batchSyncItem.findUnique({
+          where: { id: candidateData.batchSyncItemId },
+        });
+        if (batchItem && batchItem.voucherCandidateId) {
+          const existingCandidate = await tx.voucherCandidate.findUnique({
+            where: { id: batchItem.voucherCandidateId },
+          });
+          if (existingCandidate) {
+            return existingCandidate;
+          }
+        }
+      }
+
       const candidate = await tx.voucherCandidate.create({
         data: {
-          ...candidateData,
-          lines: { create: candidateData.lines },
-          references: { create: candidateData.references },
-          narrations: { create: candidateData.narrations },
+          companyId: candidateData.companyId,
+          voucherNumber: candidateData.voucherNumber,
+          voucherType:
+            candidateData.voucherType === 'PURCHASE' ? 'Purchase' : 'Receipt',
+          date:
+            candidateData.date instanceof Date
+              ? candidateData.date
+              : new Date(candidateData.date || Date.now()),
+          status: 'PENDING',
+          entries: {
+            create:
+              candidateData.lines?.map((l: any, i: number) => ({
+                sequence: i,
+                ledgerName: l.ledgerName || l.voucherLedgerId || 'DEV_MODE',
+                amount: l.amount || 0,
+                isDebit: l.type === 'DEBIT',
+              })) || [],
+          },
         },
       });
 
@@ -38,8 +67,23 @@ export class PrismaVoucherRepository implements IVoucherRepository {
             executionTimeMs: logData.details?.executionTimeMs || 0,
           },
         });
-        logData.voucherValidationId = validation.id;
-        await tx.voucherValidationLog.create({ data: logData });
+        await tx.voucherValidationLog.create({
+          data: {
+            voucherValidationId: validation.id,
+            details: {
+              level: logData.level,
+              message: logData.message,
+              ...(logData.details || {}),
+            },
+          },
+        });
+      }
+
+      if (candidateData.batchSyncItemId) {
+        await tx.batchSyncItem.update({
+          where: { id: candidateData.batchSyncItemId },
+          data: { voucherCandidateId: candidate.id, status: 'VOUCHER_CREATED' },
+        });
       }
 
       return candidate;
@@ -50,6 +94,20 @@ export class PrismaVoucherRepository implements IVoucherRepository {
     return this.prisma.voucherLedger.findUnique({
       where: { name },
     });
+  }
+
+  async findFeeAllocationCandidateById(id: string): Promise<any> {
+    return this.prisma.feeAllocationCandidate.findUnique({
+      where: { id },
+      include: {
+        studentPaymentCandidate: true,
+      },
+    });
+  }
+
+  async checkCompanyExists(id: string): Promise<boolean> {
+    const count = await this.prisma.company.count({ where: { id } });
+    return count > 0;
   }
 
   async logValidation(log: any): Promise<void> {

@@ -21,7 +21,7 @@ import { InfrastructureException } from '../../../../shared/exceptions/Infrastru
 export class PrismaVendorRepository implements IVendorRepository {
   constructor(private readonly prisma: PrismaService) {}
   private getClient(tx?: ITransactionContext): any {
-    return tx ? (tx as unknown as TransactionClient) : this.prisma.client;
+    return tx ? (tx as unknown as TransactionClient) : this.prisma;
   }
 
   async findVendorByCriteria(query: VendorQuery): Promise<Vendor | null> {
@@ -42,10 +42,26 @@ export class PrismaVendorRepository implements IVendorRepository {
   }
 
   async searchVendorsFuzzy(name: string, threshold: number): Promise<Vendor[]> {
-    return [];
+    try {
+      const raw = await this.getClient().vendor.findMany({
+        where: { name: { contains: name, mode: 'insensitive' } },
+        take: 10
+      });
+      return raw.map((r: any) => VendorMapper.toDomain(r));
+    } catch (e) {
+      throw new InfrastructureException('Database error', e);
+    }
   }
+
   async getVendorById(id: string): Promise<Vendor | null> {
-    return null;
+    try {
+      const raw = await this.getClient().vendor.findUnique({
+        where: { id }
+      });
+      return raw ? VendorMapper.toDomain(raw) : null;
+    } catch (e) {
+      throw new InfrastructureException('Database error', e);
+    }
   }
 }
 
@@ -53,7 +69,7 @@ export class PrismaVendorRepository implements IVendorRepository {
 export class PrismaInvoiceCandidateRepository implements IInvoiceCandidateRepository {
   constructor(private readonly prisma: PrismaService) {}
   private getClient(tx?: ITransactionContext): any {
-    return tx ? (tx as unknown as TransactionClient) : this.prisma.client;
+    return tx ? (tx as unknown as TransactionClient) : this.prisma;
   }
 
   async saveExtractedCandidate(
@@ -89,6 +105,14 @@ export class PrismaInvoiceCandidateRepository implements IInvoiceCandidateReposi
   }
 
   async findPendingVendorMatching(): Promise<InvoiceCandidate[]> {
-    return [];
+    try {
+      const raw = await this.getClient().invoiceCandidate.findMany({
+        where: { status: 'EXTRACTED' }, // Assuming EXTRACTED means ready for matching
+        take: 20
+      });
+      return raw.map((r: any) => InvoiceMapper.toDomain(r));
+    } catch (e) {
+      throw new InfrastructureException('Database error', e);
+    }
   }
 }

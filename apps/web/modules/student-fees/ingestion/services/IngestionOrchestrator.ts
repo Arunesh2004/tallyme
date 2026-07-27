@@ -59,7 +59,7 @@ export class IngestionOrchestrator {
 
       logger.info(`Polling complete for ${provider.providerName}. Ingested: ${ingestedCount}, Dup(ID): ${duplicateIdCount}, Dup(Hash): ${duplicateHashCount}`);
     } catch (error: any) {
-      logger.error(`Error during polling for ${provider.providerName}`, { error: error.message });
+      logger.error({ error: error.message }, `Error during polling for ${provider.providerName}`);
     }
   }
 

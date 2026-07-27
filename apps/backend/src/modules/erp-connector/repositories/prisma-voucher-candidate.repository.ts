@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { IVoucherCandidateRepository } from '../interfaces/voucher.interfaces';
-import { TallyVoucherDTO, TallyVoucherLineDTO } from '../dto/tally-voucher.dto';
+import { TallyVoucherDTO, TallyLedgerEntryDTO } from '../dto/tally-voucher.dto';
 
 @Injectable()
 export class PrismaVoucherCandidateRepository implements IVoucherCandidateRepository {
@@ -22,7 +22,7 @@ export class PrismaVoucherCandidateRepository implements IVoucherCandidateReposi
       return null;
     }
 
-    const lines: TallyVoucherLineDTO[] = candidate.entries.map((entry) => ({
+    const lines: TallyLedgerEntryDTO[] = candidate.entries.map((entry) => ({
       ledgerName: entry.ledgerName,
       isDebit: entry.isDebit,
       isParty: entry.isParty,
@@ -30,9 +30,7 @@ export class PrismaVoucherCandidateRepository implements IVoucherCandidateReposi
     }));
 
     return {
-      id: candidate.id,
-      companyId: candidate.companyId,
-      companyName: candidate.company.name,
+      companyName: candidate.company?.name || 'Unknown Company',
       voucherNumber: candidate.voucherNumber,
       voucherType: candidate.voucherType,
       date: candidate.date.toISOString().split('T')[0].replace(/-/g, ''), // YYYYMMDD

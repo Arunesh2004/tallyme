@@ -23,7 +23,7 @@ export class ERPConnectionManager {
 
     return {
       connectionInfo,
-      adapter: this.factory.getAdapter(connectionInfo.adapter.code),
+      adapter: this.factory.getAdapter(adapterCode),
     };
   }
 }

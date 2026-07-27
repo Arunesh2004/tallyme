@@ -40,7 +40,12 @@ export class TallyVoucherDTO {
 
   @IsString()
   @IsOptional()
+  companyId?: string;
+
+  @IsString()
+  @IsOptional()
   companyName?: string;
+
 
   @IsString()
   @IsOptional()

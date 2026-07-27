@@ -5,6 +5,7 @@ export interface ERPRequestContext {
   jobId?: string;
   queueName?: string;
   attemptNumber?: number;
+  companyId?: string;
 }
 
 export interface TransportResult {

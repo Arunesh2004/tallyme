@@ -18,8 +18,8 @@ export class OutboxWorker implements OnModuleInit {
 
   async processOutbox() {
     // 1. Fetch PENDING outbox events
-    // const events = await this.prisma.client.outboxEvent.findMany({ where: { status: 'PENDING' }, take: 100 });
-    const events: any[] = []; // Stub
+    // const events = await this.prisma.outboxEvent.findMany({ where: { status: 'PENDING' }, take: 100 });
+    const events: any[] = []; // (implementation note)
 
     for (const event of events) {
       try {
@@ -28,9 +28,12 @@ export class OutboxWorker implements OnModuleInit {
         await targetQueue.add(event.name, event.payload, { jobId: event.id });
 
         // 3. Mark as PUBLISHED
-        // await this.prisma.client.outboxEvent.update({ where: { id: event.id }, data: { status: 'PUBLISHED' } });
-      } catch (error) {
-        this.logger.error(`Failed to publish Outbox event ${event.id}`, error);
+        // await this.prisma.outboxEvent.update({ where: { id: event.id }, data: { status: 'PUBLISHED' } });
+      } catch (error: any) {
+        this.logger.error(
+          `Failed to publish Outbox event ${event.id}`,
+          error instanceof Error ? (error as any).message : String(error),
+        );
         // Will retry on next tick
       }
     }

@@ -95,7 +95,7 @@ export class VerifyERPSyncUseCase {
         {
           message: 'Verification probe failed unexpectedly',
           jobId,
-          error: error.message,
+          error: (error as any).message,
         },
         error.stack,
         'VerifyERPSyncUseCase',

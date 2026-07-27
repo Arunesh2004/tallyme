@@ -6,22 +6,22 @@ export class LoggerService implements NestLoggerService {
   constructor(private readonly pino: Logger) {}
 
   log(message: any, context?: string) {
-    this.pino.log({ context }, message);
+    this.pino.log(message, context);
   }
 
   error(message: any, trace?: string, context?: string) {
-    this.pino.error({ context, trace }, message);
+    this.pino.error(message, trace, context);
   }
 
   warn(message: any, context?: string) {
-    this.pino.warn({ context }, message);
+    this.pino.warn(message, context);
   }
 
   debug(message: any, context?: string) {
-    this.pino.debug({ context }, message);
+    this.pino.debug(message, context);
   }
 
   verbose(message: any, context?: string) {
-    this.pino.verbose({ context }, message);
+    this.pino.verbose(message, context);
   }
 }

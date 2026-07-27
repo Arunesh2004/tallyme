@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
+import { PrismaClient } from '@prisma/client';
 
 export type TransactionClient = Omit<
-  PrismaService['client'],
+  PrismaClient,
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
 >;
 
@@ -18,7 +19,7 @@ export class TransactionManager {
     callback: (tx: TransactionClient) => Promise<T>,
     timeoutMs = 10000,
   ): Promise<T> {
-    return await this.prismaService.client.$transaction(
+    return await this.prismaService.$transaction(
       async (tx: TransactionClient) => {
         return await callback(tx);
       },

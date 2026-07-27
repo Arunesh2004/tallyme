@@ -11,6 +11,7 @@ import { IPaymentParserRepository } from '../../payment-parser/interfaces/parser
 import { PAYMENT_PARSER_REPOSITORY } from '../../payment-parser/constants/parser.constants';
 import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
+import { InvalidMatchingCandidateException } from '../exceptions/matching.exceptions';
 
 @Injectable()
 export class ProcessMatchingUseCase {
@@ -32,53 +33,57 @@ export class ProcessMatchingUseCase {
       'ProcessMatchingUseCase',
     );
 
-    // Fetch the candidate from DB. Assuming prisma allows simple find.
-    // In real implementation, inject PaymentParserRepository or PrismaService
-    // We'll mock it for milestone simplicity
-    const candidate = {
-      id: paymentCandidateId,
-      admissionNumber: 'ADM-2026-001',
-      studentName: 'John Doe',
-      amount: 1500,
-    };
+    const candidate =
+      await this.repository.findCandidateByPaymentId(paymentCandidateId);
 
-    const result = await this.matchingEngine.match(candidate);
-    const conflicts = this.conflictDetector.detect(result.matchedIds);
+    if (!candidate) {
+      throw new InvalidMatchingCandidateException(
+        `Payment candidate ${paymentCandidateId} not found`,
+      );
+    }
 
-    const candidateData = {
-      paymentCandidateId,
-      studentId: result.matchedIds.length === 1 ? result.matchedIds[0] : null,
-      admissionNumber: candidate.admissionNumber,
-      matchedBy: result.breakdown
-        .filter((r) => r.score > 0)
-        .map((r) => r.ruleName)
-        .join(','),
-      confidence: result.score,
-      matchingStrategy: 'DETERMINISTIC_RULES',
-      matchingScore: result.score,
-      status: result.status as any,
-      manualReviewRequired: result.status === 'MANUAL_REVIEW',
-      warnings: conflicts,
-      rawMatchingData: { breakdown: result.breakdown } as any,
-    };
+    try {
+      const result = await this.matchingEngine.match(candidate);
+      const conflicts = this.conflictDetector.detect(result.matchedIds);
 
-    const attemptData = {
-      strategyUsed: 'DETERMINISTIC_RULES',
-      executionTimeMs: Date.now() - startTime,
-      resultStatus: result.status,
-    };
+      const candidateData = {
+        paymentCandidateId,
+        studentId: result.matchedIds.length === 1 ? result.matchedIds[0] : null,
+        admissionNumber: candidate.admissionNumber,
+        matchedBy: result.breakdown
+          .filter((r) => r.score > 0)
+          .map((r) => r.ruleName)
+          .join(','),
+        confidence: result.score,
+        matchingStrategy: 'DETERMINISTIC_RULES',
+        matchingScore: result.score,
+        status: result.status as any,
+        manualReviewRequired: result.status === 'MANUAL_REVIEW',
+        warnings: conflicts,
+        rawMatchingData: { breakdown: result.breakdown } as any,
+      };
 
-    const savedMatch = await this.repository.saveMatchingResult(
-      candidateData,
-      attemptData,
-      [],
-      [],
-    );
+      const attemptData = {
+        strategyUsed: 'DETERMINISTIC_RULES',
+        executionTimeMs: Date.now() - startTime,
+        resultStatus: result.status,
+      };
 
-    if (result.status === 'MATCHED' && !conflicts.length) {
-      await this.queue.addJob(FEE_VALIDATION_QUEUE, 'validate-fee', {
-        studentPaymentCandidateId: savedMatch.id,
-      });
+      const savedMatch = await this.repository.saveMatchingResult(
+        candidateData,
+        attemptData,
+        [],
+        [],
+      );
+
+      if (result.status === 'MATCHED' && !conflicts.length) {
+        await this.queue.addJob(FEE_VALIDATION_QUEUE, 'validate-fee', {
+          studentPaymentCandidateId: savedMatch.id,
+        });
+      }
+    } catch (e: any) {
+      this.logger.error('Matching Error', e.stack, 'ProcessMatchingUseCase');
+      throw e;
     }
   }
 }

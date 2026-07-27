@@ -5,7 +5,7 @@ import {
   PaymentAmount,
   StudentRollNumber,
 } from '../value-objects';
-import { BaseEntity, AggregateRoot } from '../../../shared/domain/base'; // Assumes existing from Module 1
+import { BaseEntity, AggregateRoot } from '../../../../shared/domain/base'; // Assumes existing from Module 1
 
 export class PaymentCandidate {
   constructor(

@@ -18,8 +18,9 @@ export class PrismaVoucherRepository {
             id: aggregateId,
             voucherNumber: entity.voucherNumber || null,
             voucherType: entity.voucherType,
-            date: entity.date,
-            payload: entity as any,
+            date: entity.date.length === 8 
+                  ? new Date(`${entity.date.substring(0,4)}-${entity.date.substring(4,6)}-${entity.date.substring(6,8)}T00:00:00Z`) 
+                  : new Date(entity.date),
             syncStatus: 'PENDING',
             organizationId: organizationId,
             correlationId: correlationId,

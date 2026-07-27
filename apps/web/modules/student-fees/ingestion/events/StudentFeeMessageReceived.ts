@@ -1,6 +1,10 @@
-import { DomainEvent } from '../../../accounting/shared/events/DomainEvent';
+import { v4 as uuidv4 } from 'uuid';
+import { DomainEvent } from '@/modules/accounting/shared/events/AccountingEvents';
 
 export class StudentFeeMessageReceived implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'StudentFeeMessageReceived';
   public occurredAt = new Date();
 

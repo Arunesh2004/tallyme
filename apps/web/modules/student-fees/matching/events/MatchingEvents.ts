@@ -1,7 +1,11 @@
-import { DomainEvent } from '../../../../modules/accounting/shared/events/DomainEvent';
+import { v4 as uuidv4 } from 'uuid';
+import { DomainEvent } from '@/modules/accounting/shared/events/AccountingEvents';
 import { MatchingResult } from '../types/MatchingResult';
 
 export class StudentMatched implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'StudentMatched';
   public occurredAt = new Date();
 
@@ -14,6 +18,9 @@ export class StudentMatched implements DomainEvent {
 }
 
 export class StudentMatchFailed implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'StudentMatchFailed';
   public occurredAt = new Date();
 
@@ -26,6 +33,9 @@ export class StudentMatchFailed implements DomainEvent {
 }
 
 export class DuplicatePaymentDetected implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'DuplicatePaymentDetected';
   public occurredAt = new Date();
 
@@ -38,6 +48,9 @@ export class DuplicatePaymentDetected implements DomainEvent {
 }
 
 export class ManualReviewCreated implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'ManualReviewCreated';
   public occurredAt = new Date();
 
@@ -50,6 +63,9 @@ export class ManualReviewCreated implements DomainEvent {
 }
 
 export class PaymentValidated implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'PaymentValidated';
   public occurredAt = new Date();
 

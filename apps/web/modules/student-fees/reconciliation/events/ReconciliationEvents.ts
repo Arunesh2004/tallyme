@@ -1,6 +1,10 @@
-import { DomainEvent } from '../../../../modules/accounting/shared/events/DomainEvent';
+import { v4 as uuidv4 } from 'uuid';
+import { DomainEvent } from '@/modules/accounting/shared/events/AccountingEvents';
 
 export class FeeAllocated implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'FeeAllocated';
   public occurredAt = new Date();
 
@@ -13,6 +17,9 @@ export class FeeAllocated implements DomainEvent {
 }
 
 export class PartialPaymentRecorded implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'PartialPaymentRecorded';
   public occurredAt = new Date();
 
@@ -25,6 +32,9 @@ export class PartialPaymentRecorded implements DomainEvent {
 }
 
 export class OverpaymentRecorded implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'OverpaymentRecorded';
   public occurredAt = new Date();
 
@@ -37,6 +47,9 @@ export class OverpaymentRecorded implements DomainEvent {
 }
 
 export class AdvancePaymentRecorded implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'AdvancePaymentRecorded';
   public occurredAt = new Date();
 
@@ -49,6 +62,9 @@ export class AdvancePaymentRecorded implements DomainEvent {
 }
 
 export class FeeTransactionCreated implements DomainEvent {
+  public eventId: string = uuidv4();
+  public timestamp: Date = new Date();
+
   public eventType = 'FeeTransactionCreated';
   public occurredAt = new Date();
 

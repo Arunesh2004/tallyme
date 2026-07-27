@@ -18,6 +18,18 @@ export class PrismaFeeValidationRepository implements IFeeValidationRepository {
     });
   }
 
+  async findStudentPaymentCandidateById(id: string): Promise<any> {
+    return this.prisma.studentPaymentCandidate.findUnique({
+      where: { id },
+    });
+  }
+
+  async getStudentOutstandings(studentId: string): Promise<any[]> {
+    return this.prisma.outstandingFee.findMany({
+      where: { studentId },
+    });
+  }
+
   async logValidation(log: any): Promise<void> {
     await this.prisma.feeValidationLog.create({
       data: log,
@@ -38,13 +50,16 @@ export class PrismaFeeValidationRepository implements IFeeValidationRepository {
   ): Promise<any> {
     return this.prisma.$transaction(async (tx) => {
       const candidate = await tx.feeAllocationCandidate.create({
-        data: candidateData,
+        data: {
+          studentPaymentCandidateId: candidateData.studentPaymentCandidateId,
+          validationStatus: candidateData.validationStatus,
+        },
       });
 
       if (logData) {
         logData.feeValidationId = candidate.id;
         // In schema, FeeValidationLog relates to FeeValidation (not Candidate),
-        // but for milestone simplicity we create the intermediate FeeValidation object or mock it.
+        // (implementation note)
         const validation = await tx.feeValidation.create({
           data: {
             feeAllocationCandidateId: candidate.id,
@@ -52,8 +67,16 @@ export class PrismaFeeValidationRepository implements IFeeValidationRepository {
             executionTimeMs: logData.details?.executionTimeMs || 0,
           },
         });
-        logData.feeValidationId = validation.id;
-        await tx.feeValidationLog.create({ data: logData });
+        await tx.feeValidationLog.create({
+          data: {
+            feeValidationId: validation.id,
+            details: {
+              level: logData.level,
+              message: logData.message,
+              ...(logData.details || {}),
+            },
+          },
+        });
       }
 
       if (exceptionsData && exceptionsData.length > 0) {

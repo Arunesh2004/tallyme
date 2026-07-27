@@ -44,7 +44,7 @@ export class ERPConnectorEngine {
     const transportContract = this.mapper.mapToTransport(internalVoucherData);
 
     // 3. Build Payload
-    const payload = this.payloadBuilder.build(adapter, transportContract);
+    const payload = await this.payloadBuilder.build(adapter, transportContract);
 
     // 4. Send over Transport
     // We do not catch transport errors here. They propagate upward as ERPTransportException.

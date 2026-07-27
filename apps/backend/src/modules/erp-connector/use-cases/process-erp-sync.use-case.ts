@@ -15,6 +15,15 @@ import { ERPTransportException } from '../exceptions/erp-transport.exception';
 import { IVoucherCandidateRepository } from '../interfaces/voucher.interfaces';
 import { VOUCHER_REPOSITORY } from '../constants/erp.constants';
 
+import { PrismaService } from '../../../infrastructure/database/prisma.service';
+import { TallyMasterValidationEngine } from '../../accounting-intelligence/validation/tally-master-validation.engine';
+import { ApprovalWorkflowEngine } from '../../accounting-intelligence/governance/approval-workflow.engine';
+import {
+  AccountingTransaction,
+  TransactionType,
+} from '../../../shared/domain/accounting-transaction';
+import { AccountingDecisionAuditService } from '../../accounting-intelligence/decision-audit/accounting-decision-audit.service';
+
 @Injectable()
 export class ProcessERPSyncUseCase {
   constructor(
@@ -24,7 +33,53 @@ export class ProcessERPSyncUseCase {
     private readonly engine: ERPConnectorEngine,
     @Inject(QUEUE_PROVIDER) private readonly queue: IQueueService,
     private readonly logger: LoggerService,
+    private readonly prisma: PrismaService,
+    private readonly tallyMasterValidationEngine: TallyMasterValidationEngine,
+    private readonly approvalWorkflowEngine: ApprovalWorkflowEngine,
+    private readonly auditService: AccountingDecisionAuditService,
   ) {}
+
+  async createJob(
+    voucherCandidateId: string,
+    adapterCode = 'TALLY_PRIME_V1',
+  ): Promise<any> {
+    const idempotencyHash = require('crypto')
+      .createHash('sha256')
+      .update(voucherCandidateId)
+      .digest('hex');
+    try {
+      return await this.repository.createSyncJob({
+        voucherCandidateId,
+        adapterCode,
+        idempotencyHash,
+        status: ERP_SYNC_STATUS.PENDING,
+      });
+    } catch (err: any) {
+      if (err.code === 'P2002') {
+        const existingJob =
+          await this.repository.findJobByIdempotencyHash(idempotencyHash);
+        if (
+          existingJob &&
+          (existingJob.status === ERP_SYNC_STATUS.FAILED_PERMANENT ||
+            existingJob.status === ERP_SYNC_STATUS.MANUAL_REVIEW)
+        ) {
+          // Reset job for retry
+          await this.repository.updateJobStatus(
+            existingJob.id,
+            ERP_SYNC_STATUS.PENDING,
+            {
+              reason: 'Retry requested - resetting status',
+              statusFrom: existingJob.status,
+            },
+          );
+          existingJob.status = ERP_SYNC_STATUS.PENDING;
+          existingJob.attempts = 0; // reset attempts
+        }
+        return existingJob;
+      }
+      throw err;
+    }
+  }
 
   async execute(jobId: string, attemptNumber: number): Promise<void> {
     this.logger.debug(
@@ -97,6 +152,112 @@ export class ProcessERPSyncUseCase {
       return;
     }
 
+    // PHASE 18: TALLY MASTER VALIDATION
+    // Construct AccountingTransaction from VoucherCandidate for Validation
+    const parties: any[] = [];
+    const lines: any[] = [];
+    const taxes: any[] = [];
+
+    // We assume PrismaVoucherCandidateRepository fetched entries.
+    // Wait, the repository might not fetch entries by default. Let's fetch it via Prisma to be sure.
+    const fullVoucher = await this.prisma.voucherCandidate.findUnique({
+      where: { id: job.voucherCandidateId },
+      include: { entries: true },
+    });
+
+    if (fullVoucher) {
+      let total = 0;
+      fullVoucher.entries.forEach((e) => {
+        if (e.isParty) {
+          parties.push({ id: e.id, type: 'PARTY', ledgerName: e.ledgerName });
+        } else {
+          lines.push({
+            id: e.id,
+            ledgerName: e.ledgerName,
+            amount: Number(e.amount),
+            isDebit: e.isDebit,
+          });
+        }
+        total += Number(e.amount);
+      });
+
+      const accTx = new AccountingTransaction(
+        job.voucherCandidateId,
+        fullVoucher.companyId || '',
+        fullVoucher.voucherType as any,
+        'ERP_SYNC',
+        fullVoucher.date,
+        parties,
+        lines,
+        taxes,
+        total,
+        { voucherNumber: fullVoucher.voucherNumber },
+        [],
+        'AUTO_APPROVED' as any,
+      );
+
+      this.logger.log(
+        {
+          message: 'SYNC_VALIDATION_STARTED',
+          voucherId: job.voucherCandidateId,
+        },
+        'ProcessERPSyncUseCase',
+      );
+
+      const validationResult =
+        await this.tallyMasterValidationEngine.validate(accTx);
+
+      if (!validationResult.valid) {
+        this.logger.warn(
+          {
+            message: 'SYNC_VALIDATION_FAILED',
+            missingMasters: validationResult.missingMasters,
+          },
+          'ProcessERPSyncUseCase',
+        );
+
+        await this.prisma.voucherCandidate.update({
+          where: { id: job.voucherCandidateId },
+          data: { status: 'FAILED' as any },
+        });
+
+        // Create Approval Request
+        for (const missing of validationResult.missingMasters) {
+          await this.approvalWorkflowEngine.createApprovalRequest({
+            companyId: fullVoucher.companyId || undefined,
+            type: missing.type,
+            entityId: missing.name,
+            reason: 'Missing Master in Tally',
+            requestedBy: 'SYSTEM_SYNC_VALIDATION',
+          });
+        }
+
+        // Log Decision
+        await this.auditService.logDecision({
+          companyId: fullVoucher.companyId || undefined,
+          inputData: { voucherId: job.voucherCandidateId },
+          appliedRules: [{ rule: 'TALLY_MASTER_VALIDATION', passed: false }],
+          confidence: 0,
+          supportingEvidence: [JSON.stringify(validationResult)],
+        });
+
+        await this.transitionState(
+          job.id,
+          job.status,
+          ERP_SYNC_STATUS.MANUAL_REVIEW,
+          'Voucher rejected due to missing Tally Masters',
+        );
+        return;
+      }
+      this.logger.log(
+        {
+          message: 'SYNC_VALIDATION_PASSED',
+          voucherId: job.voucherCandidateId,
+        },
+        'ProcessERPSyncUseCase',
+      );
+    }
+
     // 4. State Transition to SYNCING
     try {
       await this.transitionState(
@@ -122,12 +283,18 @@ export class ProcessERPSyncUseCase {
       jobId: job.id,
       queueName: 'tally-sync',
       attemptNumber,
+      companyId: fullVoucher?.companyId || undefined,
     };
 
     let transportDuration = 0;
 
     try {
       // 5. Invoke ERP Sync Orchestrator
+      this.logger.log(
+        { message: 'SYNC_SENT_TO_TALLY', voucherId: job.voucherCandidateId },
+        'ProcessERPSyncUseCase',
+      );
+
       const result = await this.engine.syncVoucher(
         voucherCandidate,
         job.adapterCode,
@@ -190,7 +357,7 @@ export class ProcessERPSyncUseCase {
         {
           message: 'Sync failed with exception',
           jobId,
-          error: error.message,
+          error: (error as any).message,
           code: error.code,
         },
         'ProcessERPSyncUseCase',
@@ -207,7 +374,7 @@ export class ProcessERPSyncUseCase {
         responseTime: null,
         durationMs: transportDuration,
         success: false,
-        errorMessage: error.message,
+        errorMessage: (error as any).message,
       });
 
       let nextState;
@@ -226,8 +393,8 @@ export class ProcessERPSyncUseCase {
         job.id,
         ERP_SYNC_STATUS.SYNCING,
         nextState,
-        error.message,
-        { lastError: error.message },
+        (error as any).message,
+        { lastError: (error as any).message },
       );
 
       if (nextState === ERP_SYNC_STATUS.FAILED_TEMPORARY) {
@@ -267,5 +434,62 @@ export class ProcessERPSyncUseCase {
       },
       'ProcessERPSyncUseCase',
     );
+
+    // Update BatchSyncItem status if this transition involves a terminal state
+    if (
+      toState === ERP_SYNC_STATUS.SYNCED ||
+      toState === ERP_SYNC_STATUS.FAILED_PERMANENT ||
+      toState === ERP_SYNC_STATUS.CANCELLED ||
+      toState === ERP_SYNC_STATUS.MANUAL_REVIEW
+    ) {
+      const job = await this.repository.findJobById(jobId);
+      if (job) {
+        const batchItems = await this.prisma.batchSyncItem.findMany({
+          where: { voucherCandidateId: job.voucherCandidateId },
+        });
+
+        for (const item of batchItems) {
+          const newStatus =
+            toState === ERP_SYNC_STATUS.SYNCED ? 'SYNCED' : 'FAILED';
+          await this.prisma.batchSyncItem.update({
+            where: { id: item.id },
+            data: { status: newStatus, error: reason, completedAt: new Date() },
+          });
+
+          // Recalculate BatchSyncJob
+          const batchJob = await this.prisma.batchSyncJob.findUnique({
+            where: { id: item.batchJobId },
+            include: { items: true },
+          });
+
+          if (batchJob) {
+            const syncedCount = batchJob.items.filter(
+              (i) => i.status === 'SYNCED',
+            ).length;
+            const failedCount = batchJob.items.filter(
+              (i) => i.status === 'FAILED',
+            ).length;
+            const isCompleted =
+              syncedCount + failedCount === batchJob.totalItems;
+
+            await this.prisma.batchSyncJob.update({
+              where: { id: batchJob.id },
+              data: {
+                syncedItems: syncedCount,
+                failedItems: failedCount,
+                processingItems: batchJob.items.filter(
+                  (i) =>
+                    i.status === 'PROCESSING' ||
+                    i.status === 'VOUCHER_CREATED' ||
+                    i.status === 'ERP_SYNCING',
+                ).length,
+                status: isCompleted ? 'COMPLETED' : batchJob.status,
+                completedAt: isCompleted ? new Date() : null,
+              },
+            });
+          }
+        }
+      }
+    }
   }
 }

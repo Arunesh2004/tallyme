@@ -119,7 +119,7 @@ export class ERPIdempotencyService {
         'ERPIdempotencyService',
       );
       throw new ERPIdempotencyException(
-        `Database error: ${error.message}`,
+        `Database error: ${(error as any).message}`,
         'DB_ERROR',
       );
     }

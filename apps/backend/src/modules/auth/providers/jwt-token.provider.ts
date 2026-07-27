@@ -18,7 +18,7 @@ export class JwtTokenProvider implements ITokenProvider {
   async verifyToken(token: string): Promise<any> {
     try {
       return await this.jwtService.verifyAsync(token);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.warn('Token verification failed', 'JwtTokenProvider');
       throw error;
     }

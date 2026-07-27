@@ -28,9 +28,12 @@ import {
   VendorMatcher,
   OCRCoordinator,
   InvoiceExtractor,
-} from '../../domain/services';
+} from '../domain/services';
+export * from '../domain/services';
+// export * from './orchestrators/vendor-slip.orchestrator';
+export * from '../domain/repositories';
 import { ITransactionContext } from '../../../shared/domain/repositories';
-import { IVendorMatchRepository } from '../../domain/repositories';
+import { IVendorMatchRepository } from '../domain/repositories';
 
 @Injectable()
 export class MatchVendorCommandHandler {

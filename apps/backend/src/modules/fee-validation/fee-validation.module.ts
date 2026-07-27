@@ -13,24 +13,32 @@ import { ValidationController } from './controllers/validation.controller';
 import { ValidationWorker } from './queue/validation.worker';
 import { BullModule } from '@nestjs/bullmq';
 
+import { isWorkerMode } from '../../shared/utils/runtime-mode';
+
+const controllers = isWorkerMode ? [] : [ValidationController];
+const providers: any[] = [
+  {
+    provide: VALIDATION_REPOSITORY,
+    useClass: PrismaFeeValidationRepository,
+  },
+  FeeAllocationEngine,
+  FeeValidationEngine,
+  DuplicatePaymentRule,
+  OverpaymentRule,
+  ProcessValidationUseCase,
+];
+
+if (isWorkerMode) {
+  providers.push(ValidationWorker);
+}
+
 @Module({
   imports: [
     BullModule.registerQueue({
       name: FEE_VALIDATION_QUEUE,
     }),
   ],
-  controllers: [ValidationController],
-  providers: [
-    {
-      provide: VALIDATION_REPOSITORY,
-      useClass: PrismaFeeValidationRepository,
-    },
-    FeeAllocationEngine,
-    FeeValidationEngine,
-    DuplicatePaymentRule,
-    OverpaymentRule,
-    ProcessValidationUseCase,
-    ValidationWorker,
-  ],
+  controllers,
+  providers,
 })
 export class FeeValidationModule {}

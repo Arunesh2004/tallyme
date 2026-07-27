@@ -1,0 +1,235 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tallyme-api
+  namespace: tallyme
+  labels:
+    app: tallyme-api
+    version: "1.0"
+    component: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tallyme-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: tallyme-api
+    spec:
+      containers:
+        - name: tallyme-api
+          image: tallyme/backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: DATABASE_URL
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              value: "6379"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: JWT_SECRET
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: ENCRYPTION_KEY
+            - name: AI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: AI_API_KEY
+            - name: GMAIL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: GMAIL_CLIENT_ID
+            - name: GMAIL_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: GMAIL_CLIENT_SECRET
+            - name: GMAIL_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: GMAIL_REFRESH_TOKEN
+            - name: GMAIL_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: GMAIL_ACCOUNT
+            - name: ERP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: tallyme-config
+                  key: ERP_HOST
+            - name: ERP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: tallyme-config
+                  key: ERP_PORT
+            - name: ERP_COMPANY_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: tallyme-config
+                  key: ERP_COMPANY_NAME
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: SENTRY_DSN
+                  optional: true
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tallyme-api
+  namespace: tallyme
+spec:
+  selector:
+    app: tallyme-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tallyme-worker
+  namespace: tallyme
+  labels:
+    app: tallyme-worker
+    component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tallyme-worker
+  template:
+    metadata:
+      labels:
+        app: tallyme-worker
+    spec:
+      containers:
+        - name: tallyme-worker
+          image: tallyme/backend:latest
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3001"
+            - name: WORKER_MODE
+              value: "true"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: DATABASE_URL
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: REDIS_HOST
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: JWT_SECRET
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: ENCRYPTION_KEY
+            - name: AI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: AI_API_KEY
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: tallyme-secrets
+                  key: SENTRY_DSN
+                  optional: true
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: 3001
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: 3001
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tallyme-config
+  namespace: tallyme
+data:
+  ERP_HOST: "tally-server"
+  ERP_PORT: "9000"
+  ERP_COMPANY_NAME: "TallyMe Enterprise"
+  LOG_LEVEL: "info"
+  CORS_ORIGINS: "https://tallyme.yourdomain.com"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tallyme

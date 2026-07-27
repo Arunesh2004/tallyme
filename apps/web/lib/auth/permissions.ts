@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 /**
  * File: apps/web/lib/auth/permissions.ts
  * Purpose: Centralized Role-Based Access Control (RBAC) definitions and helpers.
  * Dependencies: None
  */
 
+// eslint-disable-next-line no-unused-vars
 export enum Role {
   ACCOUNTANT = 'ACCOUNTANT',
   ADMINISTRATOR = 'ADMINISTRATOR',

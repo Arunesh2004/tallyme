@@ -44,13 +44,6 @@ export class PrismaERPRepository implements IERPRepository {
       status,
       lastError: result?.lastError || null,
       erpReferenceId: result?.erpReferenceId || undefined,
-      stateTransitions: {
-        create: {
-          statusFrom: result?.statusFrom || null,
-          statusTo: status,
-          reason: result?.reason || null,
-        },
-      },
     };
 
     if (result?.incrementAttempt) {
@@ -79,6 +72,15 @@ export class PrismaERPRepository implements IERPRepository {
       error.name = 'ConcurrentMutationException';
       throw error;
     }
+
+    await this.prisma.eRPSyncHistory.create({
+      data: {
+        jobId,
+        statusFrom: result?.statusFrom || null,
+        statusTo: status,
+        reason: result?.reason || null,
+      },
+    });
   }
 
   async logSyncEvent(log: any): Promise<void> {

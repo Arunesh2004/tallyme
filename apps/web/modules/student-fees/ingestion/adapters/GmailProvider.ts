@@ -21,7 +21,7 @@ export class GmailProvider implements MessageProvider {
       this.gmail = google.gmail({ version: 'v1', auth: oauth2Client });
       logger.info('GmailProvider authenticated successfully');
     } catch (error: any) {
-      logger.error('Gmail authentication failed', { error: error.message });
+      logger.error({ error: error.message }, 'Gmail authentication failed');
       throw error;
     }
   }
@@ -58,7 +58,7 @@ export class GmailProvider implements MessageProvider {
 
       return normalizedMessages;
     } catch (error: any) {
-      logger.error('Failed to fetch Gmail messages', { error: error.message });
+      logger.error({ error: error.message }, 'Failed to fetch Gmail messages');
       throw error;
     }
   }

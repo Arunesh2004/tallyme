@@ -9,15 +9,22 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
-  passwordHash String
-  isActive     Boolean   @default(true)
-  roleId       String
-  role         Role      @relation(fields: [roleId], references: [id])
-  sessions     Session[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id              String              @id @default(uuid())
+  email           String              @unique
+  passwordHash    String
+  isActive        Boolean             @default(true)
+  roleId          String
+  role            Role                @relation(fields: [roleId], references: [id])
+  organizationId  String?
+  organization    Organization?       @relation(fields: [organizationId], references: [id])
+  companyId       String?
+  company         Company?            @relation(fields: [companyId], references: [id])
+  sessions        Session[]
+  memberships     CompanyMembership[]
+  roleAssignments RoleAssignment[]
+  userMFA         UserMFA?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 }
 
 model Role {
@@ -48,16 +55,44 @@ model Session {
 // ... Additional Stubs for Student, Vendor, Voucher, Outbox ...
 // Stubs included to fulfill TDS Phase 1A request
 model Student {
-  id             String               @id @default(uuid())
-  enrollmentNo   String               @unique
-  email          String?              @unique
-  studentMatches StudentMatchResult[]
+  id              String    @id @default(uuid())
+  organizationId  String?
+  companyId       String?
+  enrollmentNo    String    @unique
+  admissionNumber String?   @unique
+  firstName       String?
+  lastName        String?
+  email           String?   @unique
+  phone           String?
+  dateOfBirth     DateTime?
+  gender          String?
+  status          String?
+  admissionStatus String?
+  enrollmentDate  DateTime?
+  guardianId      String?
+  class           String?
+  section         String?
+  academicYear    String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  archivedAt      DateTime?
+
+  studentMatches           StudentMatchResult[]
+  studentPaymentCandidates StudentPaymentCandidate[]
 }
 
 model Vendor {
-  id            String        @id @default(uuid())
-  gstin         String?       @unique
-  pan           String?       @unique
+  id             String    @id @default(uuid())
+  organizationId String?
+  companyId      String?
+  vendorCode     String?   @unique
+  name           String?
+  gstin          String?   @unique
+  pan            String?   @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
   vendorMatches VendorMatch[]
 }
 
@@ -79,6 +114,8 @@ enum DocumentStatus {
 
 model Document {
   id              String         @id @default(uuid())
+  organizationId  String?
+  companyId       String?
   fileUrl         String
   checksum        String
   mimeType        String
@@ -93,20 +130,36 @@ model Document {
   allocation       ExpenseAllocation?
   manualReview     ManualReviewRoute?
   auditLogs        VendorSlipAudit[]
+
+  @@index([companyId])
+  @@index([receivedAt])
+  @@index([status])
+}
+
+enum InvoiceStatus {
+  PENDING_EXTRACTION
+  EXTRACTED
+  MANUAL_REVIEW_REQUIRED
+  APPROVED
+  QUEUED
+  SYNCED
+  FAILED
 }
 
 model InvoiceCandidate {
-  id             String    @id @default(uuid())
-  documentId     String    @unique
-  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  id             String        @id @default(uuid())
+  documentId     String        @unique
+  document       Document      @relation(fields: [documentId], references: [id], onDelete: Cascade)
   invoiceNumber  String?
   date           DateTime?
-  subtotal       Decimal?  @db.Decimal(15, 2)
-  tax            Decimal?  @db.Decimal(15, 2)
-  total          Decimal?  @db.Decimal(15, 2)
+  subtotal       Decimal?      @db.Decimal(15, 2)
+  tax            Decimal?      @db.Decimal(15, 2)
+  total          Decimal?      @db.Decimal(15, 2)
   extractedGstin String?
   extractedPan   String?
   extractedName  String?
+  extractedData  Json?
+  status         InvoiceStatus @default(PENDING_EXTRACTION)
 }
 
 model VendorMatch {
@@ -172,15 +225,20 @@ enum VoucherStatus {
 }
 
 model Company {
-  id       String             @id @default(uuid())
-  name     String
-  vouchers VoucherCandidate[]
+  id             String              @id @default(uuid())
+  name           String
+  organizationId String?
+  organization   Organization?       @relation(fields: [organizationId], references: [id])
+  vouchers       VoucherCandidate[]
+  users          User[]
+  memberships    CompanyMembership[]
+  apiKeys        APIKey[]
 }
 
 model VoucherCandidate {
   id              String        @id @default(uuid())
-  companyId       String
-  company         Company       @relation(fields: [companyId], references: [id])
+  companyId       String?
+  company         Company?      @relation(fields: [companyId], references: [id])
   voucherNumber   String        @unique
   voucherType     VoucherType
   date            DateTime
@@ -189,8 +247,13 @@ model VoucherCandidate {
   isEdit          Boolean       @default(false)
   status          VoucherStatus @default(PENDING)
 
-  entries    VoucherCandidateEntry[]
-  erpSyncJob ERPSyncJob?
+  entries                    VoucherCandidateEntry[]
+  erpSyncJob                 ERPSyncJob?
+  expenseAllocationCandidate ExpenseAllocationCandidate?
+  feeAllocationCandidate     FeeAllocationCandidate?
+
+  @@index([companyId])
+  @@index([status])
 }
 
 model VoucherCandidateEntry {
@@ -227,6 +290,8 @@ enum ERPSyncStatus {
 
 model ERPSyncJob {
   id                   String           @id @default(uuid())
+  organizationId       String?
+  companyId            String?
   voucherCandidateId   String           @unique
   voucherCandidate     VoucherCandidate @relation(fields: [voucherCandidateId], references: [id], onDelete: Cascade)
   status               ERPSyncStatus    @default(PENDING)
@@ -244,6 +309,9 @@ model ERPSyncJob {
   stateTransitions     ERPSyncHistory[]
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([status])
 }
 
 model ERPSyncHistory {
@@ -254,6 +322,29 @@ model ERPSyncHistory {
   statusTo   ERPSyncStatus
   reason     String?
   createdAt  DateTime       @default(now())
+}
+
+model MigrationHistory {
+  id                   String   @id @default(uuid())
+  migrationId          String
+  operation            String
+  objectType           String
+  objectName           String
+  parentObject         String?
+  xmlRequest           String?
+  xmlResponse          String?
+  createdAt            DateTime @default(now())
+  performedBy          String?
+  rollbackSupported    Boolean  @default(false)
+  status               String   @default("COMPLETED")
+  originalStructure    Json?
+  recommendedStructure Json?
+  rollbackMetadata     Json?
+  executionSnapshot    Json?
+  affectedEntities     Json?
+  accountingTemplate   String?
+  companyId            String?
+  userId               String?
 }
 
 model ERPSyncAttempt {
@@ -291,6 +382,8 @@ enum EmailDocumentStatus {
 
 model EmailDocument {
   id                String              @id @default(uuid())
+  organizationId    String?
+  companyId         String?
   messageId         String              @unique
   subject           String?
   sender            String?
@@ -311,9 +404,9 @@ model EmailDocument {
 }
 
 model StudentPaymentCandidate {
-  id                   String        @id @default(uuid())
-  documentId           String        @unique
-  document             EmailDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  id                   String         @id @default(uuid())
+  documentId           String?        @unique
+  document             EmailDocument? @relation(fields: [documentId], references: [id], onDelete: Cascade)
   paymentGateway       String?
   gatewayTransactionId String?
   utr                  String?
@@ -321,9 +414,26 @@ model StudentPaymentCandidate {
   payerEmail           String?
   payerPhone           String?
   rawStudentName       String?
-  amount               Decimal?      @db.Decimal(15, 2)
+  amount               Decimal?       @db.Decimal(15, 2)
   paymentDate          DateTime?
   extractionConfidence Float?
+  extractedData        Json?
+
+  // High-Confidence additions from prisma-matching.repository.ts
+  paymentCandidateId   String?  @unique
+  studentId            String?
+  student              Student? @relation(fields: [studentId], references: [id])
+  admissionNumber      String?
+  matchedBy            String?
+  confidence           Float?
+  matchingStrategy     String?
+  matchingScore        Float?
+  warnings             Json?
+  manualReviewRequired Boolean?
+  rawMatchingData      Json?
+  status               String?
+
+  FeeAllocationCandidate FeeAllocationCandidate[]
 }
 
 model StudentMatchResult {
@@ -394,81 +504,81 @@ model SchoolConfiguration {
 }
 
 model EmailIntegrationConfiguration {
-  id                   String   @id @default(uuid())
-  vendorMailbox        String?
-  studentMailbox       String?
-  provider             String?  // GOOGLE, MICROSOFT
-  clientId             String?
+  id                    String    @id @default(uuid())
+  vendorMailbox         String?
+  studentMailbox        String?
+  provider              String? // GOOGLE, MICROSOFT
+  clientId              String?
   clientSecretEncrypted String?
   refreshTokenEncrypted String?
-  syncIntervalMinutes  Int      @default(5)
-  lastSyncAt           DateTime?
-  status               String   @default("DISCONNECTED")
-  updatedAt            DateTime @updatedAt
+  syncIntervalMinutes   Int       @default(5)
+  lastSyncAt            DateTime?
+  status                String    @default("DISCONNECTED")
+  updatedAt             DateTime  @updatedAt
 }
 
 model OCRIntegrationConfiguration {
-  id                   String   @id @default(uuid())
-  provider             String   @default("AZURE_DOCUMENT_INTELLIGENCE")
-  endpoint             String?
-  apiKeyEncrypted      String?
-  modelId              String?  @default("prebuilt-invoice")
-  confidenceThreshold  Float    @default(0.8)
-  status               String   @default("DISCONNECTED")
-  updatedAt            DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  provider            String   @default("AZURE_DOCUMENT_INTELLIGENCE")
+  endpoint            String?
+  apiKeyEncrypted     String?
+  modelId             String?  @default("prebuilt-invoice")
+  confidenceThreshold Float    @default(0.8)
+  status              String   @default("DISCONNECTED")
+  updatedAt           DateTime @updatedAt
 }
 
 model ERPIntegrationConfiguration {
-  id                   String   @id @default(uuid())
-  provider             String   @default("TALLY_PRIME")
-  host                 String?
-  port                 Int?
-  companyName          String?
-  timeoutMs            Int      @default(30000)
-  retryCount           Int      @default(3)
-  encoding             String   @default("utf-16le")
-  status               String   @default("DISCONNECTED")
-  updatedAt            DateTime @updatedAt
+  id          String   @id @default(uuid())
+  provider    String   @default("TALLY_PRIME")
+  host        String?
+  port        Int?
+  companyName String?
+  timeoutMs   Int      @default(30000)
+  retryCount  Int      @default(3)
+  encoding    String   @default("utf-16le")
+  status      String   @default("DISCONNECTED")
+  updatedAt   DateTime @updatedAt
 }
 
 model LedgerMappingConfiguration {
-  id                   String   @id @default(uuid())
-  vendorLedger         String?
-  studentLedger        String?
-  gstLedger            String?
-  bankLedger           String?
-  cashLedger           String?
-  discountLedger       String?
-  feeCategories        Json?    // Stores mapping of fee types to ledger names
-  updatedAt            DateTime @updatedAt
+  id             String   @id @default(uuid())
+  vendorLedger   String?
+  studentLedger  String?
+  gstLedger      String?
+  bankLedger     String?
+  cashLedger     String?
+  discountLedger String?
+  feeCategories  Json? // Stores mapping of fee types to ledger names
+  updatedAt      DateTime @updatedAt
 }
 
 model NotificationConfiguration {
-  id                   String   @id @default(uuid())
-  smtpHost             String?
-  smtpPort             Int?
-  smtpUser             String?
-  smtpPassEncrypted    String?
-  alertEmails          String[]
-  enableSystemAlerts   Boolean  @default(true)
-  updatedAt            DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  smtpHost           String?
+  smtpPort           Int?
+  smtpUser           String?
+  smtpPassEncrypted  String?
+  alertEmails        String[]
+  enableSystemAlerts Boolean  @default(true)
+  updatedAt          DateTime @updatedAt
 }
 
 model SecurityConfiguration {
-  id                   String   @id @default(uuid())
-  jwtExpirationHours   Int      @default(24)
-  sessionTimeoutMins   Int      @default(60)
-  passwordPolicyRegex  String?
-  updatedAt            DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  jwtExpirationHours  Int      @default(24)
+  sessionTimeoutMins  Int      @default(60)
+  passwordPolicyRegex String?
+  updatedAt           DateTime @updatedAt
 }
 
 model BackupConfiguration {
-  id                   String   @id @default(uuid())
-  scheduleCron         String?  // e.g. "0 0 * * *"
-  retentionDays        Int      @default(30)
-  destinationType      String?  // S3, LOCAL
-  destinationUrl       String?
-  updatedAt            DateTime @updatedAt
+  id              String   @id @default(uuid())
+  scheduleCron    String? // e.g. "0 0 * * *"
+  retentionDays   Int      @default(30)
+  destinationType String? // S3, LOCAL
+  destinationUrl  String?
+  updatedAt       DateTime @updatedAt
 }
 
 // ==========================================
@@ -476,15 +586,1546 @@ model BackupConfiguration {
 // ==========================================
 
 model IntegrationLog {
-  id            String   @id @default(uuid())
-  correlationId String?
-  provider      String   // e.g., TALLY, AZURE_OCR, GMAIL
-  operation     String   // e.g., SYNC_VOUCHER, ANALYZE_DOCUMENT
+  id              String   @id @default(uuid())
+  correlationId   String?
+  provider        String // e.g., TALLY, AZURE_OCR, GMAIL
+  operation       String // e.g., SYNC_VOUCHER, ANALYZE_DOCUMENT
   requestPayload  String?
   responsePayload String?
-  latencyMs     Int?
-  status        String   // SUCCESS, ERROR
-  failureReason String?
+  latencyMs       Int?
+  status          String // SUCCESS, ERROR
+  createdAt       DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 2 RESTORATION MODELS
+// ==========================================
+
+model PaymentCandidate {
+  id              String  @id @default(uuid())
+  gateway         String?
+  transactionId   String?
+  utr             String?
+  referenceNumber String?
+  rawData         Json?
+}
+
+model ParsingAttempt {
+  id                 String   @id @default(uuid())
+  emailId            String?
+  parserUsed         String?
+  success            Boolean?
+  confidenceScore    Float?
+  paymentCandidateId String?
+  createdAt          DateTime @default(now())
+}
+
+model MatchingAttempt {
+  id                        String   @id @default(uuid())
+  strategyUsed              String?
+  executionTimeMs           Int?
+  resultStatus              String?
+  studentPaymentCandidateId String?
+  createdAt                 DateTime @default(now())
+}
+
+model ManualReviewTask {
+  id         String   @id @default(uuid())
+  entityType String?
+  entityId   String?
+  status     String?
+  assignedTo String?
+  resolution String?
+  createdAt  DateTime @default(now())
+}
+
+model VoucherValidationLog {
+  id                  String   @id @default(uuid())
+  voucherValidationId String?
+  details             Json?
+  createdAt           DateTime @default(now())
+}
+
+// --- LOW CONFIDENCE (COMPILE SUPPORT) MODELS ---
+
+/// Temporary compile-support implementation requiring future business validation
+model StudentMatch {
+  id                        String  @id @default(uuid())
+  studentPaymentCandidateId String?
+}
+
+/// Temporary compile-support implementation requiring future business validation
+model MatchingConflict {
+  id                        String  @id @default(uuid())
+  studentPaymentCandidateId String?
+}
+
+/// Temporary compile-support implementation requiring future business validation
+model VoucherGenerationAttempt {
+  id String @id @default(uuid())
+}
+
+/// Temporary compile-support implementation requiring future business validation
+model VendorLedgerProfile {
+  id                String  @id @default(uuid())
+  vendorId          String? @unique
+  defaultLedgerCode String?
+}
+
+/// Temporary compile-support implementation requiring future business validation
+model VoucherLedger {
+  id   String  @id @default(uuid())
+  name String? @unique
+}
+
+model ExpenseAllocationCandidate {
+  id                  String            @id @default(uuid())
+  vendorId            String
+  vendorMatchResultId String?
+  invoiceNumber       String
+  invoiceDate         DateTime?
+  subtotal            Decimal?          @db.Decimal(15, 2)
+  totalTax            Decimal?          @db.Decimal(15, 2)
+  discount            Decimal?          @db.Decimal(15, 2)
+  roundOff            Decimal?          @db.Decimal(15, 2)
+  totalAmount         Decimal?          @db.Decimal(15, 2)
+  currency            String?
+  status              String?
+  voucherCandidateId  String?           @unique
+  voucherCandidate    VoucherCandidate? @relation(fields: [voucherCandidateId], references: [id])
+
+  lines        ExpenseAllocationLine2[]
+  taxBreakdown TaxBreakdownLine[]
+
+  @@unique([vendorId, invoiceNumber])
+}
+
+model ExpenseAllocationLine2 {
+  id                           String                     @id @default(uuid())
+  expenseAllocationCandidateId String
+  expenseAllocationCandidate   ExpenseAllocationCandidate @relation(fields: [expenseAllocationCandidateId], references: [id], onDelete: Cascade)
+  ledgerName                   String?
+  amount                       Decimal?                   @db.Decimal(15, 2)
+}
+
+model TaxBreakdownLine {
+  id                           String                     @id @default(uuid())
+  expenseAllocationCandidateId String
+  expenseAllocationCandidate   ExpenseAllocationCandidate @relation(fields: [expenseAllocationCandidateId], references: [id], onDelete: Cascade)
+  taxType                      String?
+  amount                       Decimal?                   @db.Decimal(15, 2)
+}
+
+model VoucherValidation {
+  id                 String   @id @default(uuid())
+  voucherCandidateId String?
+  status             String?
+  executionTimeMs    Int?
+  createdAt          DateTime @default(now())
+}
+
+// --- PHASE 3 Mail Module Compile Support ---
+enum EmailProcessingStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  QUEUED
+}
+
+model IncomingEmail {
+  id        String                @id @default(uuid())
+  messageId String                @unique
+  status    EmailProcessingStatus @default(RECEIVED)
+  // other fields stored as JSON or omitted for minimum compile support
+}
+
+model EmailProcessingLog {
+  id           String                @id @default(uuid())
+  emailId      String
+  status       EmailProcessingStatus
+  message      String?
+  errorDetails Json?
+}
+
+model EmailAttachment {
+  id       String  @id @default(uuid())
+  emailId  String
+  filename String?
+  mimeType String?
+  fileUrl  String?
+}
+
+// --- PHASE 3 Fee Validation Compile Support ---
+model FeeAllocationCandidate {
+  id                        String                   @id @default(uuid())
+  studentPaymentCandidateId String?
+  studentPaymentCandidate   StudentPaymentCandidate? @relation(fields: [studentPaymentCandidateId], references: [id])
+  validationStatus          String?
+  voucherCandidateId        String?                  @unique
+  voucherCandidate          VoucherCandidate?        @relation(fields: [voucherCandidateId], references: [id])
+}
+
+model FeeValidation {
+  id                       String  @id @default(uuid())
+  feeAllocationCandidateId String?
+  status                   String?
+  executionTimeMs          Int?
+}
+
+model FeeValidationLog {
+  id              String  @id @default(uuid())
+  feeValidationId String?
+  details         Json?
+}
+
+model FeeValidationException {
+  id                       String  @id @default(uuid())
+  feeAllocationCandidateId String?
+}
+
+model OutstandingFee {
+  id         String   @id @default(uuid())
+  studentId  String?
+  amountPaid Decimal? @db.Decimal(15, 2)
+  isPaid     Boolean?
+}
+
+// ==========================================
+// PHASE 1: VENDOR BATCH SYNCHRONIZATION
+// ==========================================
+
+model BatchSyncJob {
+  id              String    @id @default(uuid())
+  idempotencyHash String    @unique
+  type            String    @default("VENDOR_SLIP")
+  status          String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalItems      Int       @default(0)
+  queuedItems     Int       @default(0)
+  processingItems Int       @default(0)
+  syncedItems     Int       @default(0)
+  failedItems     Int       @default(0)
+  createdBy       String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  completedAt     DateTime?
+
+  items BatchSyncItem[]
+}
+
+model BatchSyncItem {
+  id                 String       @id @default(uuid())
+  batchJobId         String
+  batchJob           BatchSyncJob @relation(fields: [batchJobId], references: [id], onDelete: Cascade)
+  invoiceCandidateId String       @unique // Refers to InvoiceCandidate
+  voucherCandidateId String? // Populated once the candidate is generated
+  queueJobId         String?
+  status             String       @default("PENDING") // PENDING, QUEUED, PROCESSING, VOUCHER_CREATED, ERP_SYNCING, SYNCED, FAILED
+  error              String?
+  retryCount         Int          @default(0)
+  lastRetryAt        DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  completedAt        DateTime?
+}
+
+// ==========================================
+// PHASE 17 ENTERPRISE ACCOUNTING INTELLIGENCE
+// ==========================================
+
+model TallyDiscoveryReport {
+  id              String   @id @default(uuid())
+  companyId       String?
+  snapshotVersion String
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  status          String
+  recommendations Json?
+
+  groups       DiscoveryGroup[]
+  ledgers      DiscoveryLedger[]
+  voucherTypes DiscoveryVoucherType[]
+  costCentres  DiscoveryCostCentre[]
+
+  analysisReports StructureAnalysisReport[]
+  migrationPlans  MigrationPlan[]
+}
+
+model DiscoveryGroup {
+  id                     String               @id @default(uuid())
+  tallyDiscoveryReportId String
+  report                 TallyDiscoveryReport @relation(fields: [tallyDiscoveryReportId], references: [id], onDelete: Cascade)
+  data                   Json
+}
+
+model DiscoveryLedger {
+  id                     String               @id @default(uuid())
+  tallyDiscoveryReportId String
+  report                 TallyDiscoveryReport @relation(fields: [tallyDiscoveryReportId], references: [id], onDelete: Cascade)
+  data                   Json
+}
+
+model DiscoveryVoucherType {
+  id                     String               @id @default(uuid())
+  tallyDiscoveryReportId String
+  report                 TallyDiscoveryReport @relation(fields: [tallyDiscoveryReportId], references: [id], onDelete: Cascade)
+  data                   Json
+}
+
+model DiscoveryCostCentre {
+  id                     String               @id @default(uuid())
+  tallyDiscoveryReportId String
+  report                 TallyDiscoveryReport @relation(fields: [tallyDiscoveryReportId], references: [id], onDelete: Cascade)
+  data                   Json
+}
+
+model AccountingTemplate {
+  id                  String   @id @default(uuid())
+  name                String
+  industry            String?
+  version             String
+  structureDefinition Json?
+  ruleDefinitions     Json?
+  metadata            Json?
+  createdAt           DateTime @default(now())
+
+  migrationPlans MigrationPlan[]
+}
+
+model AccountingDecisionLog {
+  id                 String   @id @default(uuid())
+  companyId          String?
+  userId             String?
+  timestamp          DateTime @default(now())
+  inputData          Json?
+  resolverOutput     Json?
+  appliedRules       Json?
+  ledgerDecision     Json?
+  confidence         Float?
+  supportingEvidence Json?
+  userOverride       Boolean  @default(false)
+}
+
+model ApprovalBatch {
+  id             String              @id @default(uuid())
+  organizationId String?
+  companyId      String?
+  batchId        String              @unique
+  createdBy      String?
+  approvedBy     String?
+  createdAt      DateTime            @default(now())
+  completedAt    DateTime?
+  totalRequests  Int                 @default(0)
+  totalItems     Int                 @default(0)
+  approvedCount  Int                 @default(0)
+  approvedItems  Int                 @default(0)
+  rejectedCount  Int                 @default(0)
+  rejectedItems  Int                 @default(0)
+  failedCount    Int                 @default(0)
+  status         String
+  items          ApprovalBatchItem[]
+}
+
+model ApprovalRequest {
+  id          String    @id @default(uuid())
+  companyId   String?
+  type        String
+  entityId    String?
+  reason      String
+  status      String    @default("PENDING")
+  requestedBy String?
+  approvedBy  String?
+  createdAt   DateTime  @default(now())
+  resolvedAt  DateTime?
+
+  @@index([companyId])
+  @@index([status])
+}
+
+// ==========================================
+// PHASE 19 ORGANIZATION INTELLIGENCE
+// ==========================================
+
+model StructureAnalysisReport {
+  id          String               @id @default(uuid())
+  discoveryId String
+  discovery   TallyDiscoveryReport @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+  score       Int
+  issues      Json
+  createdAt   DateTime             @default(now())
+}
+
+model MigrationPlan {
+  id             String               @id @default(uuid())
+  organizationId String?
+  companyId      String?
+  discoveryId    String
+  discovery      TallyDiscoveryReport @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+  templateId     String
+  template       AccountingTemplate   @relation(fields: [templateId], references: [id])
+  status         String               @default("DRAFT") // DRAFT, PENDING_APPROVAL, APPROVED, REJECTED, EXECUTED
+  createdAt      DateTime             @default(now())
+
+  actions   MigrationAction[]
+  execution MigrationExecution?
+}
+
+model MigrationAction {
+  id                String        @id @default(uuid())
+  migrationPlanId   String
+  migrationPlan     MigrationPlan @relation(fields: [migrationPlanId], references: [id], onDelete: Cascade)
+  actionType        String // MOVE_LEDGER, RENAME_GROUP, CREATE_LEDGER, etc.
+  details           Json
+  approvalRequired  Boolean       @default(true)
+  rollbackSupported Boolean       @default(true)
+
+  executionActions MigrationExecutionAction[]
+}
+
+// ==========================================
+// PHASE 20 MIGRATION EXECUTION
+// ==========================================
+
+model MigrationExecution {
+  id              String        @id @default(uuid())
+  organizationId  String?
+  companyId       String?
+  migrationPlanId String        @unique
+  migrationPlan   MigrationPlan @relation(fields: [migrationPlanId], references: [id], onDelete: Cascade)
+  status          String        @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED, PARTIALLY_FAILED
+  executedAt      DateTime?
+  createdAt       DateTime      @default(now())
+
+  actions           MigrationExecutionAction[]
+  rollbackExecution MigrationRollbackExecution?
+
+  @@index([companyId])
+  @@index([status])
+}
+
+model MigrationExecutionAction {
+  id                   String             @id @default(uuid())
+  migrationExecutionId String
+  migrationExecution   MigrationExecution @relation(fields: [migrationExecutionId], references: [id], onDelete: Cascade)
+  migrationActionId    String
+  migrationAction      MigrationAction    @relation(fields: [migrationActionId], references: [id])
+  actionType           String
+  externalEntityType   String?
+  externalEntityName   String?
+  executionAttempt     Int                @default(1)
+  status               String             @default("PENDING") // PENDING, RUNNING, SUCCESS, FAILED
+  requestHash          String?
+  responseHash         String?
+  errorMessage         String?
+  beforeState          Json?
+  afterState           Json?
+  executedAt           DateTime?
+}
+
+// ==========================================
+// PHASE 21 ROLLBACK & OPERATIONS
+// ==========================================
+
+model MigrationRollbackExecution {
+  id                   String             @id @default(uuid())
+  migrationExecutionId String             @unique
+  migrationExecution   MigrationExecution @relation(fields: [migrationExecutionId], references: [id], onDelete: Cascade)
+  status               String             @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED, PARTIAL
+  startedAt            DateTime?
+  completedAt          DateTime?
+  failureReason        String?
+  rollbackSnapshot     Json?
+
+  actions RollbackAction[]
+}
+
+model MigrationDependencyGraph {
+  id              String @id @default(uuid())
+  migrationPlanId String
+  entityType      String
+  entityName      String
+  dependsOn       String
+  dependencyType  String
+}
+
+model RollbackAction {
+  id                  String                     @id @default(uuid())
+  rollbackExecutionId String
+  rollbackExecution   MigrationRollbackExecution @relation(fields: [rollbackExecutionId], references: [id], onDelete: Cascade)
+  actionType          String
+  entityType          String
+  entityName          String
+  beforeState         Json?
+  afterState          Json?
+  status              String                     @default("PENDING")
+  error               String?
+}
+
+model MigrationVerificationReport {
+  id                   String   @id @default(uuid())
+  migrationExecutionId String   @unique
+  status               String   @default("PENDING") // PASSED, FAILED, PARTIAL, MANUAL_REVIEW
+  details              Json
+  createdAt            DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 22 ENTERPRISE COMMAND CENTER
+// ==========================================
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String // APPROVAL_REQUIRED, SYNC_FAILED, MIGRATION_COMPLETED, ROLLBACK_FAILED, LOW_CONFIDENCE_EXTRACTION
+  entityId  String?
+  message   String
+  status    String   @default("UNREAD") // UNREAD, READ, DISMISSED
+  userId    String?
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 24 INTELLIGENT AUTOMATION
+// ==========================================
+
+model ExtractionCorrectionLog {
+  id          String   @id @default(uuid())
+  documentId  String
+  fieldName   String
+  oldValue    String?
+  newValue    String?
+  reason      String?
+  correctedBy String?
+  createdAt   DateTime @default(now())
+}
+
+model TallyOperationVerification {
+  id                 String    @id @default(uuid())
+  operationId        String // Can link to MigrationExecution or ERPSyncJob
+  operationType      String // e.g. 'MIGRATION', 'VOUCHER_SYNC'
+  requestXML         String?   @db.Text
+  responseXML        String?   @db.Text
+  verificationStatus String    @default("PENDING") // PENDING, VERIFIED, FAILED
+  verifiedAt         DateTime?
+  createdAt          DateTime  @default(now())
+}
+
+// ==========================================
+// PHASE 25 ENTERPRISE SAAS
+// ==========================================
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companies Company[]
+  users     User[]
+}
+
+model CompanyMembership {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  role      String   @default("VIEW_ONLY")
+  createdAt DateTime @default(now())
+
+  @@unique([userId, companyId])
+}
+
+model Invite {
+  id             String   @id @default(uuid())
+  email          String
+  organizationId String
+  companyId      String?
+  role           String   @default("VIEW_ONLY")
+  token          String   @unique
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+}
+
+model RoleAssignment {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  role           String   @default("VIEW_ONLY") // ACCOUNTING_ADMIN, APPROVER, AUDITOR, VIEW_ONLY
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, organizationId])
+}
+
+model AuditLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  organizationId String?
+  companyId      String?
+  action         String
+  entity         String?
+  entityId       String?
+  oldValue       Json?
+  newValue       Json?
+  reason         String?
+  ipAddress      String?
+  userAgent      String?
+  correlationId  String?
+  timestamp      DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 26 ENTERPRISE RELIABILITY & AI GOVERNANCE
+// ==========================================
+
+model AIModelVersion {
+  id        String   @id @default(uuid())
+  provider  String // e.g. OpenAI, Anthropic, Azure
+  modelName String
+  version   String
+  purpose   String // e.g. OCR_EXTRACTION, VENDOR_MATCHING
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  executionLogs   AIExecutionLog[]
+  accuracyMetrics AIAccuracyMetric[]
+}
+
+model AIExecutionLog {
+  id             String         @id @default(uuid())
+  modelVersionId String
+  modelVersion   AIModelVersion @relation(fields: [modelVersionId], references: [id])
+  entityType     String // e.g. Document, Vendor
+  entityId       String
+  inputHash      String
+  outputHash     String
+  confidence     Float
+  latency        Int
+  humanCorrected Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+}
+
+model AIAccuracyMetric {
+  id                 String         @id @default(uuid())
+  modelVersionId     String
+  modelVersion       AIModelVersion @relation(fields: [modelVersionId], references: [id])
+  metricType         String // e.g. EXTRACTION_ACCURACY, VOUCHER_SUGGESTION
+  totalPredictions   Int            @default(0)
+  correctPredictions Int            @default(0)
+  accuracy           Float          @default(0)
+  period             String // e.g. DAILY, WEEKLY
+  createdAt          DateTime       @default(now())
+}
+
+model UserMFA {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secret    String // Encrypted secret
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model APIKey {
+  id          String    @id @default(uuid())
+  companyId   String
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  keyHash     String    @unique
+  permissions String[]
+  expiresAt   DateTime?
+  revoked     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model RetentionPolicy {
+  id           String   @id @default(uuid())
+  documentDays Int      @default(365)
+  auditLogDays Int      @default(730)
+  autoCleanup  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model RecoveryTestLog {
+  id          String   @id @default(uuid())
+  backupId    String?
+  status      String // e.g. SUCCESS, FAILED
+  report      Json?
+  performedBy String?
+  createdAt   DateTime @default(now())
+}
+
+model TallyValidationRun {
+  id             String                 @id @default(uuid())
+  companyId      String?
+  organizationId String?
+  validationType String
+  status         String // STARTED, COMPLETED, FAILED
+  startedAt      DateTime               @default(now())
+  completedAt    DateTime?
+  totalChecks    Int                    @default(0)
+  passedChecks   Int                    @default(0)
+  failedChecks   Int                    @default(0)
+  createdAt      DateTime               @default(now())
+  checks         TallyValidationCheck[]
+}
+
+model TallyValidationCheck {
+  id              String             @id @default(uuid())
+  validationRunId String
+  validationRun   TallyValidationRun @relation(fields: [validationRunId], references: [id], onDelete: Cascade)
+  checkType       String // COMPANY_EXISTS, LEDGER_EXISTS, VOUCHER_EXISTS, BALANCE_MATCH, GST_MATCH, STRUCTURE_MATCH
+  status          String // PASSED, FAILED, WARNING
+  expectedValue   String?
+  actualValue     String?
+  difference      String?
+  message         String?
+  createdAt       DateTime           @default(now())
+}
+
+model AccountingReconciliation {
+  id                 String   @id @default(uuid())
+  voucherId          String?
+  tallyVoucherNumber String?
+  expectedAmount     Decimal?
+  actualAmount       Decimal?
+  difference         Decimal?
+  status             String // MATCHED, MISMATCHED, REQUIRES_REVIEW
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model MigrationSnapshot {
+  id              String   @id @default(uuid())
+  migrationId     String?
+  beforeStructure Json?
+  afterStructure  Json?
+  changedLedgers  Json?
+  changedGroups   Json?
+  createdAt       DateTime @default(now())
+}
+
+model TallyMasterMapping {
+  id               String   @id @default(uuid())
+  companyId        String
+  entityType       String // VENDOR, STUDENT, LEDGER, GROUP
+  tallyName        String
+  tallyGuid        String?
+  internalEntityId String
+  status           String // ACTIVE, BROKEN, NEEDS_REVIEW
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model ConfidencePolicy {
+  id                String   @id @default(uuid())
+  fieldName         String
+  minimumConfidence Float
+  criticality       String // e.g. HIGH, MEDIUM, LOW
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ApprovalPolicy {
+  id               String   @id @default(uuid())
+  companyId        String?
+  transactionType  String
+  minimumAmount    Decimal?
+  requiresApproval Boolean  @default(true)
+  requiredRole     String?
+  createdAt        DateTime @default(now())
+}
+
+model ExtractionFieldConfidence {
+  id               String   @id @default(uuid())
+  documentId       String
+  fieldName        String
+  extractedValue   String?
+  normalizedValue  String?
+  confidenceScore  Float
+  sourceText       String?
+  validationStatus String // APPROVED, REVIEW_REQUIRED
+  reviewRequired   Boolean  @default(false)
+  reviewReason     String?
+  modelVersion     String?
+  promptVersion    String?
+  createdAt        DateTime @default(now())
+}
+
+model ExtractionCorrection {
+  id          String   @id @default(uuid())
+  documentId  String
+  fieldName   String
+  oldValue    String?
+  newValue    String?
+  correctedBy String?
+  createdAt   DateTime @default(now())
+}
+
+model CorrectionPattern {
+  id                    String   @id @default(uuid())
+  fieldName             String
+  wrongValue            String
+  correctValue          String
+  frequency             Int      @default(1)
+  confidenceImprovement Float    @default(0)
+  lastUsed              DateTime @default(now())
+}
+
+model AccountingException {
+  id             String    @id @default(uuid())
+  entityType     String
+  entityId       String
+  exceptionType  String // LOW_EXTRACTION_CONFIDENCE, MISSING_VENDOR, MISSING_LEDGER, AMOUNT_MISMATCH, GST_ERROR, DUPLICATE_PAYMENT, TALLY_SYNC_FAILURE
+  severity       String // HIGH, MEDIUM, LOW
+  description    String?
+  status         String // OPEN, ASSIGNED, IN_PROGRESS, RESOLVED, IGNORED
+  assignedTo     String?
+  resolvedBy     String?
+  resolutionNote String?
+  resolvedAt     DateTime?
+  createdAt      DateTime  @default(now())
+}
+
+model MasterResolutionHistory {
+  id             String   @id @default(uuid())
+  mappingId      String
+  beforeState    String?
+  afterState     String?
+  matchingMethod String? // GSTIN, PAN, MOBILE, EXACT, SIMILARITY
+  confidence     Float?
+  approvedBy     String?
+  createdAt      DateTime @default(now())
+}
+
+model ApprovalBatchItem {
+  id            String        @id @default(uuid())
+  batchId       String
+  batch         ApprovalBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  transactionId String
+  status        String // PENDING, APPROVED, REJECTED
+  reviewComment String?
+  reviewedBy    String?
+  createdAt     DateTime      @default(now())
+}
+
+// ==========================================
+// PHASE 29 MASTER ORGANIZATION & INTELLIGENCE
+// ==========================================
+
+model TallyStructureScan {
+  id                       String    @id @default(uuid())
+  companyId                String?
+  scanStatus               String // STARTED, COMPLETED, FAILED
+  startedAt                DateTime  @default(now())
+  completedAt              DateTime?
+  totalLedgers             Int       @default(0)
+  totalGroups              Int       @default(0)
+  totalVouchers            Int       @default(0)
+  totalCompanies           Int       @default(0)
+  issuesFound              Int       @default(0)
+  recommendationsGenerated Int       @default(0)
+  organizationScore        Int       @default(0)
+  createdAt                DateTime  @default(now())
+}
+
+model TallyLedgerSnapshot {
+  id               String   @id @default(uuid())
+  scanId           String
+  ledgerName       String
+  guid             String?
+  parentGroup      String?
+  openingBalance   Decimal?
+  closingBalance   Decimal?
+  gstRegistration  String?
+  gstNumber        String?
+  panNumber        String?
+  taxType          String?
+  currency         String?
+  billWiseTracking Boolean  @default(false)
+  creditPeriod     String?
+  contactDetails   Json?
+  rawData          Json?
+  rawXML           String?  @db.Text
+  createdAt        DateTime @default(now())
+}
+
+model TallyGroupSnapshot {
+  id           String   @id @default(uuid())
+  scanId       String
+  groupName    String
+  parentGroup  String?
+  nature       String?
+  childLedgers Json?
+  rawData      Json?
+  rawXML       String?  @db.Text
+  createdAt    DateTime @default(now())
+}
+
+model TallyOrganizationRecommendation {
+  id                   String   @id @default(uuid())
+  scanId               String
+  entityType           String // LEDGER, GROUP
+  currentStructure     Json
+  recommendedStructure Json
+  reason               String
+  confidence           Float
+  status               String   @default("PENDING") // PENDING, APPROVED, REJECTED, APPLIED
+  isDuplicateCandidate Boolean  @default(false)
+  mergeCandidates      Json?
+  createdAt            DateTime @default(now())
+}
+
+model TallyMigrationPlan {
+  id             String   @id @default(uuid())
+  companyId      String?
+  createdBy      String?
+  migrationType  String
+  beforeSnapshot Json?
+  plannedChanges Json?
+  status         String   @default("DRAFT") // DRAFT, APPROVED, EXECUTING, COMPLETED, FAILED, ROLLED_BACK
+  createdAt      DateTime @default(now())
+}
+
+model TallyMigrationApproval {
+  id              String    @id @default(uuid())
+  migrationPlanId String
+  approvedBy      String?
+  approvalStatus  String // PENDING, APPROVED, REJECTED
+  approvedAt      DateTime?
+  comments        String?
+  createdAt       DateTime  @default(now())
+}
+
+model TallyMigrationExecution {
+  id              String   @id @default(uuid())
+  migrationPlanId String
+  operation       String // CREATE_GROUP, MOVE_LEDGER, UPDATE_MAPPING, UPDATE_GST_DETAILS, etc.
+  entityType      String
+  beforeValue     Json?
+  afterValue      Json?
+  status          String   @default("PENDING") // SUCCESS, FAILED
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 30 LIVE TALLY CONNECTOR
+// ==========================================
+
+model TallyConnectionConfig {
+  id             String   @id @default(uuid())
+  organizationId String?
+  host           String
+  port           Int
+  companyName    String?
+  connectionName String?
+  isActive       Boolean  @default(true)
+  createdBy      String?
+  createdAt      DateTime @default(now())
+}
+
+model TallyConnection {
+  id              String    @id @default(uuid())
+  organizationId  String?
+  companyId       String?
+  host            String
+  port            Int
+  status          String // CONNECTED, DISCONNECTED, ERROR
+  lastConnectedAt DateTime?
+  lastHealthCheck DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model TallyCompanyDiscovery {
+  id            String   @id @default(uuid())
+  connectionId  String
+  companyName   String
+  companyGuid   String?
+  financialYear String?
+  active        Boolean  @default(true)
+  rawXML        String?  @db.Text
   createdAt     DateTime @default(now())
 }
 
+model TallyEnvironmentReport {
+  id            String   @id @default(uuid())
+  connectionId  String
+  companyName   String?
+  financialYear String?
+  totalLedgers  Int      @default(0)
+  totalGroups   Int      @default(0)
+  totalVouchers Int      @default(0)
+  health        String // GOOD, WARNING, POOR
+  createdAt     DateTime @default(now())
+}
+
+model TallySyncSession {
+  id           String    @id @default(uuid())
+  companyId    String?
+  syncType     String // e.g., INVOICE_BATCH, MASTER_SYNC
+  status       String // STARTED, PROCESSING, SUCCESS, FAILED
+  totalRecords Int       @default(0)
+  successCount Int       @default(0)
+  failedCount  Int       @default(0)
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+}
+
+model TallySyncLog {
+  id            String   @id @default(uuid())
+  syncSessionId String
+  entityType    String // VENDOR, STUDENT, VOUCHER, LEDGER, GROUP
+  entityId      String?
+  requestXML    String?  @db.Text
+  responseXML   String?  @db.Text
+  status        String // SUCCESS, FAILED, TIMEOUT
+  latency       Int?
+  errorMessage  String?  @db.Text
+  createdAt     DateTime @default(now())
+}
+
+model TallyHealthMetric {
+  id           String   @id @default(uuid())
+  companyId    String?
+  latency      Int
+  responseTime Int
+  successRate  Float    @default(0)
+  lastError    String?  @db.Text
+  createdAt    DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 31 ACCOUNTING INTELLIGENCE AGENTS
+// ==========================================
+
+model AccountingAgent {
+  id        String   @id @default(uuid())
+  name      String
+  agentType String   @unique // VENDOR_RESOLUTION, LEDGER_REPAIR, RECONCILIATION, SYNC_RECOVERY
+  status    String // ACTIVE, DISABLED
+  version   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  executions AgentExecution[]
+  rules      AgentRule[]
+}
+
+model AgentExecution {
+  id             String          @id @default(uuid())
+  agentId        String
+  agent          AccountingAgent @relation(fields: [agentId], references: [id])
+  organizationId String?
+  companyId      String?
+  triggerType    String // EXCEPTION, SYNC_FAILURE, VALIDATION_FAILURE
+  inputContext   Json?
+  decision       Json?
+  confidence     Float?
+  status         String // PENDING_APPROVAL, APPROVED, REJECTED, EXECUTED
+  createdAt      DateTime        @default(now())
+
+  feedbacks AgentFeedback[]
+}
+
+model AccountingRecommendation {
+  id                 String   @id @default(uuid())
+  exceptionId        String?
+  recommendationType String // e.g., CREATE_LEDGER, MERGE_VENDOR, CORRECT_TAX
+  beforeState        Json?
+  afterState         Json?
+  reason             String?  @db.Text
+  confidence         Float
+  status             String   @default("PENDING") // PENDING, UNDER_REVIEW, APPROVED, REJECTED, EXECUTING, COMPLETED, FAILED
+  createdAt          DateTime @default(now())
+
+  evidences AgentDecisionEvidence[]
+}
+
+model AgentDecisionEvidence {
+  id               String                   @id @default(uuid())
+  recommendationId String
+  recommendation   AccountingRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+  source           String // e.g., TALLY_MAPPING, VENDOR_HISTORY, RECONCILIATION
+  evidenceData     Json
+  createdAt        DateTime                 @default(now())
+}
+
+model AgentFeedback {
+  id           String         @id @default(uuid())
+  executionId  String
+  execution    AgentExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  approved     Boolean
+  rejected     Boolean
+  humanComment String?        @db.Text
+  createdAt    DateTime       @default(now())
+}
+
+model AgentRule {
+  id        String          @id @default(uuid())
+  agentId   String
+  agent     AccountingAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  ruleName  String
+  condition Json
+  action    Json
+  priority  Int             @default(0)
+  active    Boolean         @default(true)
+  createdAt DateTime        @default(now())
+}
+
+// ==========================================
+// PHASE 32 INTELLIGENT ACCOUNTING EXECUTION
+// ==========================================
+
+model AccountingAction {
+  id                   String   @id @default(uuid())
+  actionType           String   @unique // CREATE_LEDGER, UPDATE_LEDGER, MOVE_LEDGER_GROUP, etc.
+  description          String?
+  requiredApprovalRole String // EXECUTION_APPROVER
+  rollbackPolicy       String // AUTO, MANUAL, NOT_SUPPORTED
+  active               Boolean  @default(true)
+  createdAt            DateTime @default(now())
+}
+
+model ExecutionRequest {
+  id               String    @id @default(uuid())
+  recommendationId String?
+  approvedBy       String?
+  executionType    String // mapped to actionType
+  status           String // PENDING, APPROVED, EXECUTING, SUCCESS, FAILED, ROLLED_BACK
+  createdAt        DateTime  @default(now())
+  completedAt      DateTime?
+
+  steps     ExecutionStep[]
+  rollbacks ExecutionRollback[]
+}
+
+model ExecutionStep {
+  id                 String           @id @default(uuid())
+  executionRequestId String
+  request            ExecutionRequest @relation(fields: [executionRequestId], references: [id], onDelete: Cascade)
+  stepNumber         Int
+  actionType         String
+  entityType         String?
+  entityId           String?
+  requestPayload     Json?
+  tallyRequestXML    String?          @db.Text
+  tallyResponseXML   String?          @db.Text
+  status             String // PENDING, RUNNING, SUCCESS, FAILED
+  startedAt          DateTime?
+  completedAt        DateTime?
+  errorMessage       String?          @db.Text
+  createdAt          DateTime         @default(now())
+}
+
+model ExecutionRollback {
+  id                 String           @id @default(uuid())
+  executionRequestId String
+  request            ExecutionRequest @relation(fields: [executionRequestId], references: [id], onDelete: Cascade)
+  rollbackData       Json
+  status             String // PENDING, APPROVED, EXECUTING, SUCCESS, FAILED
+  createdAt          DateTime         @default(now())
+}
+
+// ==========================================
+// PHASE 33 ENTERPRISE AI INTELLIGENCE
+// ==========================================
+
+model AIModelPerformance {
+  id                    String   @id @default(uuid())
+  agentType             String
+  metricType            String // e.g., APPROVAL_RATE, ACCURACY
+  timePeriod            String // DAILY, WEEKLY, MONTHLY
+  previousValue         Float
+  currentValue          Float
+  trend                 String // IMPROVING, DECLINING, STABLE
+  totalRecommendations  Int      @default(0)
+  approvedCount         Int      @default(0)
+  rejectedCount         Int      @default(0)
+  executionSuccessCount Int      @default(0)
+  rollbackCount         Int      @default(0)
+  accuracyScore         Float    @default(0)
+  createdAt             DateTime @default(now())
+}
+
+model AgentLearningMetric {
+  id               String   @id @default(uuid())
+  agentId          String
+  patternType      String
+  beforeConfidence Float
+  afterConfidence  Float
+  improvement      Float
+  createdAt        DateTime @default(now())
+}
+
+model AccountingOperationMetric {
+  id             String   @id @default(uuid())
+  organizationId String?
+  metricType     String // e.g., AVERAGE_EXTRACTION_TIME, FAILED_EXECUTIONS
+  value          Float
+  period         String
+  createdAt      DateTime @default(now())
+}
+
+model UserDecisionPattern {
+  id           String   @id @default(uuid())
+  userId       String
+  decisionType String
+  approved     Boolean
+  rejected     Boolean
+  reason       String?  @db.Text
+  createdAt    DateTime @default(now())
+}
+
+model IntelligenceOptimization {
+  id               String   @id @default(uuid())
+  type             String // e.g., RULE_WEIGHT_CHANGE
+  observation      String   @db.Text
+  currentState     Json
+  recommendedState Json
+  reason           String   @db.Text
+  confidence       Float
+  status           String   @default("PENDING_APPROVAL") // PENDING_APPROVAL, APPROVED, REJECTED
+  approvedBy       String?
+  createdAt        DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 34 AI REASONING KNOWLEDGE LAYER
+// ==========================================
+
+model AccountingKnowledgeDocument {
+  id             String    @id @default(uuid())
+  organizationId String?
+  title          String
+  category       String
+  content        String    @db.Text
+  sourceType     String
+  version        Int       @default(1)
+  approvalStatus String    @default("APPROVED")
+  approvedBy     String?
+  effectiveFrom  DateTime  @default(now())
+  effectiveTill  DateTime?
+  createdBy      String?
+  createdAt      DateTime  @default(now())
+}
+
+model AccountingKnowledgeRule {
+  id             String    @id @default(uuid())
+  ruleType       String
+  condition      String    @db.Text
+  recommendation String    @db.Text
+  priority       Int
+  confidence     Float
+  active         Boolean   @default(true)
+  ruleVersion    Int       @default(1)
+  usageCount     Int       @default(0)
+  lastUsedAt     DateTime?
+  createdBy      String?
+  approvedBy     String?
+  createdAt      DateTime  @default(now())
+}
+
+model KnowledgeUsageLog {
+  id               String   @id @default(uuid())
+  agentId          String
+  recommendationId String
+  knowledgeId      String
+  reason           String   @db.Text
+  createdAt        DateTime @default(now())
+}
+
+model RecommendationExplanation {
+  id                String   @id @default(uuid())
+  recommendationId  String
+  explanationType   String
+  summary           String   @db.Text
+  evidence          Json
+  reasoningSteps    Json
+  confidenceFactors Json
+  generatedBy       String
+  createdAt         DateTime @default(now())
+}
+
+model KnowledgeFeedback {
+  id               String   @id @default(uuid())
+  recommendationId String
+  knowledgeId      String
+  feedbackType     String
+  comment          String?  @db.Text
+  impactScore      Float
+  reviewedBy       String
+  reviewStatus     String   @default("PENDING")
+  createdAt        DateTime @default(now())
+}
+
+// ==========================================
+// PHASE 35 PRODUCTION RUNTIME & LOCAL AGENT
+// ==========================================
+
+model TallyAgentInstallation {
+  id             String   @id @default(uuid())
+  organizationId String
+  machineName    String
+  machineId      String   @unique
+  agentVersion   String
+  agentToken     String   @unique
+  status         String   @default("ACTIVE") // ACTIVE, OFFLINE, REVOKED
+  installedAt    DateTime @default(now())
+  lastSeen       DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model AgentHeartbeat {
+  id           String   @id @default(uuid())
+  agentId      String
+  status       String // ONLINE, OFFLINE
+  latencyMs    Int
+  tallyStatus  String // CONNECTED, DISCONNECTED
+  tallyCompany String?
+  tallyVersion String?
+  createdAt    DateTime @default(now())
+}
+
+model AgentSyncQueue {
+  id             String   @id @default(uuid())
+  organizationId String
+  agentId        String?
+  actionType     String // e.g., CREATE_LEDGER, CREATE_VOUCHER
+  payload        Json
+  status         String   @default("QUEUED") // QUEUED, SENT, PROCESSING, SUCCESS, FAILED
+  retryCount     Int      @default(0)
+  failureReason  String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SyncOperationEvent {
+  id        String   @id @default(uuid())
+  syncId    String
+  eventType String // e.g., UPLOAD_RECEIVED, QUEUED, AGENT_RECEIVED, COMPLETED
+  metadata  Json?
+  timestamp DateTime @default(now())
+}
+
+model VendorInvoiceRecord {
+  id             String   @id @default(uuid())
+  organizationId String
+  vendorName     String
+  invoiceNumber  String
+  amount         Float
+  status         String // UPLOADED, EXTRACTED, APPROVED, SYNCED, EXCEPTION
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model StudentPaymentRecord {
+  id             String   @id @default(uuid())
+  organizationId String
+  studentId      String
+  amount         Float
+  paymentDate    DateTime
+  status         String // DETECTED, MAPPED, APPROVED, SYNCED, EXCEPTION
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SyncVerification {
+  id             String    @id @default(uuid())
+  syncId         String
+  expectedResult Json
+  actualResult   Json?
+  status         String // PENDING, VERIFIED, MISMATCH
+  verifiedAt     DateTime?
+  createdAt      DateTime  @default(now())
+}
+
+// ==========================================
+// PHASE 36 SAAS IDENTITY & SUBSCRIPTIONS
+// ==========================================
+
+model UserAccount {
+  id             String               @id @default(uuid())
+  organizationId String?
+  name           String
+  email          String               @unique
+  passwordHash   String
+  phone          String?
+  status         String               @default("ACTIVE") // ACTIVE, LOCKED, SUSPENDED
+  failedAttempts Int                  @default(0)
+  lastLogin      DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  memberships    OrganizationMember[]
+}
+
+model OrganizationMember {
+  id             String      @id @default(uuid())
+  userId         String
+  organizationId String
+  role           String // SUPER_ADMIN, ORGANIZATION_OWNER, FINANCE_MANAGER, ACCOUNTANT, ACCOUNTING_REVIEWER, EMPLOYEE, AUDITOR, TALLY_OPERATOR, SUPPORT_AGENT
+  permissions    Json?
+  status         String      @default("ACTIVE")
+  createdAt      DateTime    @default(now())
+  user           UserAccount @relation(fields: [userId], references: [id])
+}
+
+model UserSession {
+  id           String   @id @default(uuid())
+  userId       String
+  device       String?
+  ip           String?
+  refreshToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+}
+
+model UserInvitation {
+  id             String   @id @default(uuid())
+  email          String
+  role           String
+  organizationId String
+  invitedBy      String
+  status         String   @default("PENDING") // PENDING, ACCEPTED, EXPIRED
+  createdAt      DateTime @default(now())
+}
+
+model SubscriptionPlan {
+  id        String   @id @default(uuid())
+  name      String // STARTER, PROFESSIONAL, ENTERPRISE
+  price     Float
+  limits    Json // e.g. { invoices: 500, companies: 1 }
+  features  Json
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model OrganizationSubscription {
+  id             String   @id @default(uuid())
+  organizationId String   @unique
+  planId         String
+  startDate      DateTime
+  expiryDate     DateTime
+  status         String   @default("ACTIVE") // ACTIVE, CANCELLED, PAST_DUE
+  createdAt      DateTime @default(now())
+}
+
+model UsageMetric {
+  id             String   @id @default(uuid())
+  organizationId String
+  metricName     String // INVOICES_PROCESSED, STUDENTS_PROCESSED, TALLY_SYNC_COUNT, AI_RECOMMENDATIONS
+  value          Int      @default(0)
+  period         String // YYYY-MM
+  createdAt      DateTime @default(now())
+}
+
+model FeatureFlag {
+  id             String   @id @default(uuid())
+  featureName    String // AI_AGENTS_ENABLED, TALLY_SYNC_ENABLED, MULTI_COMPANY_ENABLED
+  isEnabled      Boolean  @default(false)
+  organizationId String?
+  createdAt      DateTime @default(now())
+}
+
+model SupportTicket {
+  id             String   @id @default(uuid())
+  organizationId String
+  createdBy      String
+  priority       String // LOW, MEDIUM, HIGH, CRITICAL
+  category       String // TALLY_CONNECTION, SYNC_FAILURE, INVOICE_ISSUE, AI_RECOMMENDATION, BILLING
+  status         String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  assignedTo     String?
+  title          String
+  description    String   @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SystemEventLog {
+  id             String   @id @default(uuid())
+  organizationId String?
+  eventType      String // API_ERROR, AGENT_CRASH, SYNC_FAILURE, SECURITY_EVENT, BILLING_EVENT
+  severity       String // INFO, WARNING, ERROR, CRITICAL
+  message        String   @db.Text
+  metadata       Json?
+  correlationId  String?
+  createdAt      DateTime @default(now())
+}
+
+model SystemAlert {
+  id             String    @id @default(uuid())
+  organizationId String?
+  alertType      String // TALLY_OFFLINE, AGENT_OFFLINE, SYNC_FAILED, HIGH_QUEUE_SIZE
+  message        String
+  status         String    @default("ACTIVE") // ACTIVE, RESOLVED
+  createdAt      DateTime  @default(now())
+  resolvedAt     DateTime?
+}
+
+// ==========================================
+// PHASE 37 ENTERPRISE RELIABILITY & OPERATIONS
+// ==========================================
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model PaymentTransaction {
+  id             String   @id @default(uuid())
+  organizationId String
+  gateway        String // STRIPE, RAZORPAY
+  transactionId  String   @unique
+  amount         Float
+  currency       String
+  status         String // CREATED, PENDING, SUCCESS, FAILED, REFUNDED
+  metadata       Json?
+  createdAt      DateTime @default(now())
+}
+
+model SyncDeadLetter {
+  id            String   @id @default(uuid())
+  syncId        String
+  failureReason String   @db.Text
+  retryCount    Int      @default(0)
+  aiAnalysis    Json? // Added AI analysis field
+  resolved      Boolean  @default(false)
+  resolvedBy    String?
+  createdAt     DateTime @default(now())
+}
+
+model AgentDeviceApproval {
+  id                String    @id @default(uuid())
+  agentId           String
+  deviceFingerprint String    @unique
+  deviceName        String?
+  ipAddress         String?
+  status            String // PENDING, APPROVED, REJECTED, REVOKED
+  approvedBy        String?
+  approvedAt        DateTime?
+  createdAt         DateTime  @default(now())
+}
+
+model BackupRecord {
+  id         String    @id @default(uuid())
+  backupType String // DAILY, WEEKLY, MANUAL
+  location   String
+  size       BigInt
+  status     String // CREATED, VERIFIED, FAILED
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+}

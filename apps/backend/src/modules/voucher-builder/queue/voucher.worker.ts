@@ -15,16 +15,16 @@ export class VoucherWorker extends WorkerHost {
 
   async process(job: Job<any, any, string>): Promise<any> {
     this.logger.log(
-      `Processing voucher builder job ${job.id} for allocation ${job.data.feeAllocationCandidateId}`,
+      `Processing voucher builder job ${job.id} for candidate ${job.data.candidateId || job.data.feeAllocationCandidateId}`,
       'VoucherWorker',
     );
 
     try {
-      await this.useCase.execute(job.data.feeAllocationCandidateId);
+      await this.useCase.execute(job.data);
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
-        `Voucher building failed for allocation ${job.data.feeAllocationCandidateId}`,
+        `Voucher building failed for candidate ${job.data.candidateId || job.data.feeAllocationCandidateId}`,
         (error as Error).stack,
         'VoucherWorker',
       );

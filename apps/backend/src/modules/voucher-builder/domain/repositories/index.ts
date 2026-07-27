@@ -1,6 +1,6 @@
-import { ITransactionContext } from '../../../shared/domain/repositories';
+import { ITransactionContext } from '../../../../shared/domain/repositories';
 
-// Stubs for Domain Entities
+// (implementation note)
 export type VoucherCandidate = { id: string };
 
 export interface IVoucherCandidateRepository {

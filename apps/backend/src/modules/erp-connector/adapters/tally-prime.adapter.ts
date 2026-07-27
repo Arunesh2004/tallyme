@@ -29,7 +29,7 @@ export class TallyPrimeAdapter extends BaseERPAdapter {
     return this.transport.checkHealth();
   }
 
-  buildPayload(voucherData: TallyVoucherDTO): string {
+  async buildPayload(voucherData: TallyVoucherDTO): Promise<string> {
     return this.xmlBuilder.buildVoucherXml(voucherData);
   }
 
@@ -56,7 +56,7 @@ export class TallyPrimeAdapter extends BaseERPAdapter {
   ): Promise<'EXISTS' | 'NOT_FOUND' | 'UNKNOWN'> {
     try {
       // 1. Build the Export XML query
-      const payload = this.xmlBuilder.buildExportXml(voucherNumber);
+      const payload = await this.xmlBuilder.buildExportXml(voucherNumber, context.companyId);
 
       // 2. Send via transport
       const transportResult = await this.transport.send(payload, context);
@@ -90,7 +90,7 @@ export class TallyPrimeAdapter extends BaseERPAdapter {
       }
 
       return 'UNKNOWN';
-    } catch (error) {
+    } catch (error: any) {
       // Transport timeouts, socket hangs, etc. map to UNKNOWN
       return 'UNKNOWN';
     }

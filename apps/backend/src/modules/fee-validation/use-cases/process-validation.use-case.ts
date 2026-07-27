@@ -9,6 +9,7 @@ import { FeeValidationEngine } from '../services/validation.engine';
 import { FeeAllocationEngine } from '../services/allocation.engine';
 import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
+import { InvalidValidationCandidateException } from '../exceptions/validation.exceptions';
 
 @Injectable()
 export class ProcessValidationUseCase {
@@ -28,44 +29,57 @@ export class ProcessValidationUseCase {
       'ProcessValidationUseCase',
     );
 
-    // MOCK: Fetch payment candidate and student fee profile
-    // In real implementation, these would come from matching repo & fee profile repo.
-    const mockPaymentData = { amount: 8000, transactionId: 'TX123' };
-    const mockStudentProfile = {
-      outstandings: [
-        {
-          id: 'due_1',
-          amount: 8000,
-          isPaid: false,
-          feeHeadId: 'h_1',
-          feeHead: { name: 'Tuition', priority: 10 },
-          dueDate: new Date(),
-        },
-      ],
+    const candidate = await this.repository.findStudentPaymentCandidateById(
+      studentPaymentCandidateId,
+    );
+
+    if (!candidate) {
+      throw new InvalidValidationCandidateException(
+        `Student payment candidate ${studentPaymentCandidateId} not found`,
+      );
+    }
+
+    if (!candidate.studentId) {
+      throw new InvalidValidationCandidateException(
+        `Student payment candidate ${studentPaymentCandidateId} is not matched to a student`,
+      );
+    }
+
+    const outstandings = await this.repository.getStudentOutstandings(
+      candidate.studentId,
+    );
+
+    if (!candidate.paymentCandidateId) throw new Error('Missing transaction ID');
+    const paymentData = {
+      amount: Number(candidate.amount) || 0,
+      transactionId: candidate.paymentCandidateId,
+    };
+    const studentProfile = {
+      outstandings,
     };
 
     const validationResult = await this.validationEngine.validate(
-      mockPaymentData,
-      mockStudentProfile,
+      paymentData,
+      studentProfile,
     );
 
     let allocationResult: any = {
       allocations: [],
       feeHeadsAffected: [],
       allocatedAmount: 0,
-      remainingAmount: mockPaymentData.amount,
+      remainingAmount: paymentData.amount,
     };
     if (!validationResult.requiresManualReview) {
       allocationResult = this.allocationEngine.allocate(
-        mockPaymentData.amount,
-        mockStudentProfile.outstandings,
+        paymentData.amount,
+        studentProfile.outstandings,
       );
     }
 
     const candidateData = {
       studentPaymentCandidateId,
-      studentId: 'MOCK_STUDENT_ID',
-      paymentAmount: mockPaymentData.amount,
+      studentId: candidate.studentId,
+      paymentAmount: paymentData.amount,
       allocatedAmount: allocationResult.allocatedAmount,
       remainingAmount: allocationResult.remainingAmount,
       feeHeads: allocationResult.feeHeadsAffected,
@@ -74,7 +88,7 @@ export class ProcessValidationUseCase {
       validationWarnings: validationResult.warnings,
       requiresManualReview: validationResult.requiresManualReview,
       duplicateCandidate: validationResult.duplicateCandidate,
-      confidence: 100, // mock
+      confidence: 100,
       rawValidationData: validationResult.rawValidationData as any,
     };
 

@@ -42,7 +42,7 @@ export class MailListenerService implements OnModuleInit {
         try {
           await this.processingService.processRawEmail(email);
           await this.gmailClient.markAsRead(email.messageId);
-        } catch (error) {
+        } catch (error: any) {
           // Continue to next email if one fails
           this.logger.error(
             `Failed to process email from batch`,
@@ -52,7 +52,7 @@ export class MailListenerService implements OnModuleInit {
         }
       }
       return emails.length;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         'Failed to poll inbox',
         (error as Error).stack,

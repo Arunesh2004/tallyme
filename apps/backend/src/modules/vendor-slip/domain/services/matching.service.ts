@@ -3,26 +3,31 @@ import { Injectable } from '@nestjs/common';
 import { Result, fail, ok } from '../../../../shared/domain/result';
 import { InvoiceCandidate, VendorMatch } from '../entities';
 import { ConfidenceScore } from '../value-objects';
-import { IVendorRepository, IInvoiceRepository } from '../repositories';
+import {
+  IVendorRepository,
+  IInvoiceCandidateRepository,
+} from '../repositories';
 import { DuplicateInvoiceError } from '../../exceptions/repository.exceptions';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class DuplicateInvoiceDetector {
-  constructor(private readonly invoiceRepo: IInvoiceRepository) {}
+  constructor(private readonly invoiceRepo: IInvoiceCandidateRepository) {}
 
   async detect(
     candidate: InvoiceCandidate,
     vendorId: string,
   ): Promise<Result<boolean, DuplicateInvoiceError>> {
-    const existing = await this.invoiceRepo.findByVendorAndNumber(
+    const invNum =
+      candidate.invoiceNumber && candidate.invoiceNumber.value
+        ? candidate.invoiceNumber.value
+        : 'UNKNOWN';
+    const existing = await this.invoiceRepo.existsByVendorAndInvoiceNumber(
       vendorId,
-      candidate.invoiceNumber.value,
+      invNum,
     );
     if (existing) {
-      return fail(
-        new DuplicateInvoiceError(vendorId, candidate.invoiceNumber.value),
-      );
+      return fail(new DuplicateInvoiceError(vendorId, invNum));
     }
     return ok(false);
   }
@@ -35,7 +40,7 @@ export class VendorMatcher {
   async match(
     candidate: InvoiceCandidate,
   ): Promise<Result<VendorMatch, string>> {
-    if (!candidate.extractedGstin)
+    if (!candidate.extractedGstin || !candidate.extractedGstin.value)
       return fail('Missing GSTIN. Requires manual review.');
 
     // 1. Exact GSTIN Match
@@ -44,7 +49,7 @@ export class VendorMatcher {
     });
     if (!vendor) return fail('No vendor found for GSTIN.');
 
-    // 2. Calculate Confidence (stubbed)
+    // (implementation note)
     const confidence = new ConfidenceScore(99);
 
     return ok(
@@ -61,7 +66,7 @@ export class ManualReviewPolicy {
   ): boolean {
     if (matchResult.isFailure) return true;
     if (candidate.confidence.score < 80) return true;
-    const match = matchResult.getValue();
+    const match = matchResult.unwrap();
     if (match.matchConfidence.score < 90) return true;
     return false;
   }

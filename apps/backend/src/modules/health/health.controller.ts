@@ -1,15 +1,15 @@
 // src/modules/health/health.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { PrismaService } from '../../infrastructure/prisma';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { PrismaService } from '../../infrastructure/database/prisma.service';
 import { QueueHealth } from '../../infrastructure/queue/bullmq';
-import { ERPConnector } from '../../infrastructure/erp/contracts';
+import { TallyTransportService } from '../erp-connector/services/transport.service';
 
 @Controller('health')
 export class HealthController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly queueHealth: QueueHealth,
-    private readonly erpConnector: ERPConnector,
+    private readonly erpConnector: TallyTransportService,
   ) {}
 
   @Get('live')
@@ -21,7 +21,7 @@ export class HealthController {
   async readinessCheck() {
     let dbStatus = 'UP';
     try {
-      await this.prisma.client.$queryRaw`SELECT 1`;
+      await this.prisma.$queryRaw`SELECT 1`;
     } catch (e) {
       dbStatus = 'DOWN';
     }
@@ -53,7 +53,7 @@ export class HealthController {
   @Get('database')
   async checkDatabase() {
     try {
-      await this.prisma.client.$queryRaw`SELECT 1`;
+      await this.prisma.$queryRaw`SELECT 1`;
       return { status: 'UP' };
     } catch (e) {
       return { status: 'DOWN', error: 'Database unreachable' };
@@ -67,6 +67,7 @@ export class HealthController {
 
   @Get('erp')
   async checkERP() {
-    return await this.erpConnector.pingERP();
+    const isHealthy = await this.erpConnector.checkHealth();
+    return { status: isHealthy ? 'UP' : 'DOWN' };
   }
 }

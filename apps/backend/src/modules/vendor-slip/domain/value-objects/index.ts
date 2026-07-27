@@ -5,39 +5,79 @@ import { IDecimal } from '../../../../shared/types';
 import { DecimalWrapper } from '../../../../infrastructure/prisma';
 export { GSTIN } from '../../../../shared/domain/value-objects';
 
-export class InvoiceNumber extends ValueObject<{ value: string }> {
-  constructor(value: string) {
-    if (!value || value.trim().length === 0)
-      throw new ValidationException('InvoiceNumber cannot be empty');
-    super({ value: value.trim() });
+export class ExtractedField<T> extends ValueObject<{
+  value: T | null;
+  confidence: number;
+  sourceText: string;
+}> {
+  constructor(value: T | null, confidence: number, sourceText: string) {
+    if (confidence < 0 || confidence > 100) {
+      throw new ValidationException(
+        'Confidence score must be between 0 and 100',
+      );
+    }
+    super({ value, confidence, sourceText });
   }
-  get value(): string {
+
+  get value(): T | null {
     return this.props.value;
   }
+
+  get confidence(): number {
+    return this.props.confidence;
+  }
+
+  get sourceText(): string {
+    return this.props.sourceText;
+  }
 }
 
-export class InvoiceDate extends ValueObject<{ date: Date }> {
-  constructor(date: Date) {
-    if (date > new Date())
+export class ExtractedGSTIN extends ExtractedField<string> {
+  constructor(value: string | null, confidence: number, sourceText: string) {
+    super(value ? value.trim() : null, confidence, sourceText);
+  }
+}
+
+export class ExtractedVendorName extends ExtractedField<string> {
+  constructor(value: string | null, confidence: number, sourceText: string) {
+    super(value ? value.trim() : null, confidence, sourceText);
+  }
+}
+
+export class InvoiceNumber extends ExtractedField<string> {
+  constructor(value: string | null, confidence: number, sourceText: string) {
+    super(value ? value.trim() : null, confidence, sourceText);
+  }
+}
+
+export class InvoiceDate extends ExtractedField<Date> {
+  constructor(date: Date | null, confidence: number, sourceText: string) {
+    if (date && date > new Date('2030-01-01')) {
       throw new ValidationException('Invoice date cannot be in the future');
-    super({ date });
-  }
-  get date(): Date {
-    return this.props.date;
+    }
+    super(date, confidence, sourceText);
   }
 }
 
-export class InvoiceAmount extends ValueObject<{ amount: IDecimal }> {
-  constructor(amount: IDecimal | number) {
-    const wrapped = new DecimalWrapper(amount);
-    if (wrapped.toNumber() < 0)
-      throw new ValidationException('Invoice amount cannot be negative');
-    super({ amount: wrapped });
-  }
-  get amount(): IDecimal {
-    return this.props.amount;
+export class InvoiceAmount extends ExtractedField<IDecimal> {
+  constructor(
+    amount: IDecimal | number | null,
+    confidence: number,
+    sourceText: string,
+  ) {
+    let wrapped: IDecimal | null = null;
+    if (amount !== null && amount !== undefined) {
+      wrapped = new DecimalWrapper(amount);
+      if (wrapped.toNumber() < 0) {
+        throw new ValidationException('Invoice amount cannot be negative');
+      }
+    }
+    super(wrapped, confidence, sourceText);
   }
 }
+
+export class ExtractedSubtotal extends InvoiceAmount {}
+export class ExtractedTax extends InvoiceAmount {}
 
 export class ConfidenceScore extends ValueObject<{ score: number }> {
   constructor(score: number) {

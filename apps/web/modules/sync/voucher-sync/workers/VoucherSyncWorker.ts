@@ -24,7 +24,7 @@ export class VoucherSyncWorker {
       { 
         connection: redisConnection,
         settings: {
-          backoffStrategy: (attemptsMade: number, type: string, err: Error, job: Job) => {
+          backoffStrategy: (attemptsMade: number, type: string | undefined, err: Error | undefined, job: any) => {
             // Exponential backoff: 2s, 4s, 8s etc.
             return Math.pow(2, attemptsMade) * 1000;
           }
@@ -37,7 +37,7 @@ export class VoucherSyncWorker {
     });
 
     this.worker.on('failed', (job, err) => {
-      logger.error(`Voucher Sync Job ${job?.id} failed (attempt ${job?.attemptsMade})`, { error: err.message });
+      logger.error({ error: err.message }, `Voucher Sync Job ${job?.id} failed (attempt ${job?.attemptsMade})`);
     });
   }
 

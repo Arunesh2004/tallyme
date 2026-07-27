@@ -10,20 +10,26 @@ export class PrismaStudentMapper {
   static toDomain(prismaStudent: PrismaStudentModel): Student {
     return Student.reconstitute({
       id: prismaStudent.id,
-      admissionNumber: prismaStudent.admissionNumber,
-      firstName: prismaStudent.firstName,
-      lastName: prismaStudent.lastName,
+      admissionNumber:
+        prismaStudent.admissionNumber || prismaStudent.enrollmentNo,
+      firstName: prismaStudent.firstName || '',
+      lastName: prismaStudent.lastName || '',
       email: prismaStudent.email,
       phone: prismaStudent.phone,
-      dateOfBirth: prismaStudent.dateOfBirth,
-      gender: prismaStudent.gender as Gender,
-      status: prismaStudent.status as StudentStatus,
-      admissionStatus: prismaStudent.admissionStatus as AdmissionStatus,
-      enrollmentDate: prismaStudent.enrollmentDate,
+      dateOfBirth: prismaStudent.dateOfBirth || new Date(0),
+      gender: (prismaStudent.gender as Gender) || Gender.OTHER,
+      status: (prismaStudent.status as StudentStatus) || StudentStatus.ACTIVE,
+      admissionStatus:
+        (prismaStudent.admissionStatus as AdmissionStatus) ||
+        AdmissionStatus.APPLIED,
+      enrollmentDate: prismaStudent.enrollmentDate || new Date(0),
       guardianId: prismaStudent.guardianId,
       createdAt: prismaStudent.createdAt,
       updatedAt: prismaStudent.updatedAt,
       archivedAt: prismaStudent.archivedAt,
+      class: prismaStudent.class,
+      section: prismaStudent.section,
+      academicYear: prismaStudent.academicYear,
     });
   }
 
@@ -31,6 +37,7 @@ export class PrismaStudentMapper {
     const props = student.getProps();
     return {
       id: props.id,
+      enrollmentNo: props.admissionNumber, // Fallback mapping for older schema
       admissionNumber: props.admissionNumber,
       firstName: props.firstName,
       lastName: props.lastName,
@@ -45,6 +52,11 @@ export class PrismaStudentMapper {
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
       archivedAt: props.archivedAt,
+      class: props.class || null,
+      section: props.section || null,
+      academicYear: props.academicYear || null,
+      organizationId: null,
+      companyId: null,
     };
   }
 }

@@ -93,7 +93,7 @@ export class FakeVendorAutomationRepository extends PrismaVendorAutomationReposi
     return audit as any;
   }
 
-  async findVendorByGstinOrPan(gstin: string, pan: string) {
+  async findVendorByGstinOrPan(gstin: string, pan: string): Promise<any> {
     return this.vendors.find((v) => v.gstin === gstin || v.pan === pan) || null;
   }
 

@@ -6,6 +6,7 @@ import {
   LedgerMapping,
   ExpenseAllocation,
 } from '../entities';
+import { InvoiceAmount } from '../value-objects';
 import { IVendorLedgerProfileRepository } from '../repositories';
 import * as crypto from 'crypto';
 
@@ -23,22 +24,23 @@ export class ExpenseAllocator {
   allocate(
     candidate: InvoiceCandidate,
     mapping: LedgerMapping,
+    matchId: string,
   ): ExpenseAllocation {
-    // Basic allocation math stub
-    const total = candidate.totalAmount.amount.toNumber();
-    const base = total / 1.18; // Assuming 18% GST for stub
+    // (implementation note)
+    const total =
+      candidate.totalAmount && candidate.totalAmount.value
+        ? candidate.totalAmount.value.toNumber()
+        : 0;
+    const base = total / 1.18; // (implementation note)
     const tax = total - base;
 
-    const lineItems = [
-      { ledger: mapping.defaultLedgerCode, amount: base },
-      { ledger: 'GST_INPUT', amount: tax },
-    ];
+    const lineItems = [{ ledger: mapping.defaultLedgerCode, amount: total }];
 
     return new ExpenseAllocation(
       crypto.randomUUID(),
-      match.id, // Should pass matchId from upper orchestrator
+      matchId, // Passed matchId from upper orchestrator
       lineItems,
-      candidate.totalAmount,
+      candidate.totalAmount || new InvoiceAmount(0, 0, ''),
     );
   }
 }

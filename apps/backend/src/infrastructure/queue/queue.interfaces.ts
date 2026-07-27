@@ -7,4 +7,11 @@ export interface IQueueService {
     data: T,
     opts?: JobsOptions,
   ): Promise<void>;
+
+  getJobCounts(queueName: string): Promise<{
+    waiting: number;
+    active: number;
+    failed: number;
+    delayed: number;
+  }>;
 }

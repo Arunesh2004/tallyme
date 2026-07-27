@@ -1,6 +1,6 @@
 // dead-letter/index.ts
 import { Injectable } from '@nestjs/common';
-import { ILogger } from '../../../shared/observability';
+import { ILogger } from '../../shared/observability';
 
 export interface DeadLetterRecord {
   jobId: string;

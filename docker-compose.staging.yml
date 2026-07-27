@@ -1,0 +1,124 @@
+version: '3.8'
+
+# =============================================================================
+# TallyMe Enterprise — Staging Docker Compose
+# =============================================================================
+# Mirrors production but uses staging secrets and data.
+# Usage:
+#   docker compose -f docker-compose.staging.yml --env-file .env.staging up -d
+# =============================================================================
+
+services:
+  backend-api:
+    image: tallyme/backend:${IMAGE_TAG:-staging}
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRY: ${JWT_EXPIRY:-1h}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      GMAIL_CLIENT_ID: ${GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${GMAIL_CLIENT_SECRET}
+      GMAIL_REFRESH_TOKEN: ${GMAIL_REFRESH_TOKEN}
+      GMAIL_ACCOUNT: ${GMAIL_ACCOUNT}
+      AI_PROVIDER: ${AI_PROVIDER:-openai}
+      AI_API_KEY: ${AI_API_KEY}
+      AI_MODEL: ${AI_MODEL:-gpt-4}
+      ERP_HOST: ${ERP_HOST}
+      ERP_PORT: ${ERP_PORT:-9000}
+      ERP_COMPANY_NAME: ${ERP_COMPANY_NAME}
+      LOG_LEVEL: debug
+      SENTRY_DSN: ${SENTRY_DSN}
+      WORKER_MODE: "false"
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - tallyme_staging_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/v1/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend-worker:
+    image: tallyme/backend:${IMAGE_TAG:-staging}
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      WORKER_MODE: "true"
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      GMAIL_CLIENT_ID: ${GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${GMAIL_CLIENT_SECRET}
+      GMAIL_REFRESH_TOKEN: ${GMAIL_REFRESH_TOKEN}
+      GMAIL_ACCOUNT: ${GMAIL_ACCOUNT}
+      AI_PROVIDER: ${AI_PROVIDER:-openai}
+      AI_API_KEY: ${AI_API_KEY}
+      ERP_HOST: ${ERP_HOST}
+      ERP_PORT: ${ERP_PORT:-9000}
+      ERP_COMPANY_NAME: ${ERP_COMPANY_NAME}
+      LOG_LEVEL: debug
+      SENTRY_DSN: ${SENTRY_DSN}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - tallyme_staging_net
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tallyme_staging}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-tallyme_staging}
+    volumes:
+      - pgdata_staging:/var/lib/postgresql/data
+    networks:
+      - tallyme_staging_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tallyme_staging}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
+    volumes:
+      - redisdata_staging:/data
+    networks:
+      - tallyme_staging_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata_staging:
+  redisdata_staging:
+
+networks:
+  tallyme_staging_net:
+    driver: bridge

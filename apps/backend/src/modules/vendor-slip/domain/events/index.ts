@@ -3,7 +3,7 @@ import {
   DomainEvent,
   IntegrationEvent,
   EventMetadata,
-} from '../../../shared/events';
+} from '../../../../shared/events/contracts';
 
 export class InvoiceUploaded implements DomainEvent {
   readonly _isDomainEvent = true;

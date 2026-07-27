@@ -25,6 +25,9 @@ export interface StudentProps {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+  class?: string | null;
+  section?: string | null;
+  academicYear?: string | null;
 }
 
 export class Student {
@@ -58,6 +61,9 @@ export class Student {
       updatedAt: props.updatedAt || new Date(),
       archivedAt: props.archivedAt || null,
       guardianId: props.guardianId || null,
+      class: props.class || null,
+      section: props.section || null,
+      academicYear: props.academicYear || null,
     });
     return student;
   }
@@ -92,6 +98,15 @@ export class Student {
   }
   get isArchived() {
     return this.props.archivedAt !== null;
+  }
+  get class() {
+    return this.props.class;
+  }
+  get section() {
+    return this.props.section;
+  }
+  get academicYear() {
+    return this.props.academicYear;
   }
 
   public getProps(): StudentProps {

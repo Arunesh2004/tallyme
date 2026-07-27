@@ -19,31 +19,66 @@ export class ProcessVoucherBuilderUseCase {
     private readonly logger: LoggerService,
   ) {}
 
-  async execute(feeAllocationCandidateId: string): Promise<void> {
+  async execute(payload: any): Promise<void> {
     const startTime = Date.now();
+    const candidateId = payload.candidateId || payload.feeAllocationCandidateId;
     this.logger.debug(
-      `Building voucher for allocation ${feeAllocationCandidateId}`,
+      `Building voucher for candidate ${candidateId}`,
       'ProcessVoucherBuilderUseCase',
     );
 
-    // MOCK: Fetch allocation, payment candidate, and student
-    // In reality, inject repositories from fee-validation, payment-parser, student domains.
-    const mockAllocationData = {
-      allocatedAmount: 8000,
-      allocationBreakdown: [{ feeHeadName: 'Tuition', allocated: 8000 }],
-    };
-    const mockPaymentData = { gateway: 'razorpay', transactionId: 'TX123' };
-    const mockStudent = { id: 'stu_1', admissionNumber: 'ADM-2026-001' };
+    const companyId = payload.companyId;
+    const companyExists = await this.repository.checkCompanyExists(companyId);
+    if (!companyExists) {
+      throw new Error(`Company ${companyId} not found`);
+    }
+
+    // If it's the old payload from Student Fee (which only sent feeAllocationCandidateId and companyId),
+    // we need to adapt it. If it's the new Generic Payload, we use it directly.
+    let buildPayload = payload;
+
+    if (!payload.voucherType && payload.feeAllocationCandidateId) {
+      const candidate = await this.repository.findFeeAllocationCandidateById(
+        payload.feeAllocationCandidateId,
+      );
+      if (!candidate || !candidate.studentPaymentCandidate) {
+        throw new Error(
+          `Fee allocation candidate ${payload.feeAllocationCandidateId} not found or missing payment candidate`,
+        );
+      }
+      buildPayload = {
+        voucherType: 'RECEIPT',
+        candidateId: payload.feeAllocationCandidateId,
+        companyId,
+        allocationData: {
+          allocatedAmount:
+            Number(candidate.studentPaymentCandidate.amount) || 0,
+          allocationBreakdown: [
+            {
+              feeHeadName: 'Fee Collection',
+              allocated: Number(candidate.studentPaymentCandidate.amount) || 0,
+            },
+          ],
+        },
+        paymentData: {
+          gateway:
+            candidate.studentPaymentCandidate.paymentGateway || '',
+          transactionId:
+            candidate.studentPaymentCandidate.paymentCandidateId || '',
+          amount: Number(candidate.studentPaymentCandidate.amount) || 0,
+        },
+        student: {
+          id: candidate.studentPaymentCandidate.studentId,
+          admissionNumber: candidate.studentPaymentCandidate.admissionNumber,
+        },
+      };
+    }
 
     let buildResult;
 
     try {
-      buildResult = await this.builderEngine.buildReceiptVoucher(
-        mockAllocationData,
-        mockPaymentData,
-        mockStudent,
-      );
-    } catch (error) {
+      buildResult = await this.builderEngine.build(buildPayload);
+    } catch (error: any) {
       this.logger.error(
         `Failed to build voucher`,
         (error as Error).stack,
@@ -52,11 +87,22 @@ export class ProcessVoucherBuilderUseCase {
       throw error;
     }
 
+    // Resolve voucherDate: use invoice date from payload, fall back to today
+    const voucherDate = buildPayload.invoice?.date
+      ? new Date(buildPayload.invoice.date)
+      : new Date();
+
     const candidateData = {
       voucherType: buildResult.voucherType,
       voucherNumber: buildResult.voucherNumber,
-      studentId: mockStudent.id,
-      feeAllocationCandidateId,
+      date: voucherDate,
+      studentId: buildPayload.student?.id || null,
+      feeAllocationCandidateId:
+        buildPayload.voucherType === 'RECEIPT'
+          ? buildPayload.candidateId
+          : null,
+      batchSyncItemId: buildPayload.batchSyncItemId,
+      companyId: buildPayload.companyId,
       totalDebit: buildResult.totalDebit,
       totalCredit: buildResult.totalCredit,
       validationStatus: buildResult.status,
@@ -64,6 +110,7 @@ export class ProcessVoucherBuilderUseCase {
       manualReviewRequired: buildResult.status === VOUCHER_STATUS.MANUAL_REVIEW,
       lines: buildResult.lines.map((l) => ({
         voucherLedgerId: l.ledgerId,
+        ledgerName: l.ledgerName,
         type: l.type,
         amount: l.amount,
         description: l.description,
