@@ -1,0 +1,5 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 11: VERIFY REDIS FAILURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BullMQ: WARNING! Your redis options maxRetriesPerRequest must be null and will be overridden by BullMQ.
+Worker failed to connect in time.

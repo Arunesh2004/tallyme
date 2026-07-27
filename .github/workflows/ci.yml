@@ -1,74 +1,257 @@
-name: Continuous Integration
+name: CI — Build, Test & Validate
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main, develop]
   pull_request:
-    branches: [ "main" ]
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/backend
 
 jobs:
+  # ===========================================================================
+  # 1. Install & Lint
+  # ===========================================================================
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: apps/backend
+        run: npm ci
+
+      - name: Lint
+        working-directory: apps/backend
+        run: npm run lint
+
+      - name: TypeScript Compile Check
+        working-directory: apps/backend
+        run: npx tsc --noEmit
+
+  # ===========================================================================
+  # 2. Unit Tests
+  # ===========================================================================
+  test-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: apps/backend
+        run: npm ci
+
+      - name: Run Unit Tests
+        working-directory: apps/backend
+        run: npm run test:cov
+        env:
+          NODE_ENV: test
+
+      - name: Upload Coverage Report
+        uses: codecov/codecov-action@v4
+        with:
+          directory: apps/backend/coverage
+
+  # ===========================================================================
+  # 3. E2E Tests (with services)
+  # ===========================================================================
+  test-e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: tallyme_test
+          POSTGRES_PASSWORD: test_pass
+          POSTGRES_DB: tallyme_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: apps/backend
+        run: npm ci
+
+      - name: Generate Prisma Client
+        working-directory: apps/backend
+        run: npx prisma generate
+
+      - name: Run Prisma Migrations
+        working-directory: apps/backend
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://tallyme_test:test_pass@localhost:5432/tallyme_test
+
+      - name: Run E2E Tests
+        working-directory: apps/backend
+        run: npm run test:e2e
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://tallyme_test:test_pass@localhost:5432/tallyme_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          JWT_SECRET: test_jwt_secret_minimum_32_chars_long
+          ENCRYPTION_KEY: test_encryption_key_32_bytes_long_
+          GMAIL_CLIENT_ID: test
+          GMAIL_CLIENT_SECRET: test
+          GMAIL_REFRESH_TOKEN: test
+          GMAIL_ACCOUNT: test@test.com
+          AI_API_KEY: test
+          ERP_HOST: localhost
+          ERP_PORT: 9000
+          ERP_COMPANY_NAME: Test Company
+
+  # ===========================================================================
+  # 4. Build Application
+  # ===========================================================================
   build:
+    name: Build
     runs-on: ubuntu-latest
+    needs: [test-unit, test-e2e]
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
-        cache-dependency-path: '**/package-lock.json'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
 
-    - name: Install Dependencies
-      run: npm ci
+      - name: Install Dependencies
+        working-directory: apps/backend
+        run: npm ci
 
-    - name: Lint
-      run: npm run lint
-      working-directory: ./apps/backend
+      - name: Build
+        working-directory: apps/backend
+        run: npm run build
 
-    - name: Type Check
-      run: npm run typecheck
-      working-directory: ./apps/web
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: apps/backend/dist
+          retention-days: 3
 
-    - name: Test Backend
-      run: npm run test:cov
-      working-directory: ./apps/backend
-
-    - name: Generate OpenAPI Specification
-      run: |
-        # Assume there's a script that generates openapi.json
-        # npm run generate:openapi
-        echo '{"openapi": "3.0.0"}' > apps/backend/openapi.json
-      
-    - name: Upload OpenAPI Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: openapi-spec
-        path: apps/backend/openapi.json
-
+  # ===========================================================================
+  # 5. Security Scan
+  # ===========================================================================
   security:
+    name: Security Scan
     runs-on: ubuntu-latest
+    needs: lint
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Run TruffleHog Secret Scanner
-      uses: trufflesecurity/trufflehog@main
-      with:
-        path: ./
-        base: ${{ github.event.repository.default_branch }}
-        head: HEAD
+      - name: TruffleHog Secret Scanner
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
 
-    - name: Run Trivy Vulnerability Scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        ignore-unfixed: true
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-        severity: 'CRITICAL,HIGH'
+      - name: Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          ignore-unfixed: true
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+
+  # ===========================================================================
+  # 6. Docker Build (on main only)
+  # ===========================================================================
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: apps/backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

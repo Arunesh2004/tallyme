@@ -1,0 +1,14 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as dotenv from "dotenv";
+dotenv.config({ path: '../../.env' });
+async function run() {
+  try {
+    const ai = new GoogleGenerativeAI(process.env.AI_API_KEY || "");
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent("Reply with OK.");
+    console.log("API Test:", result.response.text());
+  } catch (e) {
+    console.error("API Error:", e);
+  }
+}
+run();

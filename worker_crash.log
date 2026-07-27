@@ -1,0 +1,4941 @@
+OpenTelemetry initialized
+--- GEMINI CONFIG CHECK ---
+AI_API_KEY Configured: true
+AI_API_KEY Starts With: AQ.Ab
+AI_MODEL: models/gemini-flash-lite-latest
+---------------------------
+[19:26:44.561] [32mINFO[39m (20128): [36mJwtStrategy initialized[39m [90m{"trace_id":"8289a40757691c53bc5f9ed32ba8fd81","span_id":"7d14a038fc34bf09","trace_flags":"01","context":"Auth"}[39m
+[19:26:44.834] [32mINFO[39m (20128): [36mSuccessfully established connection to PostgreSQL[39m [90m{"context":"PrismaService"}[39m
+[19:26:44.836] [32mINFO[39m (20128): [36mInitializing BullMQ Service infrastructure[39m [90m{"context":"BullMqService"}[39m
+[19:26:44.868] [32mINFO[39m (20128): [36mSuccessfully established connection to Redis[39m [90m{"context":"RedisService"}[39m
+[19:26:44.868] [32mINFO[39m (20128): [36mMailListenerService initialized, starting poll interval[39m [90m{"context":"MailListenerService"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mStarting Nest application...[39m [90m{"context":"NestFactory"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mContextModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mPassportModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mObservabilityModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mMulterModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mEventsModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.909] [32mINFO[39m (20128): [36mThrottlerModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mPrometheusModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mConfigHostModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mBullMQModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mDiscoveryModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mConfigModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mConfigModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mTerminusModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mMetricsModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mScheduleModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [33mWARN[39m (20128): [36mAZURE_OCR_ENDPOINT or AZURE_OCR_KEY is missing. AzureOCRProvider will gracefully fail on extraction.[39m [90m{"context":"AzureOCRProvider"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mAppModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.910] [33mWARN[39m (20128): [36mAzure OCR credentials not found.
+Using Gemini Vision OCR.[39m [90m{"context":"OCRProviderFactory"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mJwtModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mLoggerModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mLoggerModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBullModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mPrismaModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mRedisModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mQueueModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mHealthModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mAuditModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mBackupModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mAIGovernanceModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mSharedCacheModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mFilesModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.911] [32mINFO[39m (20128): [36mOrganizationModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mAuthModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mOperationsModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mFeeValidationModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mEnterpriseAccountingIntelligenceModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mVendorSlipModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mPaymentParserModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mStudentModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mStudentMatchingModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMailModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mVoucherBuilderModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mERPConnectorModule dependencies initialized[39m [90m{"context":"InstanceLoader"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mEnterpriseEventGateway Initialized[39m [90m{"context":"EnterpriseEventGateway"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mPrometheusController {/api/v1/metrics}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMapped {/api/v1/metrics, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mAuthController {/api/v1/auth}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMapped {/api/v1/auth/csrf, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMapped {/api/v1/auth/login, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMapped {/api/v1/auth/refresh, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMapped {/api/v1/auth/logout, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mHealthController {/api/v1/health}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.912] [32mINFO[39m (20128): [36mMapped {/api/v1/health/live, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/health/ready, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/health/database, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/health/queue, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/health/erp, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mERPController {/api/v1/erp-connector}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/erp-connector/sync, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/erp-connector/health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mTallyOrganizationController {/api/v1/tally}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/tally/organization-preview, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/tally/organize, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/tally/migration/:id/rollback, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mApprovalController {/api/v1/accounting-intelligence/approvals}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/approvals/dashboard, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/approvals, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/approvals/:id/approve, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/approvals/:id/reject, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mTallyDiscoveryController {/api/v1/accounting-intelligence/discovery}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/discovery/run, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mDecisionAuditController {/api/v1/accounting-intelligence/decisions}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/decisions, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/accounting-intelligence/decisions/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mStudentController {/api/v1/students}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/students, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/students, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/students/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/students/:id, PUT} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/students/:id, DELETE} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mStudentImportController {/api/v1/api/students}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/api/students/import, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMailController {/api/v1/mail}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/mail/sync, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mPaymentParserController {/api/v1/payment-parser}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMapped {/api/v1/payment-parser/process, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.913] [32mINFO[39m (20128): [36mMatchingController {/api/v1/student-matching}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/student-matching/process, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mValidationController {/api/v1/fee-validation}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/fee-validation/process, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mVoucherController {/api/v1/voucher-builder}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/voucher-builder/process, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mCapabilityController {/api/v1/system}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/system/capabilities, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mDashboardController {/api/v1/dashboard}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/dashboard/overview, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/dashboard/enterprise/reliability, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/dashboard/operations, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/dashboard/sync, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/dashboard/intelligence, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/dashboard/alerts, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mReviewQueueController {/api/v1/review}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/review/vendor, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/review/student, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMonitoringController {/api/v1}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/erp/status, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/erp/history, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/tally/migrations, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/tally/migrations/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/system/workers, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/enterprise/health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.914] [32mINFO[39m (20128): [36mMapped {/api/v1/enterprise/accounting-health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/enterprise/migration-health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/enterprise/dashboard, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mSystemHealthController {/api/v1/system}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/system/health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mAuditController {/api/v1/audit}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/audit/events, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mAdminConfigController {/api/v1/admin}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/admin/config, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/admin/config, PUT} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mReviewQueueController {/api/v1/operations/review-queue}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/review-queue, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mTallyHealthController {/api/v1/tally/health}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/tally/health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mAuditTimelineController {/api/v1/audit/timeline}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/audit/timeline/:entityId, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mTransactionsController {/api/v1/operations/transactions}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/transactions, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/transactions/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mVendorsController {/api/v1/operations/vendors}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/vendors, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/vendors/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mNotificationsController {/api/v1/operations/notifications}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/notifications, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.915] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/notifications/:id/read, PATCH} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mQueueController {/api/v1/operations/queues}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/queues/:queueName/health, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/operations/queues/:queueName/retry-failed, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mOcrController {/api/v1/ocr}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/ocr/process/:fileId, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/ocr/:fileId/status, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mReviewController {/api/v1/vendor-slips}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/vendor-slips/review, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/vendor-slips/:id/approve, PUT} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mBatchSyncController {/api/v1/api/vendor-slips/batch-sync}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/api/vendor-slips/batch-sync, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/api/vendor-slips/batch-sync/:batchId/retry, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/api/vendor-slips/batch-sync/:batchId, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mManualReviewController {/api/v1/manual-review}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/manual-review, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/manual-review/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/manual-review/:id/approve, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/manual-review/:id/reject, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mFilesController {/api/v1/files}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/files/upload, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/files/:id, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/files/:id/metadata, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/files/:id, DELETE} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mOrganizationController {/api/v1/organizations}:[39m [90m{"context":"RoutesResolver"}[39m
+[19:26:44.916] [32mINFO[39m (20128): [36mMapped {/api/v1/organizations, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.917] [32mINFO[39m (20128): [36mMapped {/api/v1/organizations, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.917] [32mINFO[39m (20128): [36mMapped {/api/v1/organizations/:id/companies, POST} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.917] [32mINFO[39m (20128): [36mMapped {/api/v1/organizations/:id/companies, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.917] [32mINFO[39m (20128): [36mMapped {/api/v1/organizations/:id/export, GET} route[39m [90m{"context":"RouterExplorer"}[39m
+[19:26:44.917] [33mWARN[39m (20128): [36mIMAP configuration missing. Mail polling aborted.[39m [90m{"context":"GmailWatchService"}[39m
+[19:26:44.917] [32mINFO[39m (20128): [36mNest application successfully started[39m [90m{"context":"NestApplication"}[39m
+[19:26:44.917] [32mINFO[39m (20128): [36m🚀 Application is running on port: 3001[39m [90m{"context":"Bootstrap"}[39m
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: 'e96f742181cad621',
+  kind: 2,
+  timestamp: 1785074204546000,
+  duration: 1023.5,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '025598d501f02704',
+  kind: 2,
+  timestamp: 1785074204549000,
+  duration: 77.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '4d851c9c236dd8de',
+  kind: 2,
+  timestamp: 1785074204549000,
+  duration: 34.8,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '5e68a061375a8e94',
+  kind: 2,
+  timestamp: 1785074204549000,
+  duration: 36.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '6ced880beb22d761',
+  kind: 2,
+  timestamp: 1785074204550000,
+  duration: 36.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '7a5dc5fb0ceac93b',
+  kind: 2,
+  timestamp: 1785074204550000,
+  duration: 34.3,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '1adb42d8d5e6f187',
+  kind: 2,
+  timestamp: 1785074204550000,
+  duration: 36.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '2ca273c7ade41ca9',
+  kind: 2,
+  timestamp: 1785074204550000,
+  duration: 52.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: 'c37b5084158a98f6',
+  kind: 2,
+  timestamp: 1785074204551000,
+  duration: 188.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '412daf2fe3ac616e',
+  kind: 2,
+  timestamp: 1785074204552000,
+  duration: 64.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'connect',
+  id: '73e42da2832ab226',
+  kind: 2,
+  timestamp: 1785074204553000,
+  duration: 48.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'connect',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-nestjs-core',
+    version: '0.66.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'Create Nest App',
+  id: '7d14a038fc34bf09',
+  kind: 0,
+  timestamp: 1785074204396000,
+  duration: 206380.3,
+  attributes: {
+    component: '@nestjs/core',
+    'nestjs.type': 'app_creation',
+    'nestjs.version': '10.4.22',
+    'nestjs.module': 'AppModule'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '54212532e1a69833',
+  kind: 2,
+  timestamp: 1785074204764000,
+  duration: 10674.3,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '46ea2e30e355286e',
+  kind: 2,
+  timestamp: 1785074204767000,
+  duration: 9396.8,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '1f2aa33ebfc590dd',
+  kind: 2,
+  timestamp: 1785074204766000,
+  duration: 10574.7,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '6f777ae3701add7e',
+  kind: 2,
+  timestamp: 1785074204767000,
+  duration: 10076.3,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '28cb1c1ba171e286',
+  kind: 2,
+  timestamp: 1785074204768000,
+  duration: 10384.4,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '0f8a4e61a9bbcadb',
+  kind: 2,
+  timestamp: 1785074204769000,
+  duration: 10390.8,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'b0779cedfa518d2f',
+  kind: 2,
+  timestamp: 1785074204769000,
+  duration: 11426.5,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'ae1e1a0cbb96a49b',
+  kind: 2,
+  timestamp: 1785074204769000,
+  duration: 12662,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'c51177f0ce250021',
+  kind: 2,
+  timestamp: 1785074204769000,
+  duration: 13113.3,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '686d27044180f183',
+  kind: 2,
+  timestamp: 1785074204769000,
+  duration: 14092.1,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '052732032577c077',
+  kind: 2,
+  timestamp: 1785074204769000,
+  duration: 14862.8,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: '6140c523ac7b009c',
+  kind: 0,
+  timestamp: 1785074204761000,
+  duration: 30851.3,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64582
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'cc074ad992ccbdc2',
+  kind: 0,
+  timestamp: 1785074204767000,
+  duration: 31336.3,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64583
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: '4e4e8df7ce4630c3',
+  kind: 0,
+  timestamp: 1785074204766000,
+  duration: 33654.3,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64584
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'be80f836a04dfbfb',
+  kind: 0,
+  timestamp: 1785074204767000,
+  duration: 33142.4,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64585
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'efbe33e1cae99aaa',
+  kind: 0,
+  timestamp: 1785074204768000,
+  duration: 33558.9,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64586
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'f4cd2efacba8e53c',
+  kind: 0,
+  timestamp: 1785074204768000,
+  duration: 33600.5,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64587
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: '1b1bd57add8ac0de',
+  kind: 0,
+  timestamp: 1785074204769000,
+  duration: 33997,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64588
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'f0213374584beaa4',
+  kind: 0,
+  timestamp: 1785074204769000,
+  duration: 34648.4,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64589
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: '2694d5b41bcf48f9',
+  kind: 0,
+  timestamp: 1785074204769000,
+  duration: 34980.1,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64590
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'be0b4757542ddea3',
+  kind: 0,
+  timestamp: 1785074204769000,
+  duration: 35907.6,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64591
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: '1f58a8281b89b395',
+  kind: 0,
+  timestamp: 1785074204769000,
+  duration: 36560.3,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64592
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '10556a60cdaa7bf1',
+  kind: 2,
+  timestamp: 1785074204796000,
+  duration: 13925.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: 'd6b164169ce7390f',
+  kind: 2,
+  timestamp: 1785074204799000,
+  duration: 11249.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '71ac2a77091f69c8',
+  kind: 2,
+  timestamp: 1785074204800000,
+  duration: 10137.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: 'b70d359f05f37f77',
+  kind: 2,
+  timestamp: 1785074204801000,
+  duration: 9672.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '680eefb54850724b',
+  kind: 2,
+  timestamp: 1785074204802000,
+  duration: 9004,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: 'bf4b9b3e8a3856fa',
+  kind: 2,
+  timestamp: 1785074204802000,
+  duration: 8310.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '7c27d89230e65b8d',
+  kind: 2,
+  timestamp: 1785074204803000,
+  duration: 7699.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: 'a7ecd3d69f9bbc11',
+  kind: 2,
+  timestamp: 1785074204804000,
+  duration: 7149.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: 'd1e97bd38154cb9e',
+  kind: 2,
+  timestamp: 1785074204805000,
+  duration: 6590.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '2121aee3dd8fcefb',
+  kind: 2,
+  timestamp: 1785074204805000,
+  duration: 5881.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '892a74ebb62657c5',
+  kind: 2,
+  timestamp: 1785074204806000,
+  duration: 5572,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-NAME ioredis',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '2bc34a377d70b09e',
+  kind: 2,
+  timestamp: 1785074204814000,
+  duration: 4715.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '29e97a2d19ce0d0c',
+  kind: 2,
+  timestamp: 1785074204813000,
+  duration: 6117.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '8d2337b70fdad9ff',
+  kind: 2,
+  timestamp: 1785074204814000,
+  duration: 5653.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: 'e9336989aed12e99',
+  kind: 2,
+  timestamp: 1785074204815000,
+  duration: 4982.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '26b8b9480b169044',
+  kind: 2,
+  timestamp: 1785074204815000,
+  duration: 6044.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '799dc80ac399f4a2',
+  kind: 2,
+  timestamp: 1785074204816000,
+  duration: 5791.8,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '97f303a0eb25b3a4',
+  kind: 2,
+  timestamp: 1785074204816000,
+  duration: 6502.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '759f399f70ade78d',
+  kind: 2,
+  timestamp: 1785074204817000,
+  duration: 6040,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '07442c04854b2be5',
+  kind: 2,
+  timestamp: 1785074204817000,
+  duration: 5814.8,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '31c7b9674222a9ed',
+  kind: 2,
+  timestamp: 1785074204818000,
+  duration: 5673.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'client',
+  id: '01d6b8e48a4a2b93',
+  kind: 2,
+  timestamp: 1785074204818000,
+  duration: 5696.5,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'client SETINFO LIB-VER 5.11.1',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '754e3ffdccc52267',
+  kind: 2,
+  timestamp: 1785074204819000,
+  duration: 5249.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'c742defd5479aebf',
+  kind: 2,
+  timestamp: 1785074204819000,
+  duration: 9547.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'e363f6e00012df6e',
+  kind: 2,
+  timestamp: 1785074204820000,
+  duration: 11345.5,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '18e9ddf747ae54be',
+  kind: 2,
+  timestamp: 1785074204821000,
+  duration: 17398.3,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'd3910d19d1c0a08b',
+  kind: 2,
+  timestamp: 1785074204821000,
+  duration: 18530.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'e1d203c70fa1be4c',
+  kind: 2,
+  timestamp: 1785074204822000,
+  duration: 19924,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '5d3fb0121774a88b',
+  kind: 2,
+  timestamp: 1785074204822000,
+  duration: 22650,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '6a65d840d93a8948',
+  kind: 2,
+  timestamp: 1785074204823000,
+  duration: 24775.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '234a9f20e74f3e3a',
+  kind: 2,
+  timestamp: 1785074204823000,
+  duration: 26551,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'f26dee6cf2f421cf',
+  kind: 2,
+  timestamp: 1785074204824000,
+  duration: 28628.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'adb8695a8e1cf1a2',
+  kind: 2,
+  timestamp: 1785074204824000,
+  duration: 30220,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '809e654655ce44b6',
+  kind: 2,
+  timestamp: 1785074204829000,
+  duration: 27313.4,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '31976bc95327506e',
+  kind: 2,
+  timestamp: 1785074204831000,
+  duration: 27369.5,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'bcd5b7bc2c701787',
+  kind: 2,
+  timestamp: 1785074204834000,
+  duration: 25045.3,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.63.0',
+    schemaUrl: undefined
+  },
+  traceId: '5e404675ffa3af06d009d0e30f701c41',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '464a90db22f5b10a',
+  kind: 2,
+  timestamp: 1785074204838000,
+  duration: 21910.7,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'b5c67ad574e0a19c',
+  kind: 2,
+  timestamp: 1785074204840000,
+  duration: 20944.5,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '16d25dafd6f27169',
+  kind: 2,
+  timestamp: 1785074204841000,
+  duration: 19704.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'ce2ee01cdaec1b84',
+  kind: 2,
+  timestamp: 1785074204845000,
+  duration: 17018.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '95462b039215d3bb',
+  kind: 2,
+  timestamp: 1785074204847000,
+  duration: 14931.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '07c4920184dd6022',
+  kind: 2,
+  timestamp: 1785074204849000,
+  duration: 13378.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'bfc9be79a5d22d3d',
+  kind: 2,
+  timestamp: 1785074204852000,
+  duration: 11711.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: '7128e0d678150959',
+  kind: 2,
+  timestamp: 1785074204854000,
+  duration: 10867.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'info',
+  id: 'c0a71f934b1edde7',
+  kind: 2,
+  timestamp: 1785074204856000,
+  duration: 9698.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'info',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '298c17443e0306b9',
+  kind: 2,
+  timestamp: 1785074204858000,
+  duration: 8270.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:tally-migration-execution:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '1d99da146cbb529e',
+  kind: 2,
+  timestamp: 1785074204859000,
+  duration: 7548.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:tally-sync:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-net',
+    version: '0.64.0',
+    schemaUrl: undefined
+  },
+  traceId: '98d61a87e342dcafca757563e1b84591',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'tcp.connect',
+  id: 'f713c8cf2c361dee',
+  kind: 0,
+  timestamp: 1785074204838000,
+  duration: 28692,
+  attributes: {
+    'net.transport': 'ip_tcp',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380,
+    'net.peer.ip': '::1',
+    'net.host.ip': '::1',
+    'net.host.port': 64593
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: 'b7d5458dd1c7da15',
+  kind: 2,
+  timestamp: 1785074204859000,
+  duration: 7420.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:erp-verify-queue:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: 'ae0beb902af006aa',
+  kind: 2,
+  timestamp: 1785074204861000,
+  duration: 6138.1,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:payment-candidate-processing:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '077173077fac02a4',
+  kind: 2,
+  timestamp: 1785074204861000,
+  duration: 5628,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:tally-rollback-execution:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '3afcc484dbe7753d',
+  kind: 2,
+  timestamp: 1785074204862000,
+  duration: 5213.7,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:student-matching:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '038737c56a34dd64',
+  kind: 2,
+  timestamp: 1785074204862000,
+  duration: 4758.2,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:mail-processing:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '65435819f1a22bfd',
+  kind: 2,
+  timestamp: 1785074204863000,
+  duration: 4121,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:fee-validation:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '441439a13d090311',
+  kind: 2,
+  timestamp: 1785074204864000,
+  duration: 3107.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:vendor-slip-queue:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: 'bd3ca1888c7071e1',
+  kind: 2,
+  timestamp: 1785074204865000,
+  duration: 2268.9,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:voucher-generation:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'Arunesh',
+      'host.arch': 'amd64',
+      'host.id': '961ee426-227a-4c11-9579-fdfc83a68919',
+      'process.pid': 20128,
+      'process.executable.name': 'Administrator:  C:\\WINDOWS\\system32\\cmd.exe ',
+      'process.executable.path': 'C:\\Program Files\\nodejs\\node.exe',
+      'process.command_args': [
+        'C:\\Program Files\\nodejs\\node.exe',
+        'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main'
+      ],
+      'process.runtime.version': '24.12.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': 'C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\dist\\src\\main',
+      'process.owner': 'Administrator',
+      'service.name': 'unknown_service:node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '2.10.0'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-ioredis',
+    version: '0.68.0',
+    schemaUrl: undefined
+  },
+  traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+  parentSpanContext: {
+    traceId: '8289a40757691c53bc5f9ed32ba8fd81',
+    spanId: '7d14a038fc34bf09',
+    traceFlags: 1,
+    traceState: undefined
+  },
+  traceState: undefined,
+  name: 'hset',
+  id: '3dc81873ba57b017',
+  kind: 2,
+  timestamp: 1785074204866000,
+  duration: 1792.6,
+  attributes: {
+    'db.system': 'redis',
+    'db.statement': 'hset tallyme:bull:batch-sync-queue:meta opts.maxLenEvents [3 other arguments]',
+    'db.connection_string': 'redis://localhost:6380',
+    'net.peer.name': 'localhost',
+    'net.peer.port': 6380
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}

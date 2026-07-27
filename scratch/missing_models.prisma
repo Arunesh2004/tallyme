@@ -1,0 +1,89 @@
+
+// --- Missing Models for Compilation Recovery ---
+
+model TallyConnection {
+  id              String   @id @default(uuid())
+  status          String?
+  createdAt       DateTime @default(now())
+}
+
+model TallyConnectionConfig {
+  id              String   @id @default(uuid())
+}
+
+model TallyHealthMetric {
+  id              String   @id @default(uuid())
+}
+
+model TallyEnvironmentReport {
+  id              String   @id @default(uuid())
+}
+
+model TallySyncSession {
+  id              String   @id @default(uuid())
+}
+
+model TallySyncLog {
+  id              String   @id @default(uuid())
+}
+
+model AccountingException {
+  id              String   @id @default(uuid())
+}
+
+model TallyMigrationPlan {
+  id              String   @id @default(uuid())
+  status          String?
+}
+
+model TallyMigrationApproval {
+  id              String   @id @default(uuid())
+}
+
+model TallyMigrationExecution {
+  id              String   @id @default(uuid())
+  status          String?
+  errorMessage    String?
+}
+
+model TallyOrganizationRecommendation {
+  id              String   @id @default(uuid())
+}
+
+model TallyLedgerSnapshot {
+  id              String   @id @default(uuid())
+  scanId          String?
+  parentGroup     String?
+}
+
+model TallyGroupSnapshot {
+  id              String   @id @default(uuid())
+  scanId          String?
+  groupName       String?
+}
+
+model TallyStructureScan {
+  id              String   @id @default(uuid())
+}
+
+model SyncVerification {
+  id              String   @id @default(uuid())
+  syncId          String?
+  status          String?
+  actualResult    Json?
+  expectedResult  Json?
+  verifiedAt      DateTime?
+}
+
+model AgentSyncQueue {
+  id              String   @id @default(uuid())
+  status          String?
+  failureReason   String?
+}
+
+model SyncOperationEvent {
+  id              String   @id @default(uuid())
+  syncId          String?
+  eventType       String?
+  metadata        Json?
+}

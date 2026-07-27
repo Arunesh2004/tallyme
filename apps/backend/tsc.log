@@ -1,0 +1,37 @@
+src/infrastructure/guards/tenant.guard.ts(2,31): error TS2307: Cannot find module '../../prisma/prisma.service' or its corresponding type declarations.
+src/infrastructure/prisma/transaction.manager.ts(5,17): error TS2339: Property 'client' does not exist on type 'PrismaService'.
+src/infrastructure/prisma/transaction.manager.ts(21,37): error TS2339: Property 'client' does not exist on type 'PrismaService'.
+src/modules/accounting-agents/accounting-agents.module.ts(3,29): error TS2307: Cannot find module '../../audit/audit.module' or its corresponding type declarations.
+src/modules/accounting-agents/services/agent-execution.service.ts(61,11): error TS2322: Type '{ ledgerName: string; } | { group: string; } | { amount: any; } | null' is not assignable to type 'NullableJsonNullValueInput | InputJsonValue | undefined'.
+  Type 'null' is not assignable to type 'NullableJsonNullValueInput | InputJsonValue | undefined'.
+src/modules/accounting-agents/services/agent-execution.service.ts(62,11): error TS2322: Type '{ ledgerName: any; parent: string; } | { ledgerName: string; parent: string; } | { group: string; } | { amount: any; } | null' is not assignable to type 'NullableJsonNullValueInput | InputJsonValue | undefined'.
+  Type 'null' is not assignable to type 'NullableJsonNullValueInput | InputJsonValue | undefined'.
+src/modules/accounting-agents/services/agent-execution.service.ts(87,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/modules/accounting-execution/accounting-execution.module.ts(3,29): error TS2307: Cannot find module '../../audit/audit.module' or its corresponding type declarations.
+src/modules/accounting-execution/accounting-execution.module.ts(4,38): error TS2307: Cannot find module '../../tally-connector/tally-connector.module' or its corresponding type declarations.
+src/modules/accounting-execution/services/action-runner.service.ts(29,214): error TS18047: 'step.requestPayload' is possibly 'null'.
+src/modules/accounting-execution/services/action-runner.service.ts(29,214): error TS7053: Element implicitly has an 'any' type because expression of type '"ledgerName"' can't be used to index type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'ledgerName' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+src/modules/accounting-execution/services/action-runner.service.ts(29,276): error TS18047: 'step.requestPayload' is possibly 'null'.
+src/modules/accounting-execution/services/action-runner.service.ts(29,276): error TS7053: Element implicitly has an 'any' type because expression of type '"parent"' can't be used to index type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'parent' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+src/modules/accounting-execution/services/execution.service.ts(68,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/modules/accounting-execution/services/rollback.service.ts(17,89): error TS18047: 'request' is possibly 'null'.
+src/modules/accounting-execution/services/rollback.service.ts(27,11): error TS18047: 'request' is possibly 'null'.
+src/modules/accounting-execution/services/rollback.service.ts(29,24): error TS18047: 'request' is possibly 'null'.
+src/modules/accounting-reasoning/accounting-reasoning.module.ts(3,29): error TS2307: Cannot find module '../../audit/audit.module' or its corresponding type declarations.
+src/modules/enterprise-intelligence-engine/enterprise-intelligence-engine.module.ts(8,29): error TS2307: Cannot find module '../../audit/audit.module' or its corresponding type declarations.
+src/modules/tally-connector/services/sync-pipeline.service.ts(46,36): error TS18047: 'connection' is possibly 'null'.
+src/modules/tally-connector/services/sync-pipeline.service.ts(46,53): error TS18047: 'connection' is possibly 'null'.
+src/modules/tally-connector/services/tally-connection.service.ts(35,7): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/modules/tally-connector/tally-connector.module.ts(9,29): error TS2307: Cannot find module '../../audit/audit.module' or its corresponding type declarations.
+src/modules/tally-organization/services/migration.service.ts(50,7): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/modules/tally-organization/services/migration.service.ts(68,26): error TS18047: 'plan' is possibly 'null'.
+src/modules/tally-organization/services/migration.service.ts(122,7): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/modules/tally-organization/services/migration.service.ts(122,18): error TS18047: 'plan' is possibly 'null'.
+src/modules/tally-organization/services/rollback.service.ts(42,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/modules/tally-organization/services/structure-analyzer.service.ts(128,7): error TS2532: Object is possibly 'undefined'.
+src/modules/tally-organization/tally-organization.module.ts(9,29): error TS2307: Cannot find module '../../audit/audit.module' or its corresponding type declarations.

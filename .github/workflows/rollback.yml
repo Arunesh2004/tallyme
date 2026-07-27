@@ -1,0 +1,82 @@
+name: Rollback — Revert to Previous Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      image_tag:
+        description: 'Image tag to roll back to (e.g. v1.0.0, sha-abc1234)'
+        required: true
+        type: string
+      reason:
+        description: 'Reason for rollback'
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    name: Rollback ${{ inputs.environment }} to ${{ inputs.image_tag }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log Rollback Intent
+        run: |
+          echo "🔄 ROLLBACK INITIATED"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Target version: ${{ inputs.image_tag }}"
+          echo "Reason: ${{ inputs.reason }}"
+          echo "Initiated by: ${{ github.actor }}"
+
+      - name: Rollback Staging
+        if: inputs.environment == 'staging'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/tallyme-staging
+            echo "IMAGE_TAG=${{ inputs.image_tag }}" > .image_tag.env
+            docker compose -f docker-compose.staging.yml --env-file .env.staging pull
+            docker compose -f docker-compose.staging.yml --env-file .env.staging up -d --remove-orphans
+            echo "✅ Staging rolled back to ${{ inputs.image_tag }}"
+
+      - name: Rollback Production
+        if: inputs.environment == 'production'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/tallyme
+            # Take a backup of current state before rollback
+            ./scripts/backup-db.sh
+            echo "IMAGE_TAG=${{ inputs.image_tag }}" > .image_tag.env
+            docker compose -f docker-compose.prod.yml --env-file .env pull
+            docker compose -f docker-compose.prod.yml --env-file .env up -d --remove-orphans
+            echo "✅ Production rolled back to ${{ inputs.image_tag }}"
+
+      - name: Validate Health After Rollback
+        run: |
+          sleep 20
+          if [ "${{ inputs.environment }}" == "production" ]; then
+            URL=${{ secrets.PRODUCTION_URL }}
+          else
+            URL=${{ secrets.STAGING_URL }}
+          fi
+          status=$(curl -s -o /dev/null -w "%{http_code}" $URL/api/v1/health/ready)
+          echo "Health check status after rollback: $status"
+          if [ "$status" != "200" ]; then
+            echo "❌ Rollback health check FAILED"
+            exit 1
+          fi
+          echo "✅ Rollback successful — system is healthy"

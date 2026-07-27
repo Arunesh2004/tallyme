@@ -11,11 +11,14 @@ async function main() {
   const orchestrator = new MatchingOrchestrator();
 
   console.log("1. Seeding Mock Student Data...");
+  await prisma.organization.upsert({
+    where: { id: 'org_default' },
+    update: {},
+    create: { id: 'org_default', name: 'Default Org' }
+  });
   const feeStructure = await prisma.feeStructure.create({
     data: {
       name: 'Class 10 Regular',
-      tuitionFee: 2000,
-      computerFee: 500,
       organizationId: 'org_default'
     }
   });

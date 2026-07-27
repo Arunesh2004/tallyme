@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+.git
+.env
+.env.*
+apps/frontend
+**/*.log
+**/.next
+**/dist
+**/build
+apps/backend/coverage
+*.md
