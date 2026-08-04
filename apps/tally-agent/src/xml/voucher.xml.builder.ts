@@ -9,7 +9,7 @@ export interface VoucherData {
 }
 
 export class VoucherXmlBuilder {
-  static buildCreate(data: VoucherData): string {
+  static buildCreate(data: VoucherData, companyName: string = 'TallyMe Connect'): string {
     const { voucherType, date, partyLedger, amount, reference, narration } = data;
 
     return `<ENVELOPE>
@@ -20,15 +20,17 @@ export class VoucherXmlBuilder {
         <IMPORTDATA>
           <REQUESTDESC>
             <REPORTNAME>Vouchers</REPORTNAME>
+            <STATICVARIABLES>
+              <SVCURRENTCOMPANY>${companyName}</SVCURRENTCOMPANY>
+            </STATICVARIABLES>
           </REQUESTDESC>
           <REQUESTDATA>
             <TALLYMESSAGE xmlns:UDF="TallyUDF">
               <VOUCHER VCHTYPE="${voucherType}" ACTION="Create">
                 <DATE>${date}</DATE>
                 <VOUCHERTYPENAME>${voucherType}</VOUCHERTYPENAME>
-                <PARTYLEDGERNAME>${partyLedger}</PARTYLEDGERNAME>
-                ${reference ? `<REFERENCE>${reference}</REFERENCE>` : ''}
                 ${narration ? `<NARRATION>${narration}</NARRATION>` : ''}
+                ${reference ? `<REFERENCE>${reference}</REFERENCE>` : ''}
                 <ALLLEDGERENTRIES.LIST>
                   <LEDGERNAME>${partyLedger}</LEDGERNAME>
                   <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>

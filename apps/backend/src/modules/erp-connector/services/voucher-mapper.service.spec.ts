@@ -15,7 +15,7 @@ describe('VoucherMapperService', () => {
   describe('mapToTransport', () => {
     const validData = {
       voucherNumber: 'V-001',
-      date: '20240101',
+      date: '2024-01-01',
       voucherType: 'Purchase',
       companyId: 'comp-1',
       partyLedgerName: 'Vendor A',
@@ -32,10 +32,10 @@ describe('VoucherMapperService', () => {
       expect(result.lines[0].amount).toBe(100);
     });
 
-    it('should convert Date object to YYYYMMDD string', () => {
+    it('should format Date object to DD-MM-YYYY string', () => {
       const data = { ...validData, date: new Date('2024-01-15') };
       const result = service.mapToTransport(data);
-      expect(result.date).toBe('20240115');
+      expect(result.date).toBe('15-01-2024');
     });
 
     it('should default voucherType to Receipt if not provided', () => {
