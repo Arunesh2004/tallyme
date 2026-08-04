@@ -150,20 +150,20 @@ export class DashboardController {
       const processed = await this.prisma.eRPSyncJob.count({
         where: {
           createdAt: {
-            gte: new Date(d.setHours(0,0,0,0)),
-            lt: new Date(d.setHours(23,59,59,999))
+            gte: new Date(d.setHours(0, 0, 0, 0)),
+            lt: new Date(d.setHours(23, 59, 59, 999)),
           },
-          status: 'SYNCED'
-        }
+          status: 'SYNCED',
+        },
       });
       const failed = await this.prisma.eRPSyncJob.count({
         where: {
           createdAt: {
-            gte: new Date(d.setHours(0,0,0,0)),
-            lt: new Date(d.setHours(23,59,59,999))
+            gte: new Date(d.setHours(0, 0, 0, 0)),
+            lt: new Date(d.setHours(23, 59, 59, 999)),
           },
-          status: 'FAILED_PERMANENT'
-        }
+          status: 'FAILED_PERMANENT',
+        },
       });
       data.push({ name, processed, failed });
     }

@@ -238,79 +238,96 @@ export class AuthService {
     try {
       // 1. Security Check: Invariant is User count == 0
       const userCount = await this.prisma.user.count();
-    if (userCount > 0) {
-      this.logger.warn('Bootstrap attempted but system is already initialized', 'AuthService');
-      throw new ForbiddenException('System is already initialized');
-    }
+      if (userCount > 0) {
+        this.logger.warn(
+          'Bootstrap attempted but system is already initialized',
+          'AuthService',
+        );
+        throw new ForbiddenException('System is already initialized');
+      }
 
-    // 2. Hash Password
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+      // 2. Hash Password
+      const passwordHash = await bcrypt.hash(dto.password, 10);
 
-    // 3. Execute inside a single Prisma transaction
-    await this.prisma.$transaction(async (tx) => {
-      // Create Organization
-      const org = await tx.organization.create({
-        data: {
-          name: dto.organizationName,
-          slug: dto.organizationName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        },
-      });
-
-      // Create Company
-      const company = await tx.company.create({
-        data: {
-          name: dto.companyName,
-          organizationId: org.id,
-        },
-      });
-
-      // Upsert Role and seed required permissions for Vendor Pipeline
-      const role = await tx.role.upsert({
-        where: { name: 'ACCOUNTING_ADMIN' },
-        update: {
-          permissions: {
-            connectOrCreate: [
-              { where: { action: 'Invoice.Upload' }, create: { action: 'Invoice.Upload' } },
-              { where: { action: 'Invoice.Process' }, create: { action: 'Invoice.Process' } },
-            ],
+      // 3. Execute inside a single Prisma transaction
+      await this.prisma.$transaction(async (tx) => {
+        // Create Organization
+        const org = await tx.organization.create({
+          data: {
+            name: dto.organizationName,
+            slug: dto.organizationName
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-'),
           },
-        },
-        create: { 
-          name: 'ACCOUNTING_ADMIN',
-          permissions: {
-            connectOrCreate: [
-              { where: { action: 'Invoice.Upload' }, create: { action: 'Invoice.Upload' } },
-              { where: { action: 'Invoice.Process' }, create: { action: 'Invoice.Process' } },
-            ],
+        });
+
+        // Create Company
+        const company = await tx.company.create({
+          data: {
+            name: dto.companyName,
+            organizationId: org.id,
           },
-        },
+        });
+
+        // Upsert Role and seed required permissions for Vendor Pipeline
+        const role = await tx.role.upsert({
+          where: { name: 'ACCOUNTING_ADMIN' },
+          update: {
+            permissions: {
+              connectOrCreate: [
+                {
+                  where: { action: 'Invoice.Upload' },
+                  create: { action: 'Invoice.Upload' },
+                },
+                {
+                  where: { action: 'Invoice.Process' },
+                  create: { action: 'Invoice.Process' },
+                },
+              ],
+            },
+          },
+          create: {
+            name: 'ACCOUNTING_ADMIN',
+            permissions: {
+              connectOrCreate: [
+                {
+                  where: { action: 'Invoice.Upload' },
+                  create: { action: 'Invoice.Upload' },
+                },
+                {
+                  where: { action: 'Invoice.Process' },
+                  create: { action: 'Invoice.Process' },
+                },
+              ],
+            },
+          },
+        });
+
+        // Create User
+        const user = await tx.user.create({
+          data: {
+            email: dto.email,
+            passwordHash,
+            isActive: true,
+            roleId: role.id,
+            organizationId: org.id,
+            companyId: company.id,
+          },
+        });
+
+        // Assign Role
+        await tx.roleAssignment.create({
+          data: {
+            userId: user.id,
+            organizationId: org.id,
+            role: 'ACCOUNTING_ADMIN',
+          },
+        });
+
+        this.logger.log(`Bootstrap successful for ${dto.email}`, 'AuthService');
       });
 
-      // Create User
-      const user = await tx.user.create({
-        data: {
-          email: dto.email,
-          passwordHash,
-          isActive: true,
-          roleId: role.id,
-          organizationId: org.id,
-          companyId: company.id,
-        },
-      });
-
-      // Assign Role
-      await tx.roleAssignment.create({
-        data: {
-          userId: user.id,
-          organizationId: org.id,
-          role: 'ACCOUNTING_ADMIN',
-        },
-      });
-
-      this.logger.log(`Bootstrap successful for ${dto.email}`, 'AuthService');
-    });
-
-    return { message: 'Bootstrap successful' };
+      return { message: 'Bootstrap successful' };
     } catch (error) {
       console.error('BOOTSTRAP ERROR:', error);
       throw error;

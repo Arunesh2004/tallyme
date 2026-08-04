@@ -94,6 +94,7 @@ export class FilesController {
         checksum: metadata.checksum,
         mimeType: metadata.contentType,
         uploadedBy,
+        companyId: user?.tenantId || null,
         source: 'MANUAL_UPLOAD',
         status: 'UPLOADED',
       },

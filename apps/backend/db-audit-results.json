@@ -1,0 +1,1495 @@
+{
+  "timestamp": "2026-08-01T06:19:35.274Z",
+  "duplicateVoucherNumbers": [],
+  "jobsMissingRequestXml": 16,
+  "recentInvoices": [
+    {
+      "id": "f528a53c-0a49-429e-9fd9-ebd656bd9c0c",
+      "documentId": "8919d6cb-2c6d-4277-857c-5dd53bdaa8dd",
+      "invoiceNumber": "26886192",
+      "date": "2019-09-30T00:00:00.000Z",
+      "subtotal": "74.65",
+      "tax": "13.44",
+      "total": "88.09",
+      "extractedGstin": "36AADCI5931J1ZF",
+      "extractedPan": null,
+      "extractedName": "Indeed India Operations Private Limited",
+      "extractedData": {
+        "pan": "AADCI5931J",
+        "cess": null,
+        "cgst": null,
+        "igst": 13.44,
+        "sgst": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": "Uttar Pradesh",
+        "amount": 88.09,
+        "freight": null,
+        "discount": null,
+        "roundOff": null,
+        "subtotal": 74.65,
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 74.65,
+            "hsnSac": null,
+            "discount": null,
+            "quantity": null,
+            "taxAmount": null,
+            "taxPercent": null,
+            "description": "Advertising on Indeed.com September 2019 Advertising on Indeed.com"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 13.44,
+            "hsnSac": "998365",
+            "discount": null,
+            "quantity": null,
+            "taxAmount": 13.44,
+            "taxPercent": 18,
+            "description": "Integrated GST @ 18% on 74.65"
+          }
+        ],
+        "taxAmount": 13.44,
+        "confidence": 0.95,
+        "vendorName": "Indeed India Operations Private Limited",
+        "bankDetails": {
+          "ifsc": "CITI0000006",
+          "bankName": "Citibank N.A.",
+          "accountNumber": "0521313021"
+        },
+        "invoiceDate": "2019-09-30T00:00:00.000Z",
+        "otherCharges": null,
+        "paymentTerms": null,
+        "invoiceNumber": "26886192",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "vendorAddress": "Ground Floor, 'C' Block, Divya Sree Omega, Kondapur, Hitech City Road, Kothaguda, Hyderabad - 500081",
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    {
+      "id": "f0c61668-4ebb-4ab3-8106-a7e37779a6d4",
+      "documentId": "fce30b49-9970-4699-9aff-7b55cb8302e1",
+      "invoiceNumber": "IND-E2E-12345",
+      "date": null,
+      "subtotal": "4500",
+      "tax": "500",
+      "total": "5000",
+      "extractedGstin": "36AADCI5931J1ZF",
+      "extractedPan": null,
+      "extractedName": "Indeed India Operations Private Limited",
+      "extractedData": {
+        "pan": null,
+        "cess": null,
+        "cgst": 250,
+        "igst": null,
+        "sgst": 250,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "amount": 5000,
+        "freight": null,
+        "discount": null,
+        "roundOff": null,
+        "subtotal": 4500,
+        "lineItems": [
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "discount": null,
+            "quantity": 1,
+            "taxAmount": null,
+            "taxPercent": null,
+            "description": "Services Rendered"
+          }
+        ],
+        "taxAmount": null,
+        "confidence": 0.95,
+        "vendorName": "Indeed India Operations Private Limited",
+        "bankDetails": null,
+        "invoiceDate": null,
+        "otherCharges": null,
+        "paymentTerms": "Net 30",
+        "invoiceNumber": "IND-E2E-12345",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "vendorAddress": "123 Business Lane, City, State, Zip Code",
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    {
+      "id": "8e5d0801-79d8-45d2-b6dd-aad2e9a1475b",
+      "documentId": "7603133c-9b67-4730-9053-69da77be6190",
+      "invoiceNumber": "26886192",
+      "date": "2019-09-30T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "13.44",
+      "total": "88.09",
+      "extractedGstin": "36AADCI5931J1ZF",
+      "extractedPan": null,
+      "extractedName": "Indeed India Operations Private Limited",
+      "extractedData": {
+        "pan": "AADCI5931J",
+        "cess": null,
+        "cgst": null,
+        "igst": 13.44,
+        "sgst": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": "Uttar Pradesh",
+        "amount": 88.09,
+        "freight": null,
+        "discount": null,
+        "roundOff": null,
+        "subtotal": 74.65,
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 74.65,
+            "hsnSac": null,
+            "discount": null,
+            "quantity": null,
+            "taxAmount": null,
+            "taxPercent": null,
+            "description": "Advertising on Indeed.com September 2019 Advertising on Indeed.com"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 13.44,
+            "hsnSac": "998365",
+            "discount": null,
+            "quantity": null,
+            "taxAmount": 13.44,
+            "taxPercent": 18,
+            "description": "Integrated GST @ 18% on 74.65"
+          }
+        ],
+        "taxAmount": 13.44,
+        "confidence": 0.98,
+        "vendorName": "Indeed India Operations Private Limited",
+        "bankDetails": {
+          "ifsc": "CITI0000006",
+          "bankName": "Citibank N.A.",
+          "accountNumber": "0521313021"
+        },
+        "invoiceDate": "2019-09-30T00:00:00.000Z",
+        "otherCharges": null,
+        "paymentTerms": null,
+        "invoiceNumber": "26886192",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "vendorAddress": "Ground Floor, 'C' Block, Divya Sree Omega, Kondapur, Hitech City Road, Kothaguda, Hyderabad - 500081",
+        "confidenceFactors": {}
+      },
+      "status": "EXTRACTED"
+    }
+  ],
+  "recentVouchers": [
+    {
+      "id": "fc23fd2c-596c-4081-b1f4-2b3a66d81918",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-285909",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T19:14:45.845Z",
+      "narration": null,
+      "partyLedgerName": "Indeed India Operations Private Limited",
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "e2ebf70b-4818-4af8-954f-06c878a32553",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "fc23fd2c-596c-4081-b1f4-2b3a66d81918",
+        "status": "FAILED_PERMANENT",
+        "attempts": 1,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "aa26ca61c53ba7594b5576134b185317a68fa474d788e3512b35e503b5ab470d",
+        "nextRetryAt": null,
+        "lastAttemptAt": "2026-07-31T19:14:46.659Z",
+        "lastVerificationAt": null,
+        "lastError": "Tax Classification &apos;CGST&apos; does not exist!",
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T19:14:45.941Z",
+        "updatedAt": "2026-07-31T19:14:47.412Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "f0e7329c-9cd5-4480-bc7b-bb7aceb683ac",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-759503",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T19:39:19.417Z",
+      "narration": null,
+      "partyLedgerName": "Indeed India Operations Private Limited",
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 85
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "91468536-a791-4515-82c2-c3a055c170e3",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "f0e7329c-9cd5-4480-bc7b-bb7aceb683ac",
+        "status": "UNKNOWN",
+        "attempts": 1,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "2b908fe9b1927d147b501c289e095320b839314a6bfba0a5ca347ee2b11cd86a",
+        "nextRetryAt": null,
+        "lastAttemptAt": "2026-07-31T19:39:19.783Z",
+        "lastVerificationAt": null,
+        "lastError": "Request to Tally timed out after 30000ms",
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T19:39:19.729Z",
+        "updatedAt": "2026-07-31T19:39:49.820Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "eefd2de5-38e6-4f0d-a2ad-a5d691580bea",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-122566",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T18:55:22.509Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "FAILED",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "b39ed2bf-16ca-4f69-be56-17a82c7af091",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "eefd2de5-38e6-4f0d-a2ad-a5d691580bea",
+        "status": "MANUAL_REVIEW",
+        "attempts": 0,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "af9b9013e29223199e0ad029b129061a55cf582431ad50992fa72b063e259b30",
+        "nextRetryAt": null,
+        "lastAttemptAt": null,
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T18:55:22.599Z",
+        "updatedAt": "2026-07-31T18:55:23.830Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "eba261c9-a77a-44cf-b2a0-cfb035ea21f4",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-730348",
+      "voucherType": "Purchase",
+      "date": "2019-09-30T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": "Indeed India Operations Private Limited",
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 88.09,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 74.65,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 13.44,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "ledgerDecisions": {
+          "tax": {
+            "name": "Input GST",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.7
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "UNKNOWN_LEDGER",
+            "source": "SYSTEM",
+            "confidence": 0.7
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "9dacad06-730a-4afe-8449-59be5d7963c2",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "eba261c9-a77a-44cf-b2a0-cfb035ea21f4",
+        "status": "RETRY_PENDING",
+        "attempts": 3,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "e2b12600ee70b8562819cd044596458911f02a1a1a9e14e8f40e40c0a1d0878c",
+        "nextRetryAt": null,
+        "lastAttemptAt": "2026-08-01T03:08:54.089Z",
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-08-01T03:08:50.421Z",
+        "updatedAt": "2026-08-01T03:08:54.142Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "d5c0fbe2-0ef4-43ad-91d8-28c0a0ba4e8c",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-451869",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T19:00:51.839Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "942ee782-2936-49f8-845e-a1309d1f1cca",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "d5c0fbe2-0ef4-43ad-91d8-28c0a0ba4e8c",
+        "status": "RETRY_PENDING",
+        "attempts": 3,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "70bd73035ca31d663adda79ba772b35254dcf1581d338ebca609938ac0b057b3",
+        "nextRetryAt": null,
+        "lastAttemptAt": "2026-07-31T19:00:55.122Z",
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T19:00:51.892Z",
+        "updatedAt": "2026-07-31T19:00:55.143Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "c1f63a39-3658-4a76-9932-2d4e7178b903",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-738632",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T18:48:58.598Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "FAILED",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 85
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "2ae71597-06ea-4871-b0c6-0bdfd5abae0b",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "c1f63a39-3658-4a76-9932-2d4e7178b903",
+        "status": "MANUAL_REVIEW",
+        "attempts": 0,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "fe3f848cc7f1623a8c4829661347668a0f83d1cf3c07d07a3ebb5802a963095a",
+        "nextRetryAt": null,
+        "lastAttemptAt": null,
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T18:48:58.673Z",
+        "updatedAt": "2026-07-31T18:48:59.445Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "ad79094e-3bb3-4e93-aa65-d775ac390f69",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-662585",
+      "voucherType": "Purchase",
+      "date": "2019-09-30T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": "Indeed India Operations Private Limited",
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 88.09,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 74.65,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 13.44,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "ledgerDecisions": {
+          "tax": {
+            "name": "Input GST",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.7
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "UNKNOWN_LEDGER",
+            "source": "SYSTEM",
+            "confidence": 0.7
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "7f0e48ff-156a-4b66-a470-e6faf00928cc",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "ad79094e-3bb3-4e93-aa65-d775ac390f69",
+        "status": "RETRY_PENDING",
+        "attempts": 3,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "549e899fdf55bd9b22781bedf943ecf013ef0fc74673c2365fddd163e56c0635",
+        "nextRetryAt": null,
+        "lastAttemptAt": "2026-08-01T02:17:45.954Z",
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-08-01T02:17:42.642Z",
+        "updatedAt": "2026-08-01T02:17:45.987Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "a78b646c-7de6-4c51-ab30-2c978d554570",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-739371",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T18:48:59.344Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "FAILED",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "d35e35f6-e719-4c15-b179-210a3dc16735",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "a78b646c-7de6-4c51-ab30-2c978d554570",
+        "status": "MANUAL_REVIEW",
+        "attempts": 0,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "a542b633b23432d093e4c6f2723633265697ac67e20fa288bea44487ed5aff45",
+        "nextRetryAt": null,
+        "lastAttemptAt": null,
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T18:48:59.472Z",
+        "updatedAt": "2026-07-31T18:48:59.492Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "a61709d9-f1da-4795-93d6-22b29bb58cfd",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-445632",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T18:44:05.594Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "FAILED",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "66531eeb-f3d5-47d1-bdfa-8ffc98645274",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "a61709d9-f1da-4795-93d6-22b29bb58cfd",
+        "status": "MANUAL_REVIEW",
+        "attempts": 0,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "2318bc059f14ffe6be9fbaa46fa0e10fe9a0fb470b708f6248885edbd6f2b44b",
+        "nextRetryAt": null,
+        "lastAttemptAt": null,
+        "lastVerificationAt": null,
+        "lastError": null,
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T18:44:07.515Z",
+        "updatedAt": "2026-07-31T18:44:07.529Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    },
+    {
+      "id": "95ad6c59-fce3-4b65-b7f4-f55b05544b0a",
+      "companyId": "25dc8651-3863-46b7-99fe-cdc0576fc99c",
+      "voucherNumber": "PUR-636117",
+      "voucherType": "Purchase",
+      "date": "2026-07-31T19:20:36.096Z",
+      "narration": null,
+      "partyLedgerName": "Indeed India Operations Private Limited",
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "pan": null,
+        "gstin": "36AADCI5931J1ZF",
+        "state": null,
+        "taxes": {
+          "cess": null,
+          "cgst": 250,
+          "igst": null,
+          "sgst": 250
+        },
+        "lineItems": [
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 5000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Purchase from vendor"
+          },
+          {
+            "rate": 500,
+            "unit": null,
+            "amount": 500,
+            "hsnSac": null,
+            "quantity": 1,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 4000,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          },
+          {
+            "rate": null,
+            "unit": null,
+            "amount": 250,
+            "hsnSac": null,
+            "quantity": null,
+            "description": "Expense/Tax allocation"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "placeOfSupply": null,
+        "purchaseOrder": null,
+        "ledgerDecisions": {
+          "taxes": {
+            "CGST": {
+              "name": "Input CGST Ledger",
+              "confidence": 1
+            },
+            "SGST": {
+              "name": "Input SGST Ledger",
+              "confidence": 1
+            }
+          },
+          "vendor": {
+            "name": "Indeed India Operations Private Limited",
+            "source": "VendorMatchingEngine",
+            "confidence": 90
+          },
+          "lineItems": [
+            {
+              "hsn": null,
+              "source": "LedgerMappingEngine",
+              "hsnMatch": false,
+              "confidence": 0.95,
+              "description": "Services Rendered",
+              "finalLedger": "Repairs and Maintenance",
+              "geminiMatch": false,
+              "keywordMatch": true
+            }
+          ],
+          "reconciliationAuditLog": {
+            "difference": 0,
+            "invoiceTotal": 5000,
+            "taxRecovered": 0,
+            "finalDecision": "BALANCED",
+            "calculatedTotal": 5000,
+            "componentsFound": [],
+            "adjustmentsApplied": {
+              "freight": 0,
+              "discount": 0,
+              "roundOff": 0,
+              "otherCharges": 0
+            },
+            "componentsRecovered": []
+          }
+        }
+      },
+      "erpSyncJob": {
+        "id": "71d51a44-6c6d-430c-85a9-f8989fbab4ef",
+        "organizationId": null,
+        "companyId": null,
+        "voucherCandidateId": "95ad6c59-fce3-4b65-b7f4-f55b05544b0a",
+        "status": "FAILED_PERMANENT",
+        "attempts": 1,
+        "maxAttempts": 5,
+        "verificationAttempts": 0,
+        "idempotencyHash": "75306991de1df292701ebe9088c2efe1088159d840fed62bd8930b59e2d8695d",
+        "nextRetryAt": null,
+        "lastAttemptAt": "2026-07-31T19:20:36.700Z",
+        "lastVerificationAt": null,
+        "lastError": "Tax Classification &apos;CGST&apos; does not exist!",
+        "erpReferenceId": null,
+        "adapterCode": "TALLY_PRIME_V1",
+        "createdAt": "2026-07-31T19:20:36.684Z",
+        "updatedAt": "2026-07-31T19:20:36.844Z",
+        "requestXml": null,
+        "responseXml": null,
+        "lastResponse": null,
+        "responseTimeMs": null,
+        "xmlHash": null,
+        "retryCount": 0,
+        "voucherNumber": null,
+        "masterId": null,
+        "guid": null,
+        "transportStatus": null,
+        "parserWarnings": []
+      }
+    }
+  ]
+}

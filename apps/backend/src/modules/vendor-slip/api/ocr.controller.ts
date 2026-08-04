@@ -15,13 +15,15 @@ import {
   PermissionsGuard,
   RequirePermissions,
 } from '../../auth/guards/permissions.guard';
-import { OCRCoordinator, InvoiceExtractor } from '../domain/services';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
 import { Inject } from '@nestjs/common';
-import * as fs from 'fs/promises';
-import { CompanyContextService } from '../../../core/context/company-context.service';
+import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
+import { CorrelationContext } from '../../../shared/observability/context';
+import { OcrPipelineService } from '../services/ocr-pipeline.service';
+import { EnterpriseEventGateway } from '../../events/enterprise-event.gateway';
 
 /**
  * OcrController — protected by JWT authentication.
@@ -32,22 +34,24 @@ import { CompanyContextService } from '../../../core/context/company-context.ser
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class OcrController {
   constructor(
-    private readonly ocrCoordinator: OCRCoordinator,
-    private readonly aiExtractor: InvoiceExtractor,
     private readonly prisma: PrismaService,
     @Inject(QUEUE_PROVIDER) private readonly queueService: IQueueService,
-    private readonly companyContext: CompanyContextService,
+    private readonly configService: ConfigService,
+    private readonly ocrPipelineService: OcrPipelineService,
+    private readonly eventGateway: EnterpriseEventGateway,
   ) {}
 
   /**
    * POST /ocr/process/:fileId
    * Triggers OCR → AI Extraction → persist InvoiceCandidate → BullMQ dispatch.
-   * Fetches the real file path from the Document record stored during upload.
+   * If USE_ASYNC_OCR is true, enqueues the job and returns 202 Accepted.
    */
   @Post('process/:fileId')
   @HttpCode(HttpStatus.OK)
   @RequirePermissions('Invoice.Process')
   async processInvoice(@Param('fileId') fileId: string) {
+    const isAsync = this.configService.get('USE_ASYNC_OCR') === 'true' || process.env.USE_ASYNC_OCR === 'true';
+
     // 1. Fetch the Document record to get the actual stored file path
     const document = await this.prisma.document.findUnique({
       where: { id: fileId },
@@ -57,80 +61,61 @@ export class OcrController {
       throw new NotFoundException(`Document not found: ${fileId}`);
     }
 
-    // Update document status to OCR_PROCESSING
-    await this.prisma.document.update({
-      where: { id: fileId },
-      data: { status: 'OCR_PROCESSING' },
-    });
+    // Extract correlationId or generate if missing
+    let correlationId = CorrelationContext.getCorrelationId();
+    if (!correlationId) {
+      correlationId = crypto.randomUUID();
+    }
 
-    try {
-      // 2. Run OCR against the stored file path
-      const fileBuffer = await fs.readFile(document.fileUrl);
-      const ocrResult = await this.ocrCoordinator.runOCR(fileBuffer, { mimeType: document.mimeType });
-
-      // 3. Extract Invoice Fields
-      const candidate = await this.aiExtractor.extract(ocrResult.text);
-
-      // 4. Persist InvoiceCandidate linked to the Document
-      const createdCandidate = await this.prisma.invoiceCandidate.create({
-        data: {
-          documentId: document.id,
-          invoiceNumber: candidate.invoiceNumber ?? 'UNKNOWN',
-          date: candidate.invoiceDate,
-          total: candidate.amount || 0,
-          tax: candidate.taxAmount || 0,
-          extractedGstin: candidate.gstin ?? null,
-          extractedName: candidate.vendorName ?? null,
-          extractedData: {
-            lineItems: candidate.lineItems,
-            confidence: candidate.confidence,
-            confidenceFactors: candidate.confidenceFactors
-          },
-          status: 'EXTRACTED',
+    if (isAsync) {
+      const jobId = crypto.randomUUID();
+      await this.queueService.addJob(
+        'ocr-queue',
+        'process-ocr',
+        {
+          fileId,
+          correlationId,
         },
-      });
-
-      // Update document status
-      await this.prisma.document.update({
-        where: { id: fileId },
-        data: {
-          status: 'EXTRACTION_PROCESSING',
-          confidenceScore: candidate.confidence ?? null,
-        },
-      });
-
-      // 5. Dispatch to BullMQ vendor-slip-queue
-      await this.queueService.addJob('vendor-slip-queue', 'process-vendor-slip', {
-        candidateId: createdCandidate.id,
-        companyId: this.companyContext.getCompanyId(),
+        { jobId, attempts: 3, backoff: { type: 'exponential', delay: 2000 } }
+      );
+      
+      this.eventGateway.emitEvent(`${fileId}:ocr_status`, {
+        status: 'OCR_QUEUED',
+        documentId: fileId,
+        jobId,
+        timestamp: new Date().toISOString()
       });
 
       return {
-        status: 'SUCCESS',
-        candidateId: createdCandidate.id,
-        documentId: document.id,
-        confidence: candidate.confidence ?? 0,
+        status: 'ACCEPTED',
+        documentId: fileId,
+        jobId
       };
-    } catch (error: any) {
-      // Graceful degradation on OCR / AI extraction failure
-      await this.prisma.document.update({
-        where: { id: fileId },
-        data: { status: 'OCR_FAILED' },
-      });
-      
-      await this.prisma.vendorSlipAudit.create({
-        data: {
-          documentId: fileId,
-          action: 'OCR_EXTRACTION_FAILURE',
-          metadata: { error: error.message, stack: error.stack },
-        },
-      });
-      
-      throw new UnprocessableEntityException({
-        status: 'FAILED',
-        error: error.message,
-      });
+    } else {
+      // Synchronous execution
+      return await this.ocrPipelineService.processDocument(fileId, correlationId);
     }
+  }
+
+  /**
+   * GET /ocr/:fileId/candidate
+   * Returns the full InvoiceCandidate for a processed document.
+   */
+  @Get(':fileId/candidate')
+  @RequirePermissions('Invoice.Read')
+  async getCandidate(@Param('fileId') fileId: string) {
+    const candidate = await this.prisma.invoiceCandidate.findUnique({
+      where: { documentId: fileId },
+      include: { document: true },
+    });
+
+    if (!candidate) {
+      throw new NotFoundException(
+        `Candidate not found for document: ${fileId}`,
+      );
+    }
+
+    return candidate;
   }
 
   /**

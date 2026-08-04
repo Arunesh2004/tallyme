@@ -3,7 +3,10 @@ export class ParsePaymentEmailCommand {
   constructor(public readonly emailRawId: string) {}
 }
 export class MatchStudentCommand {
-  constructor(public readonly candidateId: string, public readonly companyId: string) {}
+  constructor(
+    public readonly candidateId: string,
+    public readonly companyId: string,
+  ) {}
 }
 export class AllocateFeeCommand {
   constructor(public readonly paymentId: string) {}
@@ -17,7 +20,10 @@ import { Injectable } from '@nestjs/common';
 import { EventPublisher } from '../../../shared/events';
 import { StudentMatcher } from '../domain/services/student-matching.service';
 import { FeeAllocationService } from '../domain/services/fee-allocation.service';
-import { StudentVoucherOrchestrator } from '../domain/services/student-voucher.orchestrator';
+import {
+  StudentVoucherOrchestrator,
+  StudentVoucherMappingPolicy,
+} from '../domain/services/student-voucher.orchestrator';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { PaymentCandidate } from '../domain/entities';
 import {
@@ -35,7 +41,8 @@ import {
   TransactionType,
 } from '../../../shared/domain/accounting-transaction';
 import { ValidationStatus } from '../../../shared/domain/extraction-confidence';
-
+import { TransactionDraftService } from '../../universal-transaction/services/transaction-draft.service';
+import { StudentFeeDraftAdapter } from './student-fee-draft.adapter';
 @Injectable()
 export class MatchStudentCommandHandler {
   constructor(
@@ -48,6 +55,9 @@ export class MatchStudentCommandHandler {
     private readonly ledgerMappingEngine: LedgerMappingEngine,
     private readonly rulesEngine: AccountingRulesEngine,
     private readonly auditService: AccountingDecisionAuditService,
+    private readonly mappingPolicy: StudentVoucherMappingPolicy,
+    private readonly transactionDraftService: TransactionDraftService,
+    private readonly adapter: StudentFeeDraftAdapter,
   ) {}
 
   async execute(command: MatchStudentCommand, tx: any): Promise<void> {
@@ -67,8 +77,13 @@ export class MatchStudentCommandHandler {
     }
 
     // Convert Prisma model to Domain entity
-    if (!prismaCandidate.bankReference || !prismaCandidate.gatewayTransactionId) {
-      throw new Error(`Missing critical reference fields for payment ${prismaCandidate.id}`);
+    if (
+      !prismaCandidate.bankReference ||
+      !prismaCandidate.gatewayTransactionId
+    ) {
+      throw new Error(
+        `Missing critical reference fields for payment ${prismaCandidate.id}`,
+      );
     }
     const domainCandidate = new PaymentCandidate(
       prismaCandidate.id,
@@ -198,19 +213,56 @@ export class MatchStudentCommandHandler {
       confidence: ruleDecision.confidence,
     });
 
-    // 5. Generate Voucher via Orchestrator
-    await this.orchestrator.orchestrate(
-      feeAllocations,
-      incomeLedgerName,
-      studentName,
-      ref,
-      command.companyId
+    const bankLedgerName = await this.mappingPolicy.getBankLedger(
+      prismaCandidate.paymentGateway || 'UNKNOWN',
     );
 
-    this.logger.log(
-      `Successfully completed student workflow for ${command.candidateId}`,
-      'MatchStudentCommandHandler',
+    // 5. Generate Generic Payload and Convert to Draft
+    const allocationBreakdown = feeAllocations.map((a) => ({
+      feeHeadName: a.outstandingFeeId,
+      allocated: a.allocatedAmount.amount.toNumber(),
+    }));
+
+    const totalCredit = allocationBreakdown.reduce(
+      (sum, a) => sum + a.allocated,
+      0,
     );
+
+    const genericPayload = {
+      voucherType: 'RECEIPT',
+      companyId: command.companyId,
+      allocationData: {
+        allocationBreakdown,
+        remainingAmount: 0, 
+      },
+      paymentData: {
+        amount: totalCredit,
+        reference: ref,
+        bankLedger: bankLedgerName,
+      },
+      student: { name: studentName },
+    };
+
+    const canonicalPayload = this.adapter.map(genericPayload, command.candidateId);
+
+    try {
+      await this.transactionDraftService.createDraft(canonicalPayload, 'system');
+      
+      this.logger.log(
+        `Successfully created Transaction Draft for student candidate ${command.candidateId}`,
+        'MatchStudentCommandHandler',
+      );
+    } catch (e: any) {
+      if (e.name === 'DuplicateDetectedException' || e.message?.includes('DuplicateDetectedException')) {
+        await this.prisma.studentPaymentCandidate.update({
+          where: { id: command.candidateId },
+          data: { status: 'FAILED' },
+        });
+        this.logger.warn(`Candidate ${command.candidateId} rejected as duplicate.`, 'MatchStudentCommandHandler');
+      } else {
+        throw e;
+      }
+    }
   }
 }
 

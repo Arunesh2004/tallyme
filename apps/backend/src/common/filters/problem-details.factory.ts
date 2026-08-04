@@ -3,13 +3,20 @@ import { Request } from 'express';
 
 export class ProblemDetailsFactory {
   static createFromException(exception: unknown, request: Request) {
-    const status =
-      exception instanceof HttpException
+    const isCsrfError =
+      exception &&
+      typeof exception === 'object' &&
+      (exception as any).code === 'EBADCSRFTOKEN';
+
+    const status = isCsrfError
+      ? HttpStatus.FORBIDDEN
+      : exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const errorResponse =
-      exception instanceof HttpException
+    const errorResponse = isCsrfError
+      ? 'invalid csrf token'
+      : exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal Server Error';
 
@@ -22,8 +29,9 @@ export class ProblemDetailsFactory {
 
     return {
       type: `https://httpstatuses.com/${status}`,
-      title:
-        exception instanceof HttpException
+      title: isCsrfError
+        ? 'Forbidden'
+        : exception instanceof HttpException
           ? exception.name
           : 'Internal Server Error',
       status,

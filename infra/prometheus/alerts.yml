@@ -137,7 +137,7 @@ groups:
   - name: tallyme.erp
     rules:
       - alert: ERPHighFailureRate
-        expr: increase(tallyme_erp_sync_failures_total[15m]) > 5
+        expr: increase(tallyme_erp_sync_failure_total[15m]) > 5
         for: 1m
         labels:
           severity: critical
@@ -190,3 +190,35 @@ groups:
         annotations:
           summary: "Disk space critically low"
           description: "Less than 10% disk remaining on {{ $labels.instance }}"
+
+  # =========================================================================
+  # Phase 9: Transaction and Audit Alerts
+  # =========================================================================
+  - name: tallyme.transaction
+    rules:
+      - alert: AuditLogsDropped
+        expr: increase(audit_drop_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Audit logs are being dropped"
+          description: "Data loss in audit pipeline: {{ $value }} dropped in last 5m"
+
+      - alert: OutboxDeadLettersHigh
+        expr: increase(outbox_dead_total[15m]) > 5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High volume of DEAD outbox events"
+          description: "{{ $value }} outbox events became permanently dead"
+
+      - alert: CronLockContentionHigh
+        expr: increase(cron_lock_contention_total[1h]) > 10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Cron Lock Contention"
+          description: "Cron execution skipped {{ $value }} times due to lock acquired by another pod"

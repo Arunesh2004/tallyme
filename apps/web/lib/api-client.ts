@@ -9,8 +9,35 @@ export const apiClient = axios.create({
   withCredentials: true,
 });
 
+let csrfToken: string | null = null;
+let csrfTokenPromise: Promise<string> | null = null;
+
+async function getCsrfToken() {
+  if (csrfToken) return csrfToken;
+  if (!csrfTokenPromise) {
+    csrfTokenPromise = axios.get(`${apiClient.defaults.baseURL}/auth/csrf`, { withCredentials: true })
+      .then(res => {
+        csrfToken = res.data.csrfToken;
+        return csrfToken as string;
+      })
+      .catch(() => {
+        csrfTokenPromise = null;
+        return '';
+      });
+  }
+  return csrfTokenPromise;
+}
+
 apiClient.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const method = config.method?.toLowerCase();
+    if (method && ['post', 'put', 'patch', 'delete'].includes(method)) {
+      const token = await getCsrfToken();
+      if (token && config.headers) {
+        config.headers['csrf-token'] = token;
+      }
+    }
+
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;

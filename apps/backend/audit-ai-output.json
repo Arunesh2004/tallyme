@@ -1,0 +1,10 @@
+{
+  "amount": 6431,
+  "confidence": 0.95,
+  "gstin": "27ABCDE1234F1ZS",
+  "invoiceDate": "2024-05-15",
+  "invoiceNumber": "ST/24-25/0115",
+  "subtotal": 5450,
+  "taxAmount": 981,
+  "vendorName": "SHREE TRADERS"
+}

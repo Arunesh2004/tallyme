@@ -33,11 +33,12 @@ COPY --from=builder /usr/src/app/apps/backend/prisma ./prisma
 COPY --from=builder /usr/src/app/apps/backend/node_modules/.prisma ./node_modules/.prisma
 
 # Expose the API port
-EXPOSE 3000
+EXPOSE 3001
+CMD ["node", "dist/src/main"]
 
-# Health check configuration
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
 
 # Start the application
 CMD ["npm", "run", "start:prod"]

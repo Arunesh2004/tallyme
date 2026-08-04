@@ -13,8 +13,9 @@ export class ContextMiddleware implements NestMiddleware {
       (req.headers[CORRELATION_ID_HEADER] as string) || crypto.randomUUID();
     const requestId =
       (req.headers[REQUEST_ID_HEADER] as string) || crypto.randomUUID();
+    const tenantId = (req.headers['x-tenant-id'] as string) || 'DEFAULT';
 
-    RequestContextService.run({ correlationId, requestId }, () => {
+    RequestContextService.run({ correlationId, requestId, tenantId }, () => {
       next();
     });
   }

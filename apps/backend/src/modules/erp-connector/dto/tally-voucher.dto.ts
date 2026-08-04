@@ -15,6 +15,10 @@ export class TallyLedgerEntryDTO {
   @IsNotEmpty()
   ledgerName!: string;
 
+  @IsString()
+  @IsOptional()
+  stockItemName?: string;
+
   @IsBoolean()
   isDebit!: boolean;
 
@@ -23,12 +27,32 @@ export class TallyLedgerEntryDTO {
 
   @IsNumber()
   amount!: number;
+
+  @IsString()
+  @IsOptional()
+  hsnCode?: string;
+
+  @IsNumber()
+  @IsOptional()
+  quantity?: number;
+
+  @IsString()
+  @IsOptional()
+  unit?: string;
+
+  @IsNumber()
+  @IsOptional()
+  rate?: number;
 }
 
 export class TallyVoucherDTO {
   @IsString()
   @IsNotEmpty()
   voucherNumber!: string;
+
+  @IsString()
+  @IsOptional()
+  guid?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -46,7 +70,6 @@ export class TallyVoucherDTO {
   @IsOptional()
   companyName?: string;
 
-
   @IsString()
   @IsOptional()
   narration?: string;
@@ -54,6 +77,53 @@ export class TallyVoucherDTO {
   @IsString()
   @IsOptional()
   partyLedgerName?: string;
+
+  // Supplier Additions
+  @IsString()
+  @IsOptional()
+  supplierGstin?: string;
+
+  @IsString()
+  @IsOptional()
+  supplierPan?: string;
+
+  @IsString()
+  @IsOptional()
+  supplierState?: string;
+
+  @IsString()
+  @IsOptional()
+  placeOfSupply?: string;
+
+  // Invoice Metadata Additions
+  @IsString()
+  @IsOptional()
+  invoiceNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  purchaseOrder?: string;
+
+  @IsString()
+  @IsOptional()
+  paymentTerms?: string;
+
+  // GST Additions
+  @IsNumber()
+  @IsOptional()
+  cgst?: number;
+
+  @IsNumber()
+  @IsOptional()
+  sgst?: number;
+
+  @IsNumber()
+  @IsOptional()
+  igst?: number;
+
+  @IsNumber()
+  @IsOptional()
+  cess?: number;
 
   @IsBoolean()
   @IsOptional()

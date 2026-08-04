@@ -1,0 +1,1 @@
+const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); async function run() { await prisma.user.update({ where: { email: 'admin@test.com' }, data: { passwordHash: '$2b$10$S5dLGpnPSsUU8KFSJ0mvjuT.F05DvnsxyPzHF3saZFoejp1TwSU3y' }}); console.log('updated'); } run();

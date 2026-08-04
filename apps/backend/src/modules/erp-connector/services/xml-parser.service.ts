@@ -22,7 +22,6 @@ export class TallyXmlParserService {
     };
 
     // If HTTP failed fundamentally, wrap it as a business failure
-    // (though retry/dead-letter decisions are left to Orchestrator)
     if (!transportResult.success) {
       result.message = `HTTP Transport Failure: Status ${transportResult.httpStatus}`;
       result.responseCode = 'TRANSPORT_ERROR';
@@ -43,30 +42,52 @@ export class TallyXmlParserService {
       return result;
     }
 
-    // Extract common Tally nodes using regex (lightweight parser)
+    // ── Extract all Tally response fields ───────────────────────────────
+    const statusMatch = xml.match(/<STATUS>(\d+)<\/STATUS>/i);
     const createdMatch = xml.match(/<CREATED>(\d+)<\/CREATED>/i);
     const alteredMatch = xml.match(/<ALTERED>(\d+)<\/ALTERED>/i);
     const errorsMatch = xml.match(/<ERRORS>(\d+)<\/ERRORS>/i);
     const lineErrorMatch = xml.match(/<LINEERROR>([\s\S]*?)<\/LINEERROR>/i);
     const lastVchIdMatch = xml.match(/<LASTVCHID>([^<]+)<\/LASTVCHID>/i);
+    // Phase I.1 additions
+    const vchNameMatch = xml.match(/<VCHNAME>([^<]+)<\/VCHNAME>/i);
+    const warnMsgMatch = xml.match(/<WARNMSG>([\s\S]*?)<\/WARNMSG>/i);
 
+    const statusCode = statusMatch ? parseInt(statusMatch[1], 10) : null;
     const created = createdMatch ? parseInt(createdMatch[1], 10) : 0;
     const altered = alteredMatch ? parseInt(alteredMatch[1], 10) : 0;
     const errors = errorsMatch ? parseInt(errorsMatch[1], 10) : 0;
 
     const lineError = lineErrorMatch ? lineErrorMatch[1].trim() : null;
+    const vchName = vchNameMatch ? vchNameMatch[1].trim() : undefined;
+    const warnMsg = warnMsgMatch ? warnMsgMatch[1].trim() : undefined;
 
     result.referenceId = lastVchIdMatch ? lastVchIdMatch[1].trim() : undefined;
+    if (vchName) result.voucherNumber = vchName;
 
     result.metadata = {
+      status: statusCode,
       createdCount: created,
       alteredCount: altered,
       errorCount: errors,
+      vchName,
+      warnMsg,
     };
 
-    // Determine Success
-    // Tally considers a voucher successful if CREATED > 0 or ALTERED > 0 and ERRORS == 0
-    if ((created > 0 || altered > 0) && errors === 0) {
+    // ── Success determination (priority order) ───────────────────────────
+    // 1. STATUS field (primary — most reliable across Tally versions)
+    // 2. CREATED / ERRORS (fallback for older installs without STATUS)
+    let isSuccess: boolean;
+
+    if (statusCode !== null) {
+      // STATUS=1 → success, STATUS=0 → failure
+      isSuccess = statusCode === 1;
+    } else {
+      // Fallback: classic CREATED > 0 && ERRORS == 0
+      isSuccess = (created > 0 || altered > 0) && errors === 0;
+    }
+
+    if (isSuccess) {
       result.success = true;
       result.responseCode = 'SUCCESS';
       result.message = 'Voucher synchronized successfully';
@@ -76,8 +97,12 @@ export class TallyXmlParserService {
       result.message = lineError || 'Unknown Tally validation error';
     }
 
+    // ── Warnings ─────────────────────────────────────────────────────────
     if (!result.referenceId && result.success) {
       warnings.push('Missing LASTVCHID in successful response');
+    }
+    if (warnMsg) {
+      warnings.push(`Tally warning: ${warnMsg}`);
     }
 
     this.logger.debug(
@@ -85,6 +110,7 @@ export class TallyXmlParserService {
         message: 'Tally XML Parsed',
         success: result.success,
         responseCode: result.responseCode,
+        statusField: statusCode,
         warningsCount: warnings.length,
       },
       'TallyXmlParserService',

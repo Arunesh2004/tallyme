@@ -24,7 +24,16 @@ export interface IERPAdapter {
   parseResponse(response: TransportResult): ERPResponse;
   validateResponse(parsedResponse: ERPResponse): boolean;
   verifyVoucherExists(
-    voucherNumber: string,
+    criteria: {
+      voucherNumber?: string;
+      guid?: string;
+      masterId?: string;
+      externalInvoiceNumber?: string;
+      voucherType?: string;
+      partyLedger?: string;
+      amount?: number;
+      date?: Date;
+    },
     context: ERPRequestContext,
   ): Promise<'EXISTS' | 'NOT_FOUND' | 'UNKNOWN'>;
 }

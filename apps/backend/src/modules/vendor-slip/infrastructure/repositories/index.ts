@@ -45,7 +45,7 @@ export class PrismaVendorRepository implements IVendorRepository {
     try {
       const raw = await this.getClient().vendor.findMany({
         where: { name: { contains: name, mode: 'insensitive' } },
-        take: 10
+        take: 10,
       });
       return raw.map((r: any) => VendorMapper.toDomain(r));
     } catch (e) {
@@ -56,7 +56,7 @@ export class PrismaVendorRepository implements IVendorRepository {
   async getVendorById(id: string): Promise<Vendor | null> {
     try {
       const raw = await this.getClient().vendor.findUnique({
-        where: { id }
+        where: { id },
       });
       return raw ? VendorMapper.toDomain(raw) : null;
     } catch (e) {
@@ -108,7 +108,7 @@ export class PrismaInvoiceCandidateRepository implements IInvoiceCandidateReposi
     try {
       const raw = await this.getClient().invoiceCandidate.findMany({
         where: { status: 'EXTRACTED' }, // Assuming EXTRACTED means ready for matching
-        take: 20
+        take: 20,
       });
       return raw.map((r: any) => InvoiceMapper.toDomain(r));
     } catch (e) {

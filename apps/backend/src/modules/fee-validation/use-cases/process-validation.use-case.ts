@@ -49,7 +49,8 @@ export class ProcessValidationUseCase {
       candidate.studentId,
     );
 
-    if (!candidate.paymentCandidateId) throw new Error('Missing transaction ID');
+    if (!candidate.paymentCandidateId)
+      throw new Error('Missing transaction ID');
     const paymentData = {
       amount: Number(candidate.amount) || 0,
       transactionId: candidate.paymentCandidateId,

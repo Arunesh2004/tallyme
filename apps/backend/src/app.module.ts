@@ -33,10 +33,10 @@ import { VoucherBuilderModule } from './modules/voucher-builder/voucher-builder.
 import { ERPConnectorModule } from './modules/erp-connector/erp-connector.module';
 import { ObservabilityModule } from './shared/observability/observability.module';
 import { VendorSlipModule } from './modules/vendor-slip/vendor-slip.module';
-// import { StudentFeeModule } from './modules/student-fee/student-fee.module';
+import { StudentFeeModule } from './modules/student-fee/student-fee.module';
 import { OperationsModule } from './modules/operations/operations.module';
 import { FilesModule } from './modules/files/files.module';
-// import { EnterpriseAccountingIntelligenceModule } from './modules/accounting-intelligence/enterprise-accounting-intelligence.module';
+import { EnterpriseAccountingIntelligenceModule } from './modules/accounting-intelligence/enterprise-accounting-intelligence.module';
 
 import { OrganizationModule } from './modules/organization/organization.module';
 import { AuditModule } from './modules/audit/audit.module';
@@ -44,6 +44,8 @@ import { EventsModule } from './modules/events/events.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BackupModule } from './modules/backup/backup.module';
 import { AIGovernanceModule } from './modules/ai-governance/ai-governance.module';
+import { UniversalTransactionModule } from './modules/universal-transaction/universal-transaction.module';
+import { AccountingPolicyModule } from './modules/accounting-policy/accounting-policy.module';
 
 @Module({
   imports: [
@@ -89,15 +91,17 @@ import { AIGovernanceModule } from './modules/ai-governance/ai-governance.module
     OperationsModule,
     ObservabilityModule,
     VendorSlipModule,
-    // StudentFeeModule,
+    StudentFeeModule,
     FilesModule,
-    // EnterpriseAccountingIntelligenceModule,
+    EnterpriseAccountingIntelligenceModule,
     EventsModule,
     OrganizationModule,
     AuditModule,
     ScheduleModule.forRoot(),
     BackupModule,
     AIGovernanceModule,
+    UniversalTransactionModule,
+    AccountingPolicyModule,
   ],
   providers: [
     {

@@ -1,0 +1,382 @@
+[
+  {
+    "filename": "Screenshot 2026-07-26 234527.png",
+    "status": "FAILED_PERMANENT",
+    "invoiceCandidate": {
+      "id": "6ebc00fe-1aaf-4c79-84f0-dfd5560f4596",
+      "documentId": "754aa51e-2a56-45e5-bd3f-bf668f0f374c",
+      "invoiceNumber": "ST/24-25/0115",
+      "date": "2024-05-15T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "981",
+      "total": "6431",
+      "extractedGstin": "27ABCDE1234F1ZS",
+      "extractedPan": null,
+      "extractedName": "SHREE TRADERS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    "voucherCandidate": {
+      "id": "9d855c26-6058-40be-a90a-0362df8d639f",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-888338",
+      "voucherType": "Purchase",
+      "date": "2024-05-15T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "SHREE TRADERS LEDGER",
+            "source": "VendorMatchingEngine",
+            "confidence": 99
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    "syncJob": {
+      "id": "677ab037-c56d-4180-b5e0-173af490f876",
+      "organizationId": null,
+      "companyId": null,
+      "voucherCandidateId": "9d855c26-6058-40be-a90a-0362df8d639f",
+      "status": "FAILED_PERMANENT",
+      "attempts": 1,
+      "maxAttempts": 5,
+      "verificationAttempts": 0,
+      "idempotencyHash": "d68b1db7d2375aead1b7015877266741ba74c31123deea58cddcd675182f4421",
+      "nextRetryAt": null,
+      "lastAttemptAt": "2026-07-29T13:48:09.979Z",
+      "lastVerificationAt": null,
+      "lastError": "Voucher date is missing for: &apos;Purchase&apos; voucher PUR-888338.  Verify the data, resolve errors (if any) and retry Split.",
+      "erpReferenceId": null,
+      "adapterCode": "TALLY_PRIME_V1",
+      "createdAt": "2026-07-29T13:48:08.408Z",
+      "updatedAt": "2026-07-29T13:48:10.409Z"
+    }
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234533.png",
+    "status": "FAILED_PERMANENT",
+    "invoiceCandidate": {
+      "id": "817dd904-73b7-498c-aa30-d5491bbebc77",
+      "documentId": "f554ffba-f714-43cf-b3e7-8224fb6be030",
+      "invoiceNumber": "ME/24-25/0789",
+      "date": "2024-05-20T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "13590",
+      "total": "89090",
+      "extractedGstin": "27ABCFM5578G1Z1",
+      "extractedPan": null,
+      "extractedName": "MAHALAXMI ENTERPRISES",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    "voucherCandidate": {
+      "id": "b1dc1c1d-c0ca-48af-9bc9-747f57259f2b",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-969760",
+      "voucherType": "Purchase",
+      "date": "2024-05-20T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "MAHALAXMI ENTERPRISES",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    "syncJob": {
+      "id": "5191e271-ae58-45cd-b7a0-011f8b043964",
+      "organizationId": null,
+      "companyId": null,
+      "voucherCandidateId": "b1dc1c1d-c0ca-48af-9bc9-747f57259f2b",
+      "status": "FAILED_PERMANENT",
+      "attempts": 1,
+      "maxAttempts": 5,
+      "verificationAttempts": 0,
+      "idempotencyHash": "1c9a937d4d4935d1dec2a5f34da42cf3f4f51b86fb10e84c17564a54d4a3d794",
+      "nextRetryAt": null,
+      "lastAttemptAt": "2026-07-29T13:49:29.804Z",
+      "lastVerificationAt": null,
+      "lastError": "Voucher date is missing for: &apos;Purchase&apos; voucher PUR-969760.  Verify the data, resolve errors (if any) and retry Split.",
+      "erpReferenceId": null,
+      "adapterCode": "TALLY_PRIME_V1",
+      "createdAt": "2026-07-29T13:49:29.780Z",
+      "updatedAt": "2026-07-29T13:49:29.942Z"
+    }
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234538.png",
+    "status": "FAILED_PERMANENT",
+    "invoiceCandidate": {
+      "id": "09cc10ab-dff0-4585-b1ec-17ecc687f0fa",
+      "documentId": "4d18f1c3-75dd-4ac6-b3f4-7047629a86e8",
+      "invoiceNumber": "OE/24-25/0566",
+      "date": "2024-05-25T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "4662",
+      "total": "30562",
+      "extractedGstin": "27AAHFO7890H1Z2",
+      "extractedPan": null,
+      "extractedName": "OM ELECTRICALS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    "voucherCandidate": {
+      "id": "43e19e7b-5b40-4634-b519-c34715424802",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-054054",
+      "voucherType": "Purchase",
+      "date": "2024-05-25T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "OM ELECTRICALS",
+            "source": "VendorMatchingEngine",
+            "confidence": 99
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    "syncJob": {
+      "id": "21825d87-b3b5-4796-b131-ce3c1bc171b7",
+      "organizationId": null,
+      "companyId": null,
+      "voucherCandidateId": "43e19e7b-5b40-4634-b519-c34715424802",
+      "status": "FAILED_PERMANENT",
+      "attempts": 1,
+      "maxAttempts": 5,
+      "verificationAttempts": 0,
+      "idempotencyHash": "bb3ed43acdf9308f75c49d06148303adab714f1aec5f750a777b20c920002677",
+      "nextRetryAt": null,
+      "lastAttemptAt": "2026-07-29T13:50:54.093Z",
+      "lastVerificationAt": null,
+      "lastError": "Voucher date is missing for: &apos;Purchase&apos; voucher PUR-054054.  Verify the data, resolve errors (if any) and retry Split.",
+      "erpReferenceId": null,
+      "adapterCode": "TALLY_PRIME_V1",
+      "createdAt": "2026-07-29T13:50:54.070Z",
+      "updatedAt": "2026-07-29T13:50:54.235Z"
+    }
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234549.png",
+    "status": "FAILED_PERMANENT",
+    "invoiceCandidate": {
+      "id": "eb01a399-43be-493f-8055-a18b64db20af",
+      "documentId": "146006e0-c695-460c-b578-8d93971c385e",
+      "invoiceNumber": "SBD/24-25/0444",
+      "date": "2024-05-28T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "3564",
+      "total": "23364",
+      "extractedGstin": "27AAKFS1234K1Z8",
+      "extractedPan": null,
+      "extractedName": "SIDDHI BOOK DEPOT",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    "voucherCandidate": {
+      "id": "2e5e2457-69da-4923-a5c1-ae996311e6da",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-143637",
+      "voucherType": "Purchase",
+      "date": "2024-05-28T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "SIDDHI BOOK DEPOT",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    "syncJob": {
+      "id": "0830c0e0-bd35-43a8-a589-97a0aabd168e",
+      "organizationId": null,
+      "companyId": null,
+      "voucherCandidateId": "2e5e2457-69da-4923-a5c1-ae996311e6da",
+      "status": "FAILED_PERMANENT",
+      "attempts": 1,
+      "maxAttempts": 5,
+      "verificationAttempts": 0,
+      "idempotencyHash": "1eea94249868cc5eb489f7cedefd0fed1a89f0bb28619587951b8b770ac0c319",
+      "nextRetryAt": null,
+      "lastAttemptAt": "2026-07-29T13:52:23.792Z",
+      "lastVerificationAt": null,
+      "lastError": "Voucher date is missing for: &apos;Purchase&apos; voucher PUR-143637.  Verify the data, resolve errors (if any) and retry Split.",
+      "erpReferenceId": null,
+      "adapterCode": "TALLY_PRIME_V1",
+      "createdAt": "2026-07-29T13:52:23.702Z",
+      "updatedAt": "2026-07-29T13:52:24.150Z"
+    }
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234559.png",
+    "status": "SYNCED",
+    "invoiceCandidate": {
+      "id": "c7a6416c-3c46-44f9-8cc5-e961fefa9439",
+      "documentId": "0ca20185-eebc-4169-85aa-0374910f5648",
+      "invoiceNumber": "Fl/24-25/0099",
+      "date": "2024-06-01T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "324",
+      "total": "2124",
+      "extractedGstin": "27AABCFI5567J1Z9",
+      "extractedPan": null,
+      "extractedName": "Industrial Fasteners & Hardware",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED"
+    },
+    "voucherCandidate": {
+      "id": "4e3bc46a-a0dc-4ba4-87f0-39d301b9d5b4",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-230941",
+      "voucherType": "Purchase",
+      "date": "2024-06-01T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "Industrial Fasteners & Hardware",
+            "source": "VendorMatchingEngine",
+            "confidence": 99
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    "syncJob": {
+      "id": "87a821c4-57a8-4f61-8817-1e563019c505",
+      "organizationId": null,
+      "companyId": null,
+      "voucherCandidateId": "4e3bc46a-a0dc-4ba4-87f0-39d301b9d5b4",
+      "status": "SYNCED",
+      "attempts": 1,
+      "maxAttempts": 5,
+      "verificationAttempts": 0,
+      "idempotencyHash": "368dec7532ea1503c9821507b811dc8dacddb7accbd2b1dfa3f0bfaa64e5885e",
+      "nextRetryAt": null,
+      "lastAttemptAt": "2026-07-29T13:53:51.042Z",
+      "lastVerificationAt": null,
+      "lastError": null,
+      "erpReferenceId": "340",
+      "adapterCode": "TALLY_PRIME_V1",
+      "createdAt": "2026-07-29T13:53:50.981Z",
+      "updatedAt": "2026-07-29T13:53:51.513Z"
+    }
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234604.png",
+    "status": "ERROR",
+    "reason": "VoucherCandidate timeout"
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234609.png",
+    "status": "ERROR",
+    "reason": "{\"status\":\"FAILED\",\"error\":\"fetch failed\"}"
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234614.png",
+    "status": "ERROR",
+    "reason": "{\"status\":\"FAILED\",\"error\":\"fetch failed\"}"
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234618.png",
+    "status": "ERROR",
+    "reason": "VoucherCandidate timeout"
+  },
+  {
+    "filename": "Screenshot 2026-07-26 234638.png",
+    "status": "ERROR",
+    "reason": "VoucherCandidate timeout"
+  }
+]

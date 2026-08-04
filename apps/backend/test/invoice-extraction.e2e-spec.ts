@@ -4,10 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/infrastructure/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import axios from 'axios';
-
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+import { InvoiceExtractor, OCRCoordinator } from '../src/modules/vendor-slip/domain/services';
 
 jest.mock('fs/promises', () => ({
   readFile: jest.fn().mockResolvedValue(Buffer.from('fake-file')),
@@ -22,14 +19,35 @@ describe('Invoice Extraction (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+    .overrideProvider(InvoiceExtractor)
+    .useValue({
+      extract: jest.fn().mockResolvedValue({
+        vendorName: 'Vendor',
+        invoiceNumber: '123',
+        amount: 100,
+        confidence: 0.95,
+      })
+    })
+    .overrideProvider(OCRCoordinator)
+    .useValue({
+      runOCR: jest.fn().mockResolvedValue({
+        text: 'Mocked OCR Text',
+      })
+    })
+    .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
     prisma = moduleFixture.get<PrismaService>(PrismaService);
-    
+
     const jwtService = moduleFixture.get<JwtService>(JwtService);
-    jwtToken = jwtService.sign({ sub: 'test-user', roles: ['admin'], companyId: 'company-1' });
+    jwtToken = jwtService.sign({
+      sub: 'test-user',
+      roles: ['admin'],
+      permissions: ['Invoice.Process'],
+      companyId: 'company-1',
+    });
 
     // Seed a document
     const doc = await prisma.document.create({
@@ -40,8 +58,8 @@ describe('Invoice Extraction (e2e)', () => {
         organizationId: 'company-1',
         uploadedBy: 'test-user',
         checksum: '12345',
-        source: 'EMAIL'
-      }
+        source: 'EMAIL',
+      },
     });
     documentId = doc.id;
   });
@@ -53,24 +71,26 @@ describe('Invoice Extraction (e2e)', () => {
   });
 
   it('TEST 1: Valid invoice upload -> OCR success, Candidate Created', async () => {
-    mockedAxios.post
-      .mockResolvedValueOnce({
-        data: { choices: [{ message: { content: 'OCR Text' } }] },
-      })
-      .mockResolvedValueOnce({
-        data: { choices: [{ message: { content: JSON.stringify({ vendorName: 'Vendor', invoiceNumber: '123', amount: 100, confidence: 0.95 }) } }] },
-      });
+    const isAsync = process.env.USE_ASYNC_OCR === 'true';
 
     const response = await request(app.getHttpServer())
       .post(`/ocr/process/${documentId}`)
-      .set('Authorization', `Bearer ${jwtToken}`)
-      .expect(200);
+      .set('Authorization', `Bearer ${jwtToken}`);
 
-    expect(response.body.status).toBe('SUCCESS');
-    expect(response.body.confidence).toBe(0.95);
+    if (isAsync) {
+      expect(response.status).toBe(200); // Created/Accepted (Nest defaults to 201 for POST)
+      expect(response.body.status).toBe('ACCEPTED');
+      
+      // Wait for BullMQ worker to pick it up and process
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    } else {
+      expect(response.status).toBe(200);
+      expect(response.body.status).toBe('SUCCESS');
+      expect(response.body.confidence).toBe(0.95);
+    }
 
     const candidate = await prisma.invoiceCandidate.findUnique({
-      where: { documentId }
+      where: { documentId },
     });
     expect(candidate).toBeDefined();
     expect(candidate?.extractedName).toBe('Vendor');

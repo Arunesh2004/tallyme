@@ -11,7 +11,7 @@ import { isWorkerMode } from '../../shared/utils/runtime-mode';
     PrismaModule,
     MulterModule.register({ storage: undefined }), // memoryStorage is the default for buffer access
   ],
-  controllers: isWorkerMode ? [] : [FilesController],
+  controllers: [FilesController],
   providers: [LocalStorageProvider],
   exports: [LocalStorageProvider],
 })

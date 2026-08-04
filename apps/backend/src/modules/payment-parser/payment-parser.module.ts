@@ -17,12 +17,15 @@ import { PaymentParserController } from './controllers/parser.controller';
 import { BullModule } from '@nestjs/bullmq';
 
 import { isWorkerMode } from '../../shared/utils/runtime-mode';
+import { StudentPaymentExtractor } from './services/student-payment.extractor';
+import { PrismaModule } from '../../infrastructure/database/prisma.module';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: PAYMENT_CANDIDATE_QUEUE,
     }),
+    PrismaModule,
   ],
   controllers: isWorkerMode ? [] : [PaymentParserController],
   providers: [
@@ -38,10 +41,8 @@ import { isWorkerMode } from '../../shared/utils/runtime-mode';
     RazorpayParser,
     GenericParser,
     ProcessPaymentEmailUseCase,
+    StudentPaymentExtractor,
   ],
-  exports: [
-    PAYMENT_PARSER_REPOSITORY,
-    ProcessPaymentEmailUseCase,
-  ],
+  exports: [PAYMENT_PARSER_REPOSITORY, ProcessPaymentEmailUseCase, StudentPaymentExtractor, RazorpayParser],
 })
 export class PaymentParserModule {}

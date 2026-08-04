@@ -24,9 +24,12 @@ import { VendorsController } from './controllers/vendors.controller';
 import { NotificationsController } from './controllers/notifications.controller';
 import { QueueController } from './controllers/queue.controller';
 import { QueueModule } from '../../infrastructure/queue/bullmq.module';
+import { ApprovalBatchService } from './approval-batch/approval-batch.service';
+import { PrismaModule } from '../../infrastructure/database/prisma.module';
+import { EnterpriseAccountingIntelligenceModule } from '../accounting-intelligence/enterprise-accounting-intelligence.module';
 
 @Module({
-  imports: [ERPConnectorModule, QueueModule], // Required for TallyTransportService inside TallyHealthService
+  imports: [ERPConnectorModule, QueueModule, PrismaModule, EnterpriseAccountingIntelligenceModule], // Required for TallyTransportService inside TallyHealthService
   controllers: [
     CapabilityController,
     DashboardController,
@@ -50,6 +53,8 @@ import { QueueModule } from '../../infrastructure/queue/bullmq.module';
     TallyHealthService,
     AuditTimelineService,
     NotificationService,
+    ApprovalBatchService,
   ],
+  exports: [ApprovalBatchService],
 })
 export class OperationsModule {}

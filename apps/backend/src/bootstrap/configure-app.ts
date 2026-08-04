@@ -41,7 +41,26 @@ export const configureApp = (app: INestApplication) => {
     ) {
       return next();
     }
-    return csrfProtection(req, res, next);
+
+    // SAFE LOGGING FOR CSRF
+    return csrfProtection(req, res, (err: any) => {
+      if (err) {
+        if (err.code === 'EBADCSRFTOKEN') {
+          console.log(
+            '[CSRF Middleware] REJECT: Invalid CSRF Token on path',
+            req.path,
+          );
+          console.log(
+            '[CSRF Middleware] Headers present:',
+            Object.keys(req.headers),
+          );
+        } else {
+          console.log('[CSRF Middleware] Error:', err.message);
+        }
+        return next(err);
+      }
+      return next();
+    });
   });
 
   // Trust proxy (useful behind reverse proxies like Nginx/ALB)
@@ -52,7 +71,11 @@ export const configureApp = (app: INestApplication) => {
 
   // Enable CORS
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://app.tallyme.com'],
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://app.tallyme.com',
+    ],
     credentials: true,
   });
 

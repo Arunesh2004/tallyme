@@ -1,0 +1,38 @@
+SHREE TRADERS
+Wholesale & General Suppliers
+45, Market Road, Pune - 411002, Maharashtra
+Phone: 020-12345678 | Email: sales@shreetraders.in
+
+TAX INVOICE
+
+Invoice No.: ST/24-25/0115
+GSTIN: 27ABCDE1234F1ZS
+
+Date: 15/05/2024
+
+Bill To:
+ABC SCHOOL
+12, School Road,
+Pune - 411005, Maharashtra
+GSTIN: 27AAACC1234D1Z6
+
+S.No. Description of Goods HSN/SAC Qty Rate Amount (₹)
+1 A4 Size Paper (500 Sheets) 4802 10 250.00 2,500.00
+2 HP Ink Cartridge 680 8443 2 950.00 1,900.00
+3 Stapler Machine 8472 3 350.00 1,050.00
+
+Subtotal 5,450.00
+CGST @9% 490.50
+SGST @9% 490.50
+Round Off 0.00
+Total ₹ 6,431.00
+
+Amount in words: Six Thousand Four Hundred Thirty One Only
+
+Bank Details:
+Bank Name: HDFC Bank
+A/c No.: 50200012345678
+IFSC Code: HDFC0001234
+
+For SHREE TRADERS
+Authorized Signatory

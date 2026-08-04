@@ -1,40 +1,49 @@
-# TallyMe Enterprise - Deployment Guide
+# TallyMe Enterprise Deployment Guide
 
-## Architecture Overview
-TallyMe is a multi-container application comprising:
-- **Backend API**: NestJS web server
-- **Backend Worker**: NestJS background job processor (BullMQ)
-- **Frontend**: Next.js (App Router) client
-- **PostgreSQL**: Primary data store
-- **Redis**: Queue and Idempotency store
-- **Nginx**: Reverse proxy for routing and SSL
+## Overview
+This guide covers the deployment of TallyMe Enterprise to a multi-node Kubernetes cluster. The architecture leverages Horizontal Pod Autoscaling (HPA), Redis Distributed Locks for cron safety, and a robust `initContainer` for Prisma migrations.
 
-## Prerequisite Configuration
-Before deploying, create a `.env` file from `.env.example` and set highly secure secrets for `JWT_SECRET`, `POSTGRES_PASSWORD`, etc.
+## Pre-requisites
+- Kubernetes 1.25+ cluster
+- PostgreSQL 15+ (e.g., AWS RDS or Azure Flexible Server)
+- Redis 7+ (e.g., Elasticache)
+- External Secrets Operator installed in the cluster (for AWS Secrets Manager / HashiCorp Vault)
+- GitHub Container Registry (GHCR) access
 
-## 1. Single Node Deployment (Linux VPS)
-The simplest production deployment leverages `docker-compose.prod.yml`.
+## CI/CD Pipeline
+Deployment images are automatically built and published via `.github/workflows/backend.yml`.
+The pipeline uses `npx prisma migrate status` to validate the Prisma schema state and `npx prisma validate`. It outputs a production-ready image (`ghcr.io/tallyme/backend:latest`) with dev-dependencies omitted (`npm ci --omit=dev`).
 
-1. Clone the repository to the VPS.
-2. Ensure Docker and Docker Compose are installed.
-3. Build the images:
+## Deployment Steps
+
+1. **Apply Secrets:**
+   Ensure the `tallyme-secrets-external` ExternalSecret is applied, fetching credentials from your provider:
    ```bash
-   docker-compose -f docker-compose.prod.yml build
-   ```
-4. Start the stack:
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
+   kubectl apply -f k8s/external-secrets.yaml
    ```
 
-### 1.1 SSL Configuration
-The provided `nginx.conf` can be extended with Certbot to issue Let's Encrypt certificates.
-Run Certbot in a standalone container pointing to the Nginx webroot, and reload Nginx.
+2. **Apply Configurations:**
+   ```bash
+   kubectl apply -f k8s/deployment.yaml
+   ```
 
-## 2. Advanced: Blue/Green Deployment
-For zero-downtime updates:
-1. Maintain two environments in Nginx upstream blocks (`backend_blue` and `backend_green`).
-2. Deploy the new image to the inactive color (e.g., Green).
-3. Run DB migrations explicitly on the Green container.
-4. Execute health checks against Green `/api/health/ready`.
-5. Update Nginx configuration to point to Green and execute `nginx -s reload`.
-6. Spin down the Blue environment.
+3. **Database Migrations (Automated):**
+   When `k8s/deployment.yaml` is applied, the `tallyme-api` deployment uses an `initContainer` to automatically execute `npx prisma migrate deploy`. **The main API containers will not boot until this migration completes successfully.**
+
+## Worker Safety (Distributed Cron Locks)
+Background tasks (`OutboxCleanupWorker`, `VoucherCleanupWorker`, `ERPReconciliationWorker`, `OutboxRecoverySweeper`) are protected from split-brain concurrent execution via a **Distributed Redis Lock** (`cron_lock:*`). You may safely scale the `tallyme-worker` deployment to multiple replicas.
+
+## Load Testing
+A k6 baseline script is provided in `load-testing/k6-baseline.js`.
+To execute a load test against your staging or production cluster:
+```bash
+k6 run load-testing/k6-baseline.js -e API_URL=https://api.tallyme.com/api/v2 -e AUTH_TOKEN=your_token
+```
+
+## Rollback Procedure
+If a deployment fails, use the standard Kubernetes rollout undo command:
+```bash
+kubectl rollout undo deployment/tallyme-api -n tallyme
+kubectl rollout undo deployment/tallyme-worker -n tallyme
+```
+*Note: Database rollbacks must be handled manually or via Point-In-Time-Recovery (PITR).*

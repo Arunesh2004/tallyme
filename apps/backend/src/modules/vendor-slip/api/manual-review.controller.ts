@@ -22,7 +22,6 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
 import { Inject } from '@nestjs/common';
-import { VOUCHER_BUILDER_QUEUE } from '../../voucher-builder/constants/voucher.constants';
 import { LoggerService } from '../../../core/logger/logger.service';
 import { CompanyContextService } from '../../../core/context/company-context.service';
 

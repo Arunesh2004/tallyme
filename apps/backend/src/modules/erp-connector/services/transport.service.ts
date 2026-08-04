@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { LoggerService } from '../../../core/logger/logger.service';
 import { ERPTransportException } from '../exceptions/erp-transport.exception';
@@ -14,22 +15,20 @@ export class TallyTransportService {
   private getConfig(): { url: string; timeoutMs: number } {
     const host = this.configService.get<string>('TALLY_HOST') || 'localhost';
     const port = this.configService.get<string>('TALLY_PORT') || '9000';
-    const timeoutMsRaw = this.configService.get<string>('TALLY_TIMEOUT_MS');
+    const timeoutMsRaw = this.configService.get<string>(
+      'TALLY_HTTP_TIMEOUT_MS',
+    );
 
     const url = `http://${host}:${port}`;
-    if (!timeoutMsRaw) {
-      throw new ERPTransportException(
-        'Configuration error: TALLY_TIMEOUT_MS is missing',
-        'CONFIG_ERROR',
-      );
-    }
-
-    const timeoutMs = parseInt(timeoutMsRaw, 10);
-    if (isNaN(timeoutMs) || timeoutMs <= 0) {
-      throw new ERPTransportException(
-        'Configuration error: TALLY_TIMEOUT_MS must be a positive integer',
-        'CONFIG_ERROR',
-      );
+    let timeoutMs = 120000; // Default to 120 seconds
+    if (timeoutMsRaw) {
+      timeoutMs = parseInt(timeoutMsRaw, 10);
+      if (isNaN(timeoutMs) || timeoutMs <= 0) {
+        throw new ERPTransportException(
+          'Configuration error: TALLY_HTTP_TIMEOUT_MS must be a positive integer',
+          'CONFIG_ERROR',
+        );
+      }
     }
 
     return { url, timeoutMs };
@@ -53,6 +52,23 @@ export class TallyTransportService {
     let transportResultLabel = 'SUCCESS';
 
     try {
+      // DEBUG-ONLY: Payload capture — gated behind TALLY_DEBUG_PAYLOAD flag.
+      // NEVER runs in production (NODE_ENV=production).
+      const debugEnabled =
+        process.env.NODE_ENV !== 'production' &&
+        this.configService.get<string>('TALLY_DEBUG_PAYLOAD') === 'true';
+      if (debugEnabled) {
+        require('fs').writeFileSync(
+          'forensic-payload-raw.xml',
+          payload,
+          'utf8',
+        );
+        this.logger.debug(
+          'Debug payload captured to forensic-payload-raw.xml',
+          'TallyTransportService',
+        );
+      }
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -75,29 +91,42 @@ export class TallyTransportService {
       }
 
       const durationMs = Date.now() - startTime;
+      // FIX 2: Compute actual payload hash and byte size for audit trail
+      const xmlHash = crypto
+        .createHash('sha256')
+        .update(payload, 'utf8')
+        .digest('hex');
+      const payloadSizeBytes = Buffer.byteLength(payload, 'utf8');
       this.logTransport(
         context,
         url,
-        payload.length,
+        payloadSizeBytes,
         durationMs,
         httpStatus,
         transportResultLabel,
+        xmlHash,
       );
+
+      clearTimeout(timeoutId);
 
       return {
         rawResponse: responseText,
         httpStatus,
         durationMs,
         success: isSuccess,
+        xmlHash,
+        payloadSizeBytes,
       };
     } catch (error: any) {
+      clearTimeout(timeoutId);
       if (error.name === 'AbortError') {
         transportResultLabel = 'TIMEOUT';
         const durationMs = Date.now() - startTime;
+        const payloadSizeBytes = Buffer.byteLength(payload, 'utf8');
         this.logTransport(
           context,
           url,
-          payload.length,
+          payloadSizeBytes,
           durationMs,
           httpStatus,
           transportResultLabel,
@@ -111,10 +140,11 @@ export class TallyTransportService {
       transportResultLabel = 'NETWORK_ERROR';
       const code = error.cause?.code || 'CONNECTION_FAILED';
       const durationMs = Date.now() - startTime;
+      const payloadSizeBytes = Buffer.byteLength(payload, 'utf8');
       this.logTransport(
         context,
         url,
-        payload.length,
+        payloadSizeBytes,
         durationMs,
         httpStatus,
         transportResultLabel,
@@ -162,6 +192,7 @@ export class TallyTransportService {
     durationMs: number,
     httpStatus: number,
     transportStatus: string,
+    xmlHash?: string,
   ) {
     this.logger.log(
       {
@@ -172,6 +203,7 @@ export class TallyTransportService {
         durationMs,
         httpStatus,
         transportStatus,
+        ...(xmlHash ? { xmlHash: xmlHash.substring(0, 16) + '...' } : {}),
       },
       'TallyTransportService',
     );

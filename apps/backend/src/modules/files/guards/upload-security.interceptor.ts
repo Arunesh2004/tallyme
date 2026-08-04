@@ -25,6 +25,11 @@ export class UploadSecurityInterceptor implements NestInterceptor {
 
     if (file) {
       this.logger.log(`Scanning uploaded file: ${file.originalname}`);
+      console.log('[UploadSecurityInterceptor] File metadata:', {
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+      });
 
       // 1. MIME Validation
       if (!this.ALLOWED_MIMES.includes(file.mimetype)) {

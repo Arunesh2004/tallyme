@@ -27,13 +27,14 @@ export class GmailWatchService implements OnApplicationBootstrap {
   }
 
   setupWatch(): void {
-    const pollInterval = this.configService.get<number>('mail.pollIntervalMs') || 60000;
+    const pollInterval =
+      this.configService.get<number>('mail.pollIntervalMs') || 60000;
     this.logger.log(`Starting IMAP Mail Polling every ${pollInterval}ms`);
-    
+
     this.timer = setInterval(() => {
       this.pollForEmails();
     }, pollInterval);
-    
+
     // Initial fetch
     this.pollForEmails();
   }
@@ -44,13 +45,15 @@ export class GmailWatchService implements OnApplicationBootstrap {
       if (unread.length > 0) {
         this.logger.log(`Found ${unread.length} unread emails.`);
       }
-      
+
       for (const email of unread) {
         try {
           await this.mailProcessor.processRawEmail(email.raw); // Delegate raw parsing to downstream processor
           await this.mailClient.markAsRead(email.uid.toString());
         } catch (error: any) {
-          this.logger.error(`Error processing email ${email.uid}: ${error.message}`);
+          this.logger.error(
+            `Error processing email ${email.uid}: ${error.message}`,
+          );
         }
       }
     } catch (error: any) {

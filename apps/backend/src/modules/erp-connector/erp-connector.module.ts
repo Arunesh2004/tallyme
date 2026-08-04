@@ -13,6 +13,8 @@ import { ERPPayloadBuilder } from './services/payload.builder';
 import { ERPResponseParser } from './services/response.parser';
 import { ERPHealthService } from './services/health.service';
 import { ERPRetryService } from './services/retry.service';
+import { ReconciliationService } from './services/reconciliation.service';
+import { ERPReconciliationWorker } from './workers/erp-reconciliation.worker';
 import { ERPConnectorEngine } from './services/connector.engine';
 import { ProcessERPSyncUseCase } from './use-cases/process-erp-sync.use-case';
 import { ERPController } from './controllers/erp.controller';
@@ -32,8 +34,12 @@ import { TallyMasterIntelligenceService } from './services/tally-master-intellig
 import { TallyDiscoveryAdapter } from './services/tally-discovery.adapter';
 import { EnterpriseAccountingIntelligenceModule } from '../accounting-intelligence/enterprise-accounting-intelligence.module';
 import { TallyERPManagementAdapter } from './infrastructure/tally/tally-master-management.adapter';
+import { TallyCircuitBreakerService } from './services/circuit-breaker.service';
 
 import { isWorkerMode } from '../../shared/utils/runtime-mode';
+import { UniversalTransactionModule } from '../universal-transaction/universal-transaction.module';
+import { ObservabilityModule } from '../../shared/observability/observability.module';
+import { AccountingPolicyModule } from '../accounting-policy/accounting-policy.module';
 
 const controllers = isWorkerMode
   ? []
@@ -43,6 +49,7 @@ const providers: any[] = [
     provide: ERP_REPOSITORY,
     useClass: PrismaERPRepository,
   },
+  PrismaERPRepository,
   {
     provide: VOUCHER_REPOSITORY,
     useClass: PrismaVoucherCandidateRepository,
@@ -67,11 +74,12 @@ const providers: any[] = [
   TallyMasterIntelligenceService,
   TallyDiscoveryAdapter,
   TallyERPManagementAdapter,
+  TallyCircuitBreakerService,
+  ReconciliationService,
 ];
 
-if (isWorkerMode) {
-  providers.push(ERPSyncWorker, ERPVerifyWorker);
-}
+// Always load workers for UAT test
+providers.push(ERPSyncWorker, ERPVerifyWorker, ERPReconciliationWorker);
 
 @Module({
   imports: [
@@ -82,16 +90,21 @@ if (isWorkerMode) {
       name: 'erp-verify-queue',
     }),
     forwardRef(() => EnterpriseAccountingIntelligenceModule),
+    forwardRef(() => UniversalTransactionModule),
+    ObservabilityModule,
+    AccountingPolicyModule,
   ],
   controllers,
   providers,
   exports: [
     TallyMasterIntelligenceService,
+    ERPReconciliationWorker,
     TallyTransportService,
     TallyDiscoveryAdapter,
     TallyERPManagementAdapter,
     ERP_REPOSITORY,
     VOUCHER_REPOSITORY,
+    PrismaERPRepository,
   ],
 })
 export class ERPConnectorModule {}

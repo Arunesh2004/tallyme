@@ -1,0 +1,133 @@
+{
+  "ocrStatus": "SUCCESS",
+  "confidence": 0.95,
+  "canonicalModel": {
+    "header": {
+      "status": "DRAFT",
+      "currency": "INR",
+      "tenantId": "system",
+      "companyId": "UAT-TENANT-123",
+      "invoiceDate": "2024-05-15",
+      "exchangeRate": "1",
+      "financialYear": "2026",
+      "invoiceNumber": "ST/24-25/0115",
+      "transactionIntent": "SALES"
+    },
+    "parties": {
+      "vendorId": "SHREE TRADERS"
+    },
+    "metadata": {
+      "auditVersion": 1
+    },
+    "ledgerEntries": [
+      {
+        "amount": "5450.00",
+        "isDebit": false,
+        "ledgerId": "Subtotal",
+        "ledgerName": "Subtotal"
+      },
+      {
+        "amount": "490.50",
+        "isDebit": false,
+        "ledgerId": "CGST @9%",
+        "ledgerName": "CGST @9%"
+      },
+      {
+        "amount": "490.50",
+        "isDebit": false,
+        "ledgerId": "SGST @9%",
+        "ledgerName": "SGST @9%"
+      },
+      {
+        "amount": "0.00",
+        "isDebit": false,
+        "ledgerId": "Round Off",
+        "ledgerName": "Round Off"
+      },
+      {
+        "amount": "6431.00",
+        "isDebit": true,
+        "ledgerId": "Total",
+        "ledgerName": "Total"
+      }
+    ],
+    "taxAndCompliance": {
+      "gstInfo": {
+        "gstin": "27AAACC1234D1Z6",
+        "placeOfSupply": "UNKNOWN"
+      }
+    }
+  },
+  "draft": {
+    "id": "aaefbf4c-7d85-479c-a9a1-cd6842e42802",
+    "tenantId": "system",
+    "companyId": null,
+    "status": "DRAFT",
+    "version": 1,
+    "payload": {
+      "header": {
+        "status": "DRAFT",
+        "currency": "INR",
+        "tenantId": "system",
+        "companyId": "UAT-TENANT-123",
+        "invoiceDate": "2024-05-15",
+        "exchangeRate": "1",
+        "financialYear": "2026",
+        "invoiceNumber": "ST/24-25/0115",
+        "transactionIntent": "SALES"
+      },
+      "parties": {
+        "vendorId": "SHREE TRADERS"
+      },
+      "metadata": {
+        "auditVersion": 1
+      },
+      "ledgerEntries": [
+        {
+          "amount": "5450.00",
+          "isDebit": false,
+          "ledgerId": "Subtotal",
+          "ledgerName": "Subtotal"
+        },
+        {
+          "amount": "490.50",
+          "isDebit": false,
+          "ledgerId": "CGST @9%",
+          "ledgerName": "CGST @9%"
+        },
+        {
+          "amount": "490.50",
+          "isDebit": false,
+          "ledgerId": "SGST @9%",
+          "ledgerName": "SGST @9%"
+        },
+        {
+          "amount": "0.00",
+          "isDebit": false,
+          "ledgerId": "Round Off",
+          "ledgerName": "Round Off"
+        },
+        {
+          "amount": "6431.00",
+          "isDebit": true,
+          "ledgerId": "Total",
+          "ledgerName": "Total"
+        }
+      ],
+      "taxAndCompliance": {
+        "gstInfo": {
+          "gstin": "27AAACC1234D1Z6",
+          "placeOfSupply": "UNKNOWN"
+        }
+      }
+    },
+    "auditVersion": 1,
+    "createdBy": "system-ocr",
+    "updatedBy": "system-ocr",
+    "lockedBy": null,
+    "lockedAt": null,
+    "createdAt": "2026-08-03T18:48:03.266Z",
+    "updatedAt": "2026-08-03T18:48:03.266Z",
+    "deletedAt": null
+  }
+}

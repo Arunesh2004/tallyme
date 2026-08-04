@@ -40,14 +40,30 @@ export class VendorMatcher {
   async match(
     candidate: InvoiceCandidate,
   ): Promise<Result<VendorMatch, string>> {
-    if (!candidate.extractedGstin || !candidate.extractedGstin.value)
-      return fail('Missing GSTIN. Requires manual review.');
+    let vendor = null;
 
     // 1. Exact GSTIN Match
-    const vendor = await this.vendorRepo.findVendorByCriteria({
-      gstin: candidate.extractedGstin.value,
-    });
-    if (!vendor) return fail('No vendor found for GSTIN.');
+    if (candidate.extractedGstin && candidate.extractedGstin.value) {
+      vendor = await this.vendorRepo.findVendorByCriteria({
+        gstin: candidate.extractedGstin.value,
+      });
+    }
+
+    // 2. Exact Name Match (Fallback)
+    if (
+      !vendor &&
+      candidate.extractedVendorName &&
+      candidate.extractedVendorName.value
+    ) {
+      // Find vendor by name (case insensitive ideally, but exact for now is fine since we seed it exactly)
+      vendor = await this.vendorRepo.findVendorByCriteria({
+        exactName: candidate.extractedVendorName.value,
+      });
+    }
+
+    if (!vendor) {
+      return fail('No vendor found for GSTIN or Name. Requires manual review.');
+    }
 
     // (implementation note)
     const confidence = new ConfidenceScore(99);

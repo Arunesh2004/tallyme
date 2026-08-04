@@ -34,7 +34,7 @@ export class DecisionAuditController {
       id: decision.id,
       timestamp: decision.timestamp,
       transactionContext: decision.inputData,
-      decision:  {
+      decision: {
         ledgerSelected:
           (decision.ledgerDecision as any)?.ledgerName || 'UNKNOWN',
         reason: (decision.ledgerDecision as any)?.reason || 'N/A',

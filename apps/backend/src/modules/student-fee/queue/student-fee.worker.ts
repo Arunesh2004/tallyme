@@ -23,7 +23,10 @@ export class StudentFeeWorker extends WorkerHost {
 
     try {
       if (job.name === 'match-student') {
-        const command = new MatchStudentCommand(job.data.candidateId, job.data.companyId);
+        const command = new MatchStudentCommand(
+          job.data.candidateId,
+          job.data.companyId,
+        );
         // Pass null for tx since it's a top-level execution
         await this.matchStudentCommandHandler.execute(command, null as any);
         return { success: true };

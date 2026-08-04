@@ -16,6 +16,10 @@ import { ProcessVoucherBuilderUseCase } from './use-cases/process-voucher-builde
 import { VoucherController } from './controllers/voucher.controller';
 import { VoucherWorker } from './queue/voucher.worker';
 import { BullModule } from '@nestjs/bullmq';
+import { VoucherCleanupWorker } from './workers/voucher-cleanup.worker';
+import { ObservabilityModule } from '../../shared/observability/observability.module';
+
+import { AccountingPolicyModule } from '../accounting-policy/accounting-policy.module';
 
 import { isWorkerMode } from '../../shared/utils/runtime-mode';
 
@@ -26,6 +30,7 @@ const providers: any[] = [
     useClass: PrismaVoucherRepository,
   },
   LedgerResolver,
+  VoucherCleanupWorker,
   NarrationBuilder,
   ReferenceGenerator,
   VoucherValidator,
@@ -36,15 +41,16 @@ const providers: any[] = [
   ProcessVoucherBuilderUseCase,
 ];
 
-if (isWorkerMode) {
-  providers.push(VoucherWorker);
-}
+// Always load VoucherWorker
+providers.push(VoucherWorker);
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: VOUCHER_BUILDER_QUEUE,
     }),
+    ObservabilityModule,
+    AccountingPolicyModule,
   ],
   controllers,
   providers,

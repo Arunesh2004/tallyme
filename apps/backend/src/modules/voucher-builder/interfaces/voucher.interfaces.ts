@@ -14,6 +14,11 @@ export interface VoucherLineItem {
   type: 'DEBIT' | 'CREDIT';
   amount: number;
   description?: string;
+  isParty?: boolean;
+  hsnSac?: string;
+  rate?: number;
+  quantity?: number;
+  unit?: string;
 }
 
 export interface VoucherBuildResult {

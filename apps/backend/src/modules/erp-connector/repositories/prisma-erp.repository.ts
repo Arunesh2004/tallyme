@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IERPRepository } from '../interfaces/erp.interfaces';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
+import { ERPSyncStatus } from '@prisma/client';
 
 @Injectable()
 export class PrismaERPRepository implements IERPRepository {
@@ -56,6 +57,22 @@ export class PrismaERPRepository implements IERPRepository {
       data.lastVerificationAt = new Date();
     }
 
+    // ─── Audit Field Persistence (BLOCKER-1 Fix) ──────────────────────────────
+    // Persist all ERP sync audit fields whenever they are provided.
+    // These must be set on both SUCCESS and FAILURE paths.
+    if (result?.requestXml !== undefined) data.requestXml = result.requestXml;
+    if (result?.responseXml !== undefined) data.responseXml = result.responseXml;
+    if (result?.xmlHash !== undefined) data.xmlHash = result.xmlHash;
+    if (result?.responseTimeMs !== undefined) data.responseTimeMs = result.responseTimeMs;
+    if (result?.transportStatus !== undefined) data.transportStatus = result.transportStatus;
+    if (result?.voucherNumber !== undefined) data.voucherNumber = result.voucherNumber;
+    if (result?.masterId !== undefined) data.masterId = result.masterId;
+    if (result?.guid !== undefined) data.guid = result.guid;
+    if (result?.lastResponse !== undefined) data.lastResponse = result.lastResponse;
+    if (result?.parserWarnings !== undefined) data.parserWarnings = result.parserWarnings;
+    if (result?.retryCount !== undefined) data.retryCount = result.retryCount;
+    // ─────────────────────────────────────────────────────────────────────────
+
     // Implement Conditional Update to prevent concurrent mutations
     const resultQuery = await this.prisma.eRPSyncJob.updateMany({
       where: {
@@ -90,6 +107,19 @@ export class PrismaERPRepository implements IERPRepository {
   async findJobByIdempotencyHash(hash: string): Promise<any> {
     return this.prisma.eRPSyncJob.findUnique({
       where: { idempotencyHash: hash },
+    });
+  }
+
+  async findStrandedSyncJobs(minutes: number): Promise<any[]> {
+    const cutoff = new Date(Date.now() - minutes * 60000);
+    return this.prisma.eRPSyncJob.findMany({
+      where: {
+        status: ERPSyncStatus.SYNCING,
+        lastAttemptAt: { lt: cutoff },
+      },
+      include: {
+        voucherCandidate: true,
+      },
     });
   }
 }

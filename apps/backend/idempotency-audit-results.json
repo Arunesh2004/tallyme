@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-08-01T06:44:06.142Z",
+  "duplicateVoucherNumbers": [],
+  "invoiceStatusDistribution": [
+    {
+      "status": "QUEUED",
+      "cnt": "2"
+    },
+    {
+      "status": "EXTRACTED",
+      "cnt": "1"
+    }
+  ],
+  "erpSyncJobStatusDistribution": [
+    {
+      "status": "MANUAL_REVIEW",
+      "cnt": "6"
+    },
+    {
+      "status": "FAILED_PERMANENT",
+      "cnt": "4"
+    },
+    {
+      "status": "RETRY_PENDING",
+      "cnt": "4"
+    },
+    {
+      "status": "SYNCED",
+      "cnt": "2"
+    },
+    {
+      "status": "UNKNOWN",
+      "cnt": "2"
+    }
+  ],
+  "syncedJobsMissingRequestXml": [
+    {
+      "cnt": "2"
+    }
+  ],
+  "latestSyncedJobs": [
+    {
+      "id": "354cb0b2-d22f-4131-964d-efcb3ad74393",
+      "status": "SYNCED",
+      "has_xml": false,
+      "xmlHash": null,
+      "voucherNumber": null,
+      "masterId": null,
+      "guid": null,
+      "transportStatus": null,
+      "retryCount": 0
+    },
+    {
+      "id": "6e7f1a77-ea2a-452f-994e-7cda6b4506d3",
+      "status": "SYNCED",
+      "has_xml": false,
+      "xmlHash": null,
+      "voucherNumber": null,
+      "masterId": null,
+      "guid": null,
+      "transportStatus": null,
+      "retryCount": 0
+    }
+  ],
+  "duplicateVouchersByInvoiceCandidateId": []
+}

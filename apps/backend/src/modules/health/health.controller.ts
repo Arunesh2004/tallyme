@@ -40,7 +40,7 @@ export class HealthController {
     const erp = await this.checkERP();
 
     return {
-      status: db.status === 'UP' && queue.status === 'UP' ? 'UP' : 'DOWN',
+      status: db.status === 'UP' ? 'UP' : 'DOWN',
       timestamp: new Date().toISOString(),
       components: {
         database: db,

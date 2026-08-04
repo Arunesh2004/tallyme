@@ -62,10 +62,10 @@ export class VendorResolverService {
     const s2 = str2.toLowerCase().trim();
     if (s1 === s2) return 1.0;
     if (s1.includes(s2) || s2.includes(s1)) return 0.92;
-    
+
     const set1 = new Set(s1.split(' '));
     const set2 = new Set(s2.split(' '));
-    const intersection = new Set([...set1].filter(x => set2.has(x)));
+    const intersection = new Set([...set1].filter((x) => set2.has(x)));
     const union = new Set([...set1, ...set2]);
     return intersection.size / union.size;
   }

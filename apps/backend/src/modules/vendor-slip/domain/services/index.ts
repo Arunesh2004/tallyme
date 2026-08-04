@@ -13,15 +13,24 @@ import {
 } from '../../interfaces/vendor.repository.interface';
 import { InvoiceAmount } from '../value-objects';
 
-import { OCRProvider, OCRResult } from '../../../document-processing/providers/ocr-provider.interface';
-import { AIExtractor, InvoiceExtractionResult } from '../../../document-processing/providers/ai-extractor.interface';
+import {
+  OCRProvider,
+  OCRResult,
+} from '../../../document-processing/providers/ocr-provider.interface';
+import {
+  AIExtractor,
+  InvoiceExtractionResult,
+} from '../../../document-processing/providers/ai-extractor.interface';
 
 @Injectable()
 export class OCRCoordinator {
   constructor(
     @Inject('OCRProvider') private readonly ocrProvider: OCRProvider,
   ) {}
-  async runOCR(documentBuffer: Buffer, metadata?: Record<string, any>): Promise<OCRResult> {
+  async runOCR(
+    documentBuffer: Buffer,
+    metadata?: Record<string, any>,
+  ): Promise<OCRResult> {
     return this.ocrProvider.extractText(documentBuffer, metadata);
   }
 }
@@ -31,8 +40,16 @@ export class InvoiceExtractor {
   constructor(
     @Inject('AIExtractor') private readonly aiExtractor: AIExtractor,
   ) {}
-  async extract(rawText: string): Promise<InvoiceExtractionResult> {
-    return this.aiExtractor.extractInvoiceFields(rawText);
+  async extract(
+    rawText: string,
+    documentBuffer?: Buffer,
+    mimeType?: string,
+  ): Promise<InvoiceExtractionResult> {
+    return this.aiExtractor.extractInvoiceFields(
+      rawText,
+      documentBuffer,
+      mimeType,
+    );
   }
 }
 
@@ -94,7 +111,7 @@ export class ExpenseAllocator {
         : 0;
 
     const lineItems: any[] = [];
-    
+
     // Allocate subtotal
     if (subtotal > 0) {
       lineItems.push({
@@ -178,7 +195,9 @@ export class ExpenseValidationPolicy {
 
     for (const field of fields) {
       if (field && field.confidence < 70) {
-        return fail('One or more extracted fields have very low confidence (< 70%)');
+        return fail(
+          'One or more extracted fields have very low confidence (< 70%)',
+        );
       }
     }
 

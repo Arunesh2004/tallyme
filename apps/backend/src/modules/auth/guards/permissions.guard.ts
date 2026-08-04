@@ -26,8 +26,24 @@ export class PermissionsGuard implements CanActivate {
       return true; // No permissions required
     }
 
-    const { user } = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest();
+    const { user } = req;
+
+    // SAFE LOGGING
+    console.log('[PermissionsGuard] Path:', req.path);
+    console.log(
+      '[PermissionsGuard] Headers present:',
+      Object.keys(req.headers),
+    );
+    console.log('[PermissionsGuard] User present:', !!user);
+    if (user) {
+      console.log('[PermissionsGuard] User permissions:', user.permissions);
+    }
+
     if (!user || !user.permissions) {
+      console.log(
+        '[PermissionsGuard] REJECT: Insufficient permissions (no user or permissions)',
+      );
       throw new ForbiddenException('Insufficient permissions');
     }
 
@@ -37,6 +53,10 @@ export class PermissionsGuard implements CanActivate {
     );
 
     if (!hasPermission) {
+      console.log(
+        '[PermissionsGuard] REJECT: Insufficient permissions (missing required permission)',
+        requiredPermissions,
+      );
       throw new ForbiddenException('Insufficient permissions');
     }
 

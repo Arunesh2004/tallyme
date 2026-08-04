@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OCRProvider, OCRResult } from './ocr-provider.interface';
 import { GeminiClientService } from './gemini-client.service';
+import { withResilience } from '../../../shared/utils/resilience.util';
 
 @Injectable()
 export class GeminiVisionOCRProvider implements OCRProvider {
@@ -12,9 +13,11 @@ export class GeminiVisionOCRProvider implements OCRProvider {
     documentBuffer: Buffer,
     metadata?: Record<string, any>,
   ): Promise<OCRResult> {
-    try {
-      this.logger.log(`Starting Gemini Vision OCR extraction for document (${documentBuffer.length} bytes)`);
-      
+    const operation = async () => {
+      this.logger.log(
+        `Starting Gemini Vision OCR extraction for document (${documentBuffer.length} bytes)`,
+      );
+
       const response = await this.geminiClient.ai.models.generateContent({
         model: this.geminiClient.model,
         contents: [
@@ -50,9 +53,8 @@ export class GeminiVisionOCRProvider implements OCRProvider {
           extractedAt: new Date().toISOString(),
         },
       };
-    } catch (error: any) {
-      this.logger.error(`Gemini Vision OCR extraction failed: ${error.message}`, error.stack);
-      throw error;
-    }
+    };
+
+    return withResilience(operation, 'GeminiVision', 'extractText', undefined, 3, 1500);
   }
 }

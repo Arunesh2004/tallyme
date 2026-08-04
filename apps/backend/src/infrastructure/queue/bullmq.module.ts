@@ -18,6 +18,7 @@ import { BullMQModule } from './bullmq/index';
           port: config.get<number>('redis.port'),
           password: config.get<string>('redis.password'),
           db: config.get<number>('redis.db'),
+          family: 4,
         },
         prefix: config.get<string>('redis.keyPrefix') + 'bull',
       }),

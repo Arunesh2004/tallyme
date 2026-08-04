@@ -46,7 +46,7 @@ export const envSchema = z.object({
   // AI
   AI_PROVIDER: z.enum(['openai', 'anthropic', 'gemini']).default('gemini'),
   AI_API_KEY: z.string().min(1),
-  
+
   // OCR
   OCR_PROVIDER: z.enum(['auto', 'azure', 'gemini']).default('auto'),
   AZURE_OCR_ENDPOINT: z.string().url().optional(),
@@ -92,6 +92,12 @@ export const envSchema = z.object({
 
   // Observability
   SENTRY_DSN: z.string().url().optional(),
+
+  // Feature Flags
+  USE_UNIVERSAL_INGESTION: z
+    .string()
+    .transform((s) => s === 'true')
+    .default('false'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

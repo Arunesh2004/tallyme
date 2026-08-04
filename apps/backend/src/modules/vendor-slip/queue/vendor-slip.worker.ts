@@ -12,13 +12,14 @@ import { TallyMasterIntelligenceService } from '../../erp-connector/services/tal
 import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
 import { Inject } from '@nestjs/common';
-import { VOUCHER_BUILDER_QUEUE } from '../../voucher-builder/constants/voucher.constants';
 import {
   InvoiceCandidate,
   VendorMatch,
   ExpenseAllocation,
   LedgerMapping,
 } from '../domain/entities';
+import { TransactionDraftService } from '../../universal-transaction/services/transaction-draft.service';
+import { VendorSlipDraftAdapter } from '../application/vendor-slip-draft.adapter';
 import {
   InvoiceNumber,
   InvoiceDate,
@@ -31,14 +32,15 @@ import {
 } from '../domain/value-objects';
 import { Prisma } from '@prisma/client';
 import { VendorIntelligenceService } from '../../accounting-intelligence/workflows/vendor-intelligence.service';
-import { LedgerMappingEngine } from '../../accounting-intelligence/ledger-mapping/ledger-mapping.engine';
-import { AccountingRulesEngine } from '../../accounting-intelligence/rules-engine/accounting-rules.engine';
-import { AccountingDecisionAuditService } from '../../accounting-intelligence/decision-audit/accounting-decision-audit.service';
 import {
   AccountingTransaction,
   TransactionType,
 } from '../../../shared/domain/accounting-transaction';
+import { AccountingIntelligenceService } from '../../accounting-intelligence/workflows/accounting-intelligence.service';
 import { ValidationStatus } from '../../../shared/domain/extraction-confidence';
+import { VmmsShadowExecutionService } from '../vmms/application/vmms-shadow-execution.service';
+import { VmmsActiveExecutionService } from '../vmms/application/vmms-active-execution.service';
+import { VmmsFeatureFlagService } from '../vmms/config/vmms-feature-flag.service';
 
 @Processor('vendor-slip-queue')
 export class VendorSlipWorker extends WorkerHost {
@@ -51,10 +53,13 @@ export class VendorSlipWorker extends WorkerHost {
     private readonly validator: ExpenseValidationPolicy,
     private readonly masterIntelligence: TallyMasterIntelligenceService,
     private readonly vendorIntelligence: VendorIntelligenceService,
-    private readonly ledgerMappingEngine: LedgerMappingEngine,
-    private readonly rulesEngine: AccountingRulesEngine,
-    private readonly auditService: AccountingDecisionAuditService,
+    private readonly accountingIntelligence: AccountingIntelligenceService,
     @Inject(QUEUE_PROVIDER) private readonly queueService: IQueueService,
+    private readonly vmmsShadowExecutionService: VmmsShadowExecutionService,
+    private readonly vmmsActiveExecutionService: VmmsActiveExecutionService,
+    private readonly vmmsFeatureFlags: VmmsFeatureFlagService,
+    private readonly transactionDraftService: TransactionDraftService,
+    private readonly adapter: VendorSlipDraftAdapter,
   ) {
     super();
   }
@@ -77,12 +82,32 @@ export class VendorSlipWorker extends WorkerHost {
 
       // (implementation note)
       const amt = prismaCandidate.total as any;
-      const subtotalAmt = prismaCandidate.subtotal as any || 0;
+      const subtotalAmt = (prismaCandidate.subtotal as any) || 0;
 
       const extractedData: any = prismaCandidate.extractedData || {};
       const confidence = extractedData.confidence || 0;
       // Normalizing to 0-100 scale for domain objects if API returned 0-1
-      const normalizedConfidence = confidence <= 1 ? confidence * 100 : confidence;
+      const normalizedConfidence =
+        confidence <= 1 ? confidence * 100 : confidence;
+
+      // Phase 10.3 AI HUMAN REVIEW QUEUE
+      if (normalizedConfidence < 80) {
+        await this.prisma.documentReviewQueue.create({
+          data: {
+            documentId: prismaCandidate.documentId,
+            confidenceScore: normalizedConfidence,
+            extractedData: extractedData as any,
+            status: 'PENDING',
+          },
+        });
+        await this.prisma.invoiceCandidate.update({
+          where: { id: candidateId },
+          data: { status: 'MANUAL_REVIEW_REQUIRED' },
+        });
+        this.logger.warn(`Confidence ${normalizedConfidence} < 80. Diverting to DocumentReviewQueue.`, 'VendorSlipWorker');
+        return { status: 'MANUAL_REVIEW', reason: 'Low AI confidence score' };
+      }
+
 
       const domainCandidate = new InvoiceCandidate(
         prismaCandidate.id,
@@ -90,7 +115,7 @@ export class VendorSlipWorker extends WorkerHost {
         new ExtractedVendorName(
           prismaCandidate.extractedName || '',
           normalizedConfidence,
-          prismaCandidate.extractedName || ''
+          prismaCandidate.extractedName || '',
         ),
         new InvoiceNumber(
           prismaCandidate.invoiceNumber || '',
@@ -102,8 +127,16 @@ export class VendorSlipWorker extends WorkerHost {
           normalizedConfidence,
           prismaCandidate.date ? prismaCandidate.date.toISOString() : '',
         ),
-        new ExtractedSubtotal(subtotalAmt, normalizedConfidence, subtotalAmt.toString()),
-        new ExtractedTax(prismaCandidate.tax as any || 0, normalizedConfidence, (prismaCandidate.tax || 0).toString()),
+        new ExtractedSubtotal(
+          subtotalAmt,
+          normalizedConfidence,
+          subtotalAmt.toString(),
+        ),
+        new ExtractedTax(
+          (prismaCandidate.tax as any) || 0,
+          normalizedConfidence,
+          (prismaCandidate.tax || 0).toString(),
+        ),
         new InvoiceAmount(amt, normalizedConfidence, amt.toString()),
         prismaCandidate.extractedGstin
           ? new ExtractedGSTIN(
@@ -116,47 +149,116 @@ export class VendorSlipWorker extends WorkerHost {
         'EXTRACTED',
       );
 
-      const matchResult = await this.matcher.match(domainCandidate);
-      if (matchResult.isFailure) {
-        this.logger.warn(
-          `Matching failed: ${matchResult.error}`,
-          'VendorSlipWorker',
-        );
-        await this.prisma.invoiceCandidate.update({
-          where: { id: candidateId },
-          data: { status: 'MANUAL_REVIEW_REQUIRED' },
-        });
-        return { status: 'MANUAL_REVIEW', reason: matchResult.error };
-      }
-      const match = matchResult.value;
+      const extractedGstin = domainCandidate.extractedGstin?.value;
 
-      const validationResult = this.validator.validate(domainCandidate, match);
-      if (validationResult.isFailure && prismaCandidate.status !== 'APPROVED') {
-        this.logger.warn(
-          `Validation failed: ${validationResult.error}`,
-          'VendorSlipWorker',
+      // Attach raw extractedData for Accounting Intelligence to use
+      (domainCandidate as any).extractedData = extractedData;
+
+      let vendorLedgerName: string | undefined = undefined;
+      let vendorId: string | undefined = undefined;
+      const confidenceForVoucher = normalizedConfidence;
+      let mapping: any;
+
+      if (this.vmmsFeatureFlags.isVmmsActiveEnforcementEnabled()) {
+        const vmmsResult = await this.vmmsActiveExecutionService.executeSync(
+          candidateId,
+          companyId,
+          extractedGstin,
         );
-        await this.prisma.invoiceCandidate.update({
-          where: { id: candidateId },
-          data: { status: 'MANUAL_REVIEW_REQUIRED' },
-        });
-        return { status: 'MANUAL_REVIEW', reason: validationResult.error };
+
+        if (
+          vmmsResult.requiresManualReview ||
+          !vmmsResult.selectedVendorLedgerId
+        ) {
+          this.logger.warn(
+            `VMMS Active Enforcement: requires manual review`,
+            'VendorSlipWorker',
+          );
+          await this.prisma.invoiceCandidate.update({
+            where: { id: candidateId },
+            data: { status: 'MANUAL_REVIEW_REQUIRED' },
+          });
+          return {
+            status: 'MANUAL_REVIEW',
+            reason: 'VMMS requires manual review',
+          };
+        }
+
+        // Active enforcement bypasses Legacy Ledger Mapping completely.
+        vendorLedgerName = vmmsResult.selectedVendorLedgerName;
+
+        if (!vendorLedgerName) {
+          await this.prisma.invoiceCandidate.update({
+            where: { id: candidateId },
+            data: { status: 'MANUAL_REVIEW_REQUIRED' },
+          });
+          return {
+            status: 'MANUAL_REVIEW',
+            reason: 'VMMS ledger name missing',
+          };
+        }
+      } else {
+        // Phase B fallback: Legacy Matcher + Shadow Execution
+        const matchResult = await this.matcher.match(domainCandidate);
+        if (matchResult.isFailure) {
+          this.logger.warn(
+            `Matching failed: ${matchResult.error}`,
+            'VendorSlipWorker',
+          );
+          await this.prisma.invoiceCandidate.update({
+            where: { id: candidateId },
+            data: { status: 'MANUAL_REVIEW_REQUIRED' },
+          });
+          return { status: 'MANUAL_REVIEW', reason: matchResult.error };
+        }
+        const match = matchResult.value;
+        vendorId = match.vendorId;
+
+        void this.vmmsShadowExecutionService
+          .executeAsync(candidateId, companyId, extractedGstin)
+          .catch((err) => {
+            this.logger.error(
+              `Unhandled VMMS error escaped shadow executor: ${err.message}`,
+              err.stack,
+              'VendorSlipWorker',
+            );
+          });
+
+        const validationResult = this.validator.validate(
+          domainCandidate,
+          match,
+        );
+        if (
+          validationResult.isFailure &&
+          prismaCandidate.status !== 'APPROVED'
+        ) {
+          this.logger.warn(
+            `Validation failed: ${validationResult.error}`,
+            'VendorSlipWorker',
+          );
+          await this.prisma.invoiceCandidate.update({
+            where: { id: candidateId },
+            data: { status: 'MANUAL_REVIEW_REQUIRED' },
+          });
+          return { status: 'MANUAL_REVIEW', reason: validationResult.error };
+        }
+
+        mapping = await this.ledgerMapper.map(match);
+        if (!mapping || !mapping.defaultLedgerCode) {
+          this.logger.warn(
+            `Ledger mapping failed for vendor ${match.vendorId}`,
+            'VendorSlipWorker',
+          );
+          await this.prisma.invoiceCandidate.update({
+            where: { id: candidateId },
+            data: { status: 'MANUAL_REVIEW_REQUIRED' },
+          });
+          return { status: 'MANUAL_REVIEW', reason: 'Missing ledger mapping' };
+        }
+        vendorLedgerName = mapping.defaultLedgerCode;
       }
 
-      const mapping = await this.ledgerMapper.map(match);
-      if (!mapping || !mapping.defaultLedgerCode) {
-        this.logger.warn(
-          `Ledger mapping failed for vendor ${match.vendorId}`,
-          'VendorSlipWorker',
-        );
-        await this.prisma.invoiceCandidate.update({
-          where: { id: candidateId },
-          data: { status: 'MANUAL_REVIEW_REQUIRED' },
-        });
-        return { status: 'MANUAL_REVIEW', reason: 'Missing ledger mapping' };
-      }
-
-      // Phase 17B: Accounting Intelligence Integration
+      // Phase 17B/F: Accounting Intelligence Integration
       const vendorName =
         domainCandidate.extractedVendorName?.value || 'Acme Corp';
 
@@ -174,128 +276,46 @@ export class VendorSlipWorker extends WorkerHost {
         };
       }
 
-      // Step 2: Resolve Ledger via LedgerMappingEngine (removing hardcoded strings)
-      const expenseLedgerDecision =
-        await this.ledgerMappingEngine.resolveExpenseLedger(
-          match.vendorId,
-          'DEFAULT_CATEGORY',
-        );
-      if (expenseLedgerDecision.selectedLedger === 'UNKNOWN_LEDGER') {
+      // We resolve accounting payload via AccountingIntelligenceService orchestrator
+      const genericPayload =
+        await this.accountingIntelligence.generateVoucherPayload({
+          candidateId,
+          companyId,
+          batchSyncItemId,
+          domainCandidate,
+          vendorLedgerName: vendorLedgerName!,
+          vendorId,
+          normalizedConfidence,
+        });
+
+      const canonicalPayload = this.adapter.map(genericPayload);
+
+      try {
+        await this.transactionDraftService.createDraft(canonicalPayload, 'system');
+        
         await this.prisma.invoiceCandidate.update({
           where: { id: candidateId },
-          data: { status: 'MANUAL_REVIEW_REQUIRED' },
+          data: { status: 'QUEUED' },
         });
-        return { status: 'MANUAL_REVIEW', reason: 'Unresolved expense ledger' };
-      }
-      const expenseLedgerName = expenseLedgerDecision.selectedLedger;
-      const vendorLedgerName = mapping.defaultLedgerCode;
 
-      let gstLedgerName: string | undefined;
-      if (domainCandidate.extractedTax && domainCandidate.extractedTax.value && domainCandidate.extractedTax.value.toNumber() > 0) {
-        const gstLedgerDecision = await this.ledgerMappingEngine.resolveGstLedger('INPUT_GST');
-        if (gstLedgerDecision.selectedLedger === 'UNKNOWN_LEDGER') {
+        this.logger.log(
+          `Successfully created Transaction Draft for candidate ${candidateId}`,
+          'VendorSlipWorker',
+        );
+        
+        return { status: 'QUEUED' };
+      } catch (e: any) {
+        if (e.name === 'DuplicateDetectedException' || e.message?.includes('DuplicateDetectedException')) {
           await this.prisma.invoiceCandidate.update({
             where: { id: candidateId },
-            data: { status: 'MANUAL_REVIEW_REQUIRED' },
+            data: { status: 'FAILED' },
           });
-          return { status: 'MANUAL_REVIEW', reason: 'Unresolved GST ledger' };
+          this.logger.warn(`Candidate ${candidateId} rejected as duplicate.`, 'VendorSlipWorker');
+          return { status: 'FAILED' };
+        } else {
+          throw e;
         }
-        gstLedgerName = gstLedgerDecision.selectedLedger;
       }
-
-      const allocation = this.allocator.allocate(domainCandidate, mapping, expenseLedgerName, gstLedgerName);
-
-      // Step 3: Create Canonical AccountingTransaction
-      const totalAmount =
-        allocation.totalAllocated && allocation.totalAllocated.value
-          ? allocation.totalAllocated.value.toNumber()
-          : 0;
-
-      const accTx = new AccountingTransaction(
-        candidateId,
-        companyId,
-        TransactionType.PURCHASE,
-        'VENDOR_SLIP',
-        domainCandidate.invoiceDate?.value || new Date(),
-        [{ id: match.vendorId, type: 'VENDOR', ledgerName: vendorLedgerName }],
-        allocation.lineItems.map((l, idx) => ({
-          id: `line-${idx + 1}`,
-          ledgerName: l.ledger,
-          amount: Number(l.amount),
-          isDebit: true,
-        })),
-        [],
-        totalAmount,
-        { invoiceNumber: domainCandidate.invoiceNumber?.value },
-        [],
-        ValidationStatus.AUTO_APPROVED,
-      );
-
-      // Step 4: Accounting Rules Engine Evaluation
-      const ruleDecision = await this.rulesEngine.evaluate(accTx);
-      if (ruleDecision.requiresApproval) {
-        await this.prisma.invoiceCandidate.update({
-          where: { id: candidateId },
-          data: { status: 'MANUAL_REVIEW_REQUIRED' },
-        });
-        return { status: 'MANUAL_REVIEW', reason: ruleDecision.explanation };
-      }
-
-      // Step 5: Accounting Decision Log
-      await this.auditService.logDecision({
-        companyId,
-        inputData: { candidateId, vendorName, amount: totalAmount },
-        ledgerDecision: expenseLedgerDecision,
-        appliedRules: ruleDecision.appliedRules,
-        confidence: ruleDecision.confidence,
-      });
-
-      // Create Generic VoucherCandidate payload for the Shared Engine
-      const genericPayload = {
-        voucherType: ruleDecision.voucherType,
-        candidateId: domainCandidate.id,
-        batchSyncItemId,
-        companyId: companyId,
-        allocation: {
-          totalAmount: totalAmount,
-          vendorLedger: vendorLedgerName,
-          lines:
-            allocation.lineItems.length > 0
-              ? allocation.lineItems.map((l) => ({
-                  ledger: l.ledger,
-                  amount:
-                    l.amount instanceof Object && 'toNumber' in l.amount
-                      ? l.amount.toNumber()
-                      : Number(l.amount),
-                }))
-              : [{ ledger: expenseLedgerName, amount: totalAmount }],
-        },
-        invoice: {
-          number:
-            domainCandidate.invoiceNumber && domainCandidate.invoiceNumber.value
-              ? domainCandidate.invoiceNumber.value
-              : '',
-          date:
-            domainCandidate.invoiceDate && domainCandidate.invoiceDate.value
-              ? domainCandidate.invoiceDate.value.toISOString()
-              : new Date().toISOString(),
-        },
-      };
-
-      await this.queueService.addJob(
-        VOUCHER_BUILDER_QUEUE,
-        'build-purchase-voucher',
-        genericPayload,
-      );
-      await this.prisma.invoiceCandidate.update({
-        where: { id: candidateId },
-        data: { status: 'QUEUED' },
-      });
-
-      this.logger.log(
-        `Successfully dispatched to Voucher Builder for candidate ${candidateId}`,
-        'VendorSlipWorker',
-      );
     } catch (err: any) {
       this.logger.error(err.message, err.stack, 'VendorSlipWorker');
       throw err;

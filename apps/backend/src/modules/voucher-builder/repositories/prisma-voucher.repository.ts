@@ -35,17 +35,39 @@ export class PrismaVoucherRepository implements IVoucherRepository {
         }
       }
 
+      // Idempotency check: If invoiceCandidateId exists, check if it already has a voucher
+      if (candidateData.metadata?.invoiceCandidateId) {
+        const existingCandidate = await tx.voucherCandidate.findFirst({
+          where: {
+            metadata: {
+              path: ['invoiceCandidateId'],
+              equals: candidateData.metadata.invoiceCandidateId,
+            },
+          },
+        });
+        if (existingCandidate) {
+          return existingCandidate;
+        }
+      }
+
       const candidate = await tx.voucherCandidate.create({
         data: {
           companyId: candidateData.companyId,
           voucherNumber: candidateData.voucherNumber,
           voucherType:
-            candidateData.voucherType === 'PURCHASE' ? 'Purchase' : 'Receipt',
+            candidateData.voucherType === 'PURCHASE' ||
+            candidateData.voucherType === 'Purchase'
+              ? 'Purchase'
+              : 'Receipt',
+          partyLedgerName:
+            candidateData.lines?.find((l: any) => l.isParty)?.ledgerName ||
+            null,
           date:
             candidateData.date instanceof Date
               ? candidateData.date
               : new Date(candidateData.date || Date.now()),
           status: 'PENDING',
+          metadata: candidateData.metadata || {},
           entries: {
             create:
               candidateData.lines?.map((l: any, i: number) => ({
@@ -53,6 +75,7 @@ export class PrismaVoucherRepository implements IVoucherRepository {
                 ledgerName: l.ledgerName || l.voucherLedgerId || 'DEV_MODE',
                 amount: l.amount || 0,
                 isDebit: l.type === 'DEBIT',
+                isParty: Boolean(l.isParty),
               })) || [],
           },
         },
@@ -120,5 +143,20 @@ export class PrismaVoucherRepository implements IVoucherRepository {
     await this.prisma.voucherGenerationAttempt.create({
       data: attempt,
     });
+  }
+
+  async deleteOldObsoleteCandidates(days: number, batchSize: number = 1000): Promise<number> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+
+    // Using nested OR and IN for statuses: 'COMPLETED', 'FAILED', 'SYNCED'
+    const result = await this.prisma.voucherCandidate.deleteMany({
+      where: {
+        status: { in: ['COMPLETED', 'FAILED'] },
+        createdAt: { lte: cutoffDate }, // Using createdAt to prevent deleting old invoices that were recently processed
+      },
+    });
+
+    return result.count;
   }
 }

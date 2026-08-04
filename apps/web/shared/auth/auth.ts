@@ -24,8 +24,40 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials: Record<"email" | "password", string> | undefined) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        if (credentials?.email === 'qa_user@tallyme.com' && credentials?.password === 'password123') {
-          return { id: 'qa-123', email: 'qa_user@tallyme.com', name: 'QA User', organizationId: 'org_default' } as any;
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+          // Fetch CSRF token from backend
+          const csrfRes = await fetch(`${apiUrl}/auth/csrf`);
+          const csrfData = await csrfRes.json();
+          const backendCookies = csrfRes.headers.get('set-cookie');
+
+          // csurf reads the token from the 'x-csrf-token' header
+          const res = await fetch(`${apiUrl}/auth/login`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'x-csrf-token': csrfData.csrfToken,
+              ...(backendCookies ? { 'Cookie': backendCookies } : {})
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            return {
+              id: data.user.id,
+              email: data.user.email,
+              name: data.user.role,
+              organizationId: data.user.organizationId,
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+            } as any;
+          }
+        } catch (error) {
+          console.error("Auth error:", error);
         }
         return null;
       },

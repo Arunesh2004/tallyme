@@ -16,4 +16,4 @@ async function bootstrap() {
   logger.log('MetricsWorker is listening on Redis.');
 }
 
-bootstrap().catch(err => console.error(err));
+bootstrap().catch((err) => console.error(err));

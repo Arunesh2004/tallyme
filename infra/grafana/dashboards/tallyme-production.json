@@ -1,0 +1,61 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "API Request Volume",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_request_duration_seconds_count[5m])) by (status)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Outbox Dead Letters",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "outbox_dead_total",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Cron Lock Contention",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(cron_lock_contention_total[5m])",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Dropped Audit Logs",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "audit_drop_total",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "title": "TallyMe Production Dashboard",
+  "uid": "tallyme-prod-001",
+  "version": 1
+}

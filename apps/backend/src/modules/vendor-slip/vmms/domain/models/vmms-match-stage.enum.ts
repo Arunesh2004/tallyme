@@ -1,0 +1,5 @@
+export enum VmmsMatchStage {
+  NONE = 'NONE',
+  EXACT_GSTIN = 'EXACT_GSTIN',
+  NORMALIZED_GSTIN = 'NORMALIZED_GSTIN',
+}

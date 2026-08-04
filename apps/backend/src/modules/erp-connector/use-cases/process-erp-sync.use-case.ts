@@ -11,6 +11,9 @@ import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
 import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
 import { ERPRequestContext } from '../dto/transport.dto';
 import { ERPTransportException } from '../exceptions/erp-transport.exception';
+import { ERPRetryService } from '../services/retry.service';
+import { AccountingPeriodService } from '../../accounting-policy/services/accounting-period.service';
+import { PeriodLockedException } from '../../../shared/exceptions/PeriodLockedException';
 
 import { IVoucherCandidateRepository } from '../interfaces/voucher.interfaces';
 import { VOUCHER_REPOSITORY } from '../constants/erp.constants';
@@ -23,6 +26,10 @@ import {
   TransactionType,
 } from '../../../shared/domain/accounting-transaction';
 import { AccountingDecisionAuditService } from '../../accounting-intelligence/decision-audit/accounting-decision-audit.service';
+import { AuditService } from '../../audit/audit.service';
+import { CorrelationContext } from '../../../shared/observability/context';
+import { TallyMasterIntelligenceService } from '../services/tally-master-intelligence.service';
+import { MasterGroupResolverService } from '../../accounting-intelligence/governance/master-group-resolver.service';
 
 @Injectable()
 export class ProcessERPSyncUseCase {
@@ -37,6 +44,12 @@ export class ProcessERPSyncUseCase {
     private readonly tallyMasterValidationEngine: TallyMasterValidationEngine,
     private readonly approvalWorkflowEngine: ApprovalWorkflowEngine,
     private readonly auditService: AccountingDecisionAuditService,
+    private readonly globalAuditService: AuditService,
+    private readonly tallyMasterIntelligence: TallyMasterIntelligenceService,
+    private readonly masterGroupResolver: MasterGroupResolverService,
+    /** FIX 1: ERPRetryService is now injected — single source of retry truth */
+    private readonly retryService: ERPRetryService,
+    private readonly periodService: AccountingPeriodService,
   ) {}
 
   async createJob(
@@ -169,7 +182,9 @@ export class ProcessERPSyncUseCase {
       let total = 0;
       fullVoucher.entries.forEach((e) => {
         if (e.isParty) {
-          parties.push({ id: e.id, type: 'PARTY', ledgerName: e.ledgerName });
+          const partyType =
+            fullVoucher.voucherType === 'Purchase' ? 'VENDOR' : 'STUDENT';
+          parties.push({ id: e.id, type: partyType, ledgerName: e.ledgerName });
         } else {
           lines.push({
             id: e.id,
@@ -195,6 +210,198 @@ export class ProcessERPSyncUseCase {
         [],
         'AUTO_APPROVED' as any,
       );
+
+      // --- NEW LEDGER PREFLIGHT LOOP ---
+      this.logger.log(
+        {
+          message: 'SYNC_PREFLIGHT_STARTED',
+          voucherId: job.voucherCandidateId,
+        },
+        'ProcessERPSyncUseCase',
+      );
+
+      try {
+        const isPurchase = accTx.transactionType === TransactionType.PURCHASE;
+        const companyId = fullVoucher.companyId || undefined;
+
+        const metadata = (fullVoucher.metadata as any) || {};
+        const ledgerDecisions = metadata.ledgerDecisions || {};
+
+        const getExtractionConfidence = (ledgerName: string) => {
+          let conf = 0;
+          if (ledgerDecisions.vendor?.name === ledgerName) {
+            conf = ledgerDecisions.vendor.confidence || 0;
+          }
+          if (conf === 0 && ledgerDecisions.expense?.name === ledgerName) {
+            conf = ledgerDecisions.expense.confidence || 0;
+          }
+          if (conf === 0 && ledgerDecisions.taxes) {
+            const taxMatch = Object.values(ledgerDecisions.taxes).find(
+              (t: any) => t.name === ledgerName,
+            ) as any;
+            if (taxMatch) conf = taxMatch.confidence || 0;
+          }
+          if (conf === 0 && ledgerDecisions.lineItems) {
+            const match = ledgerDecisions.lineItems.find(
+              (l: any) => l.finalLedger === ledgerName,
+            );
+            if (match) conf = match.confidence || 0;
+          }
+          // Default to 1.0 for manually mapped fallback ledgers like Miscellaneous Expenses
+          if (conf === 0 && ledgerName === 'Miscellaneous Expenses') {
+            conf = 1.0;
+          }
+
+          return conf > 1 ? conf / 100 : conf;
+        };
+
+        // Resolve and Ensure Parties
+        for (const party of accTx.parties) {
+          const resolution = this.masterGroupResolver.resolvePartyGroup(party);
+          const extractionConf = getExtractionConfidence(party.ledgerName);
+
+          if (extractionConf < 0.8 || resolution.confidence < 0.6) {
+            throw new Error(
+              `Insufficient confidence to create ledger '${party.ledgerName}'. OCR: ${extractionConf}, Resolution: ${resolution.confidence}`,
+            );
+          }
+          await this.tallyMasterIntelligence.ensureLedger(
+            party.ledgerName,
+            resolution.parentGroup,
+            companyId,
+          );
+
+          await this.auditService.logDecision({
+            companyId: fullVoucher.companyId || undefined,
+            inputData: {
+              voucherId: job.voucherCandidateId,
+              ledger: party.ledgerName,
+            },
+            appliedRules: [
+              {
+                rule: 'AUTO_CREATE_LEDGER',
+                passed: true,
+                reason: resolution.reason,
+              },
+            ],
+            confidence: resolution.confidence,
+            supportingEvidence: [`Parent Group: ${resolution.parentGroup}`],
+          });
+        }
+
+        // Resolve and Ensure Lines
+        for (const line of accTx.lineItems) {
+          const resolution = this.masterGroupResolver.resolveExpenseGroup(
+            line,
+            isPurchase,
+          );
+          const extractionConf = getExtractionConfidence(line.ledgerName);
+
+          if (extractionConf < 0.8 || resolution.confidence < 0.6) {
+            throw new Error(
+              `Insufficient confidence to create ledger '${line.ledgerName}'. OCR: ${extractionConf}, Resolution: ${resolution.confidence}`,
+            );
+          }
+          await this.tallyMasterIntelligence.ensureLedger(
+            line.ledgerName,
+            resolution.parentGroup,
+            companyId,
+          );
+
+          await this.auditService.logDecision({
+            companyId: fullVoucher.companyId || undefined,
+            inputData: {
+              voucherId: job.voucherCandidateId,
+              ledger: line.ledgerName,
+            },
+            appliedRules: [
+              {
+                rule: 'AUTO_CREATE_LEDGER',
+                passed: true,
+                reason: resolution.reason,
+              },
+            ],
+            confidence: extractionConf,
+            supportingEvidence: [`Parent Group: ${resolution.parentGroup}`],
+          });
+        }
+
+        // Resolve and Ensure Taxes
+        for (const tax of accTx.taxes) {
+          const resolution = this.masterGroupResolver.resolveTaxGroup(tax);
+          const extractionConf = getExtractionConfidence(tax.ledgerName);
+
+          if (extractionConf < 0.8 || resolution.confidence < 0.6) {
+            throw new Error(
+              `Insufficient confidence to create ledger '${tax.ledgerName}'. OCR: ${extractionConf}, Resolution: ${resolution.confidence}`,
+            );
+          }
+          await this.tallyMasterIntelligence.ensureLedger(
+            tax.ledgerName,
+            resolution.parentGroup,
+            companyId,
+          );
+
+          await this.auditService.logDecision({
+            companyId: fullVoucher.companyId || undefined,
+            inputData: {
+              voucherId: job.voucherCandidateId,
+              ledger: tax.ledgerName,
+            },
+            appliedRules: [
+              {
+                rule: 'AUTO_CREATE_LEDGER',
+                passed: true,
+                reason: resolution.reason,
+              },
+            ],
+            confidence: extractionConf,
+            supportingEvidence: [`Parent Group: ${resolution.parentGroup}`],
+          });
+        }
+
+        // Insert newly verified ledgers into DiscoveryLedger offline cache
+        // We do this by getting the latest discovery report and upserting the ledgers
+        const latestDiscovery =
+          await this.prisma.tallyDiscoveryReport.findFirst({
+            where: { companyId: fullVoucher.companyId || undefined },
+            orderBy: { createdAt: 'desc' },
+          });
+
+        if (latestDiscovery) {
+          const allNewLedgers = [
+            ...accTx.parties.map((p) => p.ledgerName),
+            ...accTx.lineItems.map((l) => l.ledgerName),
+            ...accTx.taxes.map((t) => t.ledgerName),
+          ];
+
+          for (const ledgerName of allNewLedgers) {
+            const existing = await this.prisma.discoveryLedger.findFirst({
+              where: {
+                tallyDiscoveryReportId: latestDiscovery.id,
+                data: { path: ['name'], equals: ledgerName },
+              },
+            });
+            if (!existing) {
+              await this.prisma.discoveryLedger.create({
+                data: {
+                  tallyDiscoveryReportId: latestDiscovery.id,
+                  data: { name: ledgerName, type: 'LEDGER' },
+                },
+              });
+            }
+          }
+        }
+      } catch (err: any) {
+        this.logger.warn(
+          { message: 'SYNC_PREFLIGHT_FAILED', error: err.message },
+          'ProcessERPSyncUseCase',
+        );
+        // If preflight fails (either Tally is down, or confidence is too low),
+        // we just let it fall through to TallyMasterValidationEngine which will fail
+        // it correctly and route to MANUAL_REVIEW.
+      }
+      // --- END NEW LEDGER PREFLIGHT LOOP ---
 
       this.logger.log(
         {
@@ -288,7 +495,66 @@ export class ProcessERPSyncUseCase {
 
     let transportDuration = 0;
 
+    const verificationCriteria = {
+      voucherNumber: fullVoucher?.voucherNumber,
+      voucherType: fullVoucher?.voucherType,
+      partyLedger: fullVoucher?.partyLedgerName || undefined,
+      date: fullVoucher?.date,
+    };
+
     try {
+      // Validate Accounting Period before interacting with ERP
+      const syncDate = fullVoucher?.date || new Date();
+      if (fullVoucher?.companyId) {
+        try {
+          await this.periodService.validatePostingAllowed(fullVoucher.companyId, syncDate);
+        } catch (err: any) {
+          if (err instanceof PeriodLockedException || err.name === 'PeriodLockedException') {
+            this.logger.warn(
+              {
+                message: 'Voucher sync blocked by period lock',
+                voucherId: job.voucherCandidateId,
+                error: err.message
+              },
+              'ProcessERPSyncUseCase'
+            );
+            await this.transitionState(
+              job.id,
+              ERP_SYNC_STATUS.SYNCING,
+              ERP_SYNC_STATUS.FAILED_PERMANENT,
+              `ERP Sync blocked: ${err.message}`,
+              { lastResponse: err.message, transportStatus: 'BUSINESS_ERROR' }
+            );
+            return;
+          }
+          throw err;
+        }
+      }
+
+      // PHASE 2: IDEMPOTENCY CHECK BEFORE SYNC
+      const existenceCheck = await this.engine.verifyVoucherExists(
+        verificationCriteria,
+        job.adapterCode,
+        context,
+      );
+
+      if (existenceCheck === 'EXISTS') {
+        this.logger.log(
+          {
+            message: 'VOUCHER_ALREADY_EXISTS_IN_ERP',
+            voucherId: job.voucherCandidateId,
+          },
+          'ProcessERPSyncUseCase',
+        );
+        await this.transitionState(
+          job.id,
+          ERP_SYNC_STATUS.SYNCING,
+          ERP_SYNC_STATUS.SYNCED,
+          'Voucher already exists in ERP (Idempotency check passed)',
+          { erpReferenceId: fullVoucher?.voucherNumber },
+        );
+        return;
+      }
       // 5. Invoke ERP Sync Orchestrator
       this.logger.log(
         { message: 'SYNC_SENT_TO_TALLY', voucherId: job.voucherCandidateId },
@@ -304,11 +570,15 @@ export class ProcessERPSyncUseCase {
       transportDuration =
         result.transportMetadata?.durationMs || result.durationMs;
 
+      // Audit field extraction from TransportResult
+      const xmlHash = result.transportMetadata?.xmlHash ?? job.idempotencyHash;
+      const payloadSizeBytes = result.transportMetadata?.payloadSizeBytes ?? 0;
+
       // 5. Log Attempt Metadata
       await this.repository.logAttempt({
         jobId: job.id,
-        payloadHash: job.idempotencyHash,
-        payloadSize: 1024,
+        payloadHash: xmlHash,
+        payloadSize: payloadSizeBytes,
         responseType: result.responseType,
         parserWarnings: result.parserWarnings,
         requestTime: new Date(Date.now() - transportDuration),
@@ -318,22 +588,127 @@ export class ProcessERPSyncUseCase {
         errorMessage: result.success ? null : result.message,
       });
 
+      // Shared audit data for both success and failure paths
+      const sharedAuditData = {
+        xmlHash,
+        responseTimeMs: transportDuration,
+        transportStatus: result.success ? 'SUCCESS' : result.responseType,
+        parserWarnings: result.parserWarnings || [],
+        lastResponse: result.message || null,
+        retryCount: job.attempts || 0,
+        requestXml: result.requestXml || null,
+        responseXml: result.rawResponse || null,
+      };
+
       // 6. Interpret ERPSyncResult
       if (result.success) {
+        // Extract voucherNumber/masterId/guid from referenceId if available
+        // referenceId format expected: "VCHNO:PUR-123|MASTERID:456|GUID:abc" or plain voucher number
+        const refId = result.referenceId || '';
+        const voucherNumber = refId.match(/VCHNO:([^|]+)/)?.[1] || refId || fullVoucher?.voucherNumber || null;
+        const masterId = refId.match(/MASTERID:([^|]+)/)?.[1] || null;
+        const guid = refId.match(/GUID:([^|]+)/)?.[1] || null;
+
         await this.transitionState(
           job.id,
           ERP_SYNC_STATUS.SYNCING,
           ERP_SYNC_STATUS.SYNCED,
           'Sync successful',
-          { erpReferenceId: result.referenceId },
+          {
+            erpReferenceId: result.referenceId,
+            voucherNumber,
+            masterId,
+            guid,
+            ...sharedAuditData,
+          },
         );
       } else {
-        // Business failures are permanent
-        const isPermanent = result.responseType === 'BUSINESS_ERROR';
-        // Truncated/Malformed indicates stream interruption or proxy mangling
+        // Business failures are permanent unless dynamically resolvable
         const isUnknown =
           result.responseType === 'MALFORMED_XML' ||
           result.responseType === 'EMPTY_RESPONSE';
+
+        // DYNAMIC MISSING MASTER ORCHESTRATION
+        this.logger.warn({
+          message: 'DEBUG_ERP_REJECTION',
+          resultMessage: result.message,
+          jobId: job.id
+        }, 'ProcessERPSyncUseCase');
+
+        // Extract ledger missing error from Tally: e.g. "Ledger 'Advertising on Indeed.com' does not exist!"
+        const missingLedgerMatch = result.message?.match(/Ledger (?:'|&apos;|"|&quot;)(.+?)(?:'|&apos;|"|&quot;) does not exist/i);
+        this.logger.warn({
+          message: 'DEBUG_REGEX_MATCH',
+          matched: !!missingLedgerMatch,
+          captured: missingLedgerMatch?.[1]
+        }, 'ProcessERPSyncUseCase');
+
+        if (missingLedgerMatch && missingLedgerMatch[1]) {
+          const missingLedgerName = missingLedgerMatch[1];
+          this.logger.warn(
+            { message: 'TALLY_MISSING_MASTER_DETECTED', missingLedgerName, jobId: job.id },
+            'ProcessERPSyncUseCase',
+          );
+
+          let retryNeeded = false;
+          try {
+            // Find which group this ledger belongs to by searching the VoucherCandidate entries directly
+            const isPurchase = (fullVoucher?.voucherType as string)?.toUpperCase() === 'PURCHASE';
+            const companyId = fullVoucher?.companyId || undefined;
+            let parentGroup = 'Suspense Accounts'; // Safe fallback
+            
+            if (fullVoucher?.entries) {
+              const matchingEntry = fullVoucher.entries.find((e: any) => e.ledgerName.toLowerCase() === missingLedgerName.toLowerCase());
+              if (matchingEntry) {
+                if (matchingEntry.isParty) {
+                  const partyType = isPurchase ? 'VENDOR' : 'STUDENT';
+                  parentGroup = this.masterGroupResolver.resolvePartyGroup({ type: partyType } as any).parentGroup;
+                } else if (matchingEntry.ledgerName.toLowerCase().includes('gst')) {
+                  parentGroup = this.masterGroupResolver.resolveTaxGroup({ ledgerName: matchingEntry.ledgerName } as any).parentGroup;
+                } else {
+                  parentGroup = this.masterGroupResolver.resolveExpenseGroup({ ledgerName: matchingEntry.ledgerName } as any, isPurchase).parentGroup;
+                }
+              }
+            }
+
+            // Orchestrate creation
+            await this.tallyMasterIntelligence.ensureLedger(missingLedgerName, parentGroup, companyId);
+            
+            this.logger.log(
+              { message: 'MASTER_CREATED_RETRYING_SYNC', missingLedgerName, parentGroup, jobId: job.id },
+              'ProcessERPSyncUseCase',
+            );
+            
+            // Transition to FAILED_TEMPORARY which triggers normal worker retry logic
+            await this.transitionState(
+              job.id,
+              ERP_SYNC_STATUS.SYNCING,
+              ERP_SYNC_STATUS.FAILED_TEMPORARY,
+              `Missing master '${missingLedgerName}' auto-created in Tally. Ready for retry.`,
+              {
+                lastError: result.message,
+                missingMasterCreated: missingLedgerName,
+                ...sharedAuditData,
+              },
+            );
+            
+            retryNeeded = true;
+          } catch (recoveryErr: any) {
+            this.logger.error(
+              { message: 'FAILED_TO_CREATE_MISSING_MASTER', missingLedgerName, error: recoveryErr.message },
+              'ProcessERPSyncUseCase',
+            );
+            // Fall through to permanent failure below
+          }
+
+          if (retryNeeded) {
+            // Throw a retryable exception so BullMQ catches it and applies backoff
+            throw new ERPTransportException(
+              `Temporary business failure: Auto-created missing master '${missingLedgerName}'`,
+              'TEMPORARY_BUSINESS_RECOVERY',
+            );
+          }
+        }
 
         let newState = ERP_SYNC_STATUS.FAILED_PERMANENT;
         if (isUnknown) {
@@ -345,7 +720,10 @@ export class ProcessERPSyncUseCase {
           ERP_SYNC_STATUS.SYNCING,
           newState,
           result.message || 'Unknown error',
-          { lastError: result.message },
+          {
+            lastError: result.message,
+            ...sharedAuditData,
+          },
         );
       }
     } catch (error: any) {
@@ -367,7 +745,7 @@ export class ProcessERPSyncUseCase {
       await this.repository.logAttempt({
         jobId: job.id,
         payloadHash: job.idempotencyHash,
-        payloadSize: 1024,
+        payloadSize: 0,
         responseType: isTimeout ? 'TIMEOUT' : 'TRANSPORT_ERROR',
         parserWarnings: [],
         requestTime: new Date(Date.now() - transportDuration),
@@ -377,24 +755,80 @@ export class ProcessERPSyncUseCase {
         errorMessage: (error as any).message,
       });
 
+      // Audit data captured even on exception paths
+      const exceptionAuditData = {
+        transportStatus: isTimeout ? 'TIMEOUT' : (error.code || 'TRANSPORT_ERROR'),
+        lastResponse: (error as any).message || null,
+        responseTimeMs: transportDuration,
+        retryCount: (job.attempts || 0) + 1,
+        parserWarnings: [],
+      };
+
+      // Delegate retry decision to ERPRetryService
+      const retryDecision = this.retryService.shouldRetry(error);
+      const exhausted = this.retryService.isExhausted(
+        job.attempts + 1,
+        job.maxAttempts ?? this.retryService.getMaxAttempts(),
+      );
+
       let nextState;
       if (isTimeout) {
-        // Socket closed pre-ack: We don't know if Tally processed it.
-        nextState = ERP_SYNC_STATUS.UNKNOWN;
-      } else if (job.attempts + 1 >= job.maxAttempts) {
-        // Max retries reached
-        nextState = ERP_SYNC_STATUS.MANUAL_REVIEW;
+        // PHASE 3: TIMEOUT RECOVERY
+        this.logger.warn(
+          {
+            message:
+              'Transport timeout, checking if voucher was created anyway',
+            jobId,
+          },
+          'ProcessERPSyncUseCase',
+        );
+        const timeoutExistence = await this.engine.verifyVoucherExists(
+          verificationCriteria,
+          job.adapterCode,
+          context,
+        );
+
+        if (timeoutExistence === 'EXISTS') {
+          this.logger.log(
+            {
+              message: 'VOUCHER_ALREADY_EXISTS_IN_ERP_AFTER_TIMEOUT',
+              voucherId: job.voucherCandidateId,
+            },
+            'ProcessERPSyncUseCase',
+          );
+          nextState = ERP_SYNC_STATUS.SYNCED;
+          // On timeout-recovery-to-SYNCED, mark transportStatus as TIMEOUT_RECOVERED
+          exceptionAuditData.transportStatus = 'TIMEOUT_RECOVERED';
+        } else {
+          nextState = ERP_SYNC_STATUS.FAILED_TEMPORARY;
+        }
+      } else if (!retryDecision.shouldRetry || exhausted) {
+        // Non-retryable error or exhausted: route to MANUAL_REVIEW
+        nextState = exhausted
+          ? ERP_SYNC_STATUS.MANUAL_REVIEW
+          : ERP_SYNC_STATUS.FAILED_PERMANENT;
       } else {
-        // Recoverable network error (e.g. ECONNREFUSED)
+        // Recoverable network error — schedule retry
         nextState = ERP_SYNC_STATUS.FAILED_TEMPORARY;
       }
+
+      this.logger.log(
+        {
+          message: 'Retry decision',
+          jobId,
+          retryDecision,
+          exhausted,
+          nextState,
+        },
+        'ProcessERPSyncUseCase',
+      );
 
       await this.transitionState(
         job.id,
         ERP_SYNC_STATUS.SYNCING,
         nextState,
         (error as any).message,
-        { lastError: (error as any).message },
+        { lastError: (error as any).message, ...exceptionAuditData },
       );
 
       if (nextState === ERP_SYNC_STATUS.FAILED_TEMPORARY) {
@@ -444,6 +878,44 @@ export class ProcessERPSyncUseCase {
     ) {
       const job = await this.repository.findJobById(jobId);
       if (job) {
+        // Phase 6: Lifecycle state synchronization
+        const voucher = await this.prisma.voucherCandidate.findUnique({
+          where: { id: job.voucherCandidateId },
+          select: { metadata: true }
+        });
+        const draftId = (voucher?.metadata as any)?.invoiceCandidateId;
+        if (draftId) {
+          if (toState === ERP_SYNC_STATUS.SYNCED) {
+            await this.prisma.transactionOutbox.create({
+              data: {
+                aggregateType: 'ERPSyncJob',
+                aggregateId: job.id,
+                eventType: 'ERP_SYNC_COMPLETED',
+                payload: { draftId, jobId: job.id },
+                status: 'PENDING'
+              }
+            });
+            await this.globalAuditService.log({
+              action: 'ERP_SYNC_COMPLETED',
+              entity: 'ERPSyncJob',
+              entityId: job.id,
+              correlationId: CorrelationContext.getCorrelationId(),
+              reason: 'Voucher successfully synchronized to ERP',
+              newValue: { draftId, jobId: job.id },
+            });
+          } else {
+            await this.prisma.transactionOutbox.create({
+              data: {
+                aggregateType: 'ERPSyncJob',
+                aggregateId: job.id,
+                eventType: 'ERP_SYNC_FAILED',
+                payload: { draftId, jobId: job.id, reason },
+                status: 'PENDING'
+              }
+            });
+          }
+        }
+
         const batchItems = await this.prisma.batchSyncItem.findMany({
           where: { voucherCandidateId: job.voucherCandidateId },
         });

@@ -14,22 +14,48 @@ export class VoucherMapperService {
     // 1. Map fields
     const dto = plainToInstance(TallyVoucherDTO, {
       voucherNumber: internalData.voucherNumber,
+      guid: internalData.id,
       date:
-        (internalData.date instanceof Date 
-          ? internalData.date.toISOString().split('T')[0].replace(/-/g, '') 
+        (internalData.date instanceof Date
+          ? internalData.date.toISOString().split('T')[0].replace(/-/g, '')
           : internalData.date) ||
-        new Date().toISOString().split('T')[0].replace(/-/g, ''), // Default format YYYYMMDD
+        new Date().toISOString().split('T')[0].replace(/-/g, ''),
       voucherType: internalData.voucherType || 'Receipt',
       companyId: internalData.companyId,
       companyName: internalData.companyName,
       partyLedgerName: internalData.partyLedgerName,
+      narration: internalData.narration,
       isEdit: internalData.isEdit || false,
+
+      // Supplier / GST party details (Phase H.1)
+      supplierGstin: internalData.supplierGstin,
+      supplierPan: internalData.supplierPan,
+      supplierState: internalData.supplierState,
+      placeOfSupply: internalData.placeOfSupply,
+
+      // Invoice metadata (Phase H.1)
+      invoiceNumber: internalData.invoiceNumber,
+      purchaseOrder: internalData.purchaseOrder,
+      paymentTerms: internalData.paymentTerms,
+
+      // GST tax totals (Phase H.1)
+      cgst: internalData.cgst != null ? Number(internalData.cgst) : undefined,
+      sgst: internalData.sgst != null ? Number(internalData.sgst) : undefined,
+      igst: internalData.igst != null ? Number(internalData.igst) : undefined,
+      cess: internalData.cess != null ? Number(internalData.cess) : undefined,
+
       lines:
         internalData.lines?.map((line: any) => ({
           ledgerName: line.ledgerName,
+          stockItemName: line.stockItemName,
           isDebit: Boolean(line.isDebit),
           isParty: Boolean(line.isParty),
           amount: Number(line.amount),
+          // Line-level inventory metadata (Phase H.1)
+          hsnCode: line.hsnCode,
+          quantity: line.quantity != null ? Number(line.quantity) : undefined,
+          unit: line.unit,
+          rate: line.rate != null ? Number(line.rate) : undefined,
         })) || [],
     });
 

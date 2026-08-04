@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuditService } from '../audit/audit.service';
 import { ProcessERPSyncUseCase } from './use-cases/process-erp-sync.use-case';
 import { VerifyERPSyncUseCase } from './use-cases/verify-erp-sync.use-case';
 import { ERP_REPOSITORY, VOUCHER_REPOSITORY } from './constants/erp.constants';
@@ -11,6 +12,10 @@ import { ERPTransportException } from './exceptions/erp-transport.exception';
 import { TallyMasterValidationEngine } from '../accounting-intelligence/validation/tally-master-validation.engine';
 import { ApprovalWorkflowEngine } from '../accounting-intelligence/governance/approval-workflow.engine';
 import { AccountingDecisionAuditService } from '../accounting-intelligence/decision-audit/accounting-decision-audit.service';
+import { TallyMasterIntelligenceService } from './services/tally-master-intelligence.service';
+import { MasterGroupResolverService } from '../accounting-intelligence/governance/master-group-resolver.service';
+import { ERPRetryService } from './services/retry.service';
+import { AccountingPeriodService } from '../accounting-policy/services/accounting-period.service';
 
 describe('ERP Connector Integration Suite', () => {
   let processUseCase: ProcessERPSyncUseCase;
@@ -28,6 +33,7 @@ describe('ERP Connector Integration Suite', () => {
 
   const mockEngine = {
     syncVoucher: jest.fn(),
+    verifyVoucherExists: jest.fn().mockResolvedValue('NOT_FOUND'),
   };
 
   const mockQueue = {};
@@ -56,16 +62,48 @@ describe('ERP Connector Integration Suite', () => {
     logDecision: jest.fn(),
   };
 
+  const mockTallyMasterIntelligence = {
+    ensureLedger: jest.fn().mockResolvedValue(undefined),
+  };
+
+  const mockMasterGroupResolver = {
+    resolvePartyGroup: jest.fn().mockReturnValue({
+      parentGroup: 'Sundry Creditors',
+      confidence: 1.0,
+      reason: 'Test',
+    }),
+    resolveExpenseGroup: jest.fn().mockReturnValue({
+      parentGroup: 'Indirect Expenses',
+      confidence: 1.0,
+      reason: 'Test',
+    }),
+    resolveTaxGroup: jest.fn().mockReturnValue({
+      parentGroup: 'Duties & Taxes',
+      confidence: 1.0,
+      reason: 'Test',
+    }),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProcessERPSyncUseCase,
         VerifyERPSyncUseCase,
+        { provide: AuditService, useValue: { log: jest.fn() } },
         { provide: ERP_REPOSITORY, useValue: mockRepo },
         { provide: VOUCHER_REPOSITORY, useValue: mockVoucherRepo },
         { provide: ERPConnectorEngine, useValue: mockEngine },
         { provide: QUEUE_PROVIDER, useValue: mockQueue },
         { provide: LoggerService, useValue: mockLogger },
+        {
+          provide: ERPRetryService,
+          useValue: {
+            shouldRetry: jest.fn().mockReturnValue({ shouldRetry: true, reason: 'Retryable' }),
+            scheduleRetry: jest.fn(),
+            isExhausted: jest.fn().mockReturnValue(false),
+            getMaxAttempts: jest.fn().mockReturnValue(5),
+          },
+        },
         {
           provide: PrismaService,
           useValue: {
@@ -91,6 +129,20 @@ describe('ERP Connector Integration Suite', () => {
         },
         { provide: ApprovalWorkflowEngine, useValue: mockApprovalEngine },
         { provide: AccountingDecisionAuditService, useValue: mockAuditService },
+        {
+          provide: TallyMasterIntelligenceService,
+          useValue: mockTallyMasterIntelligence,
+        },
+        {
+          provide: MasterGroupResolverService,
+          useValue: mockMasterGroupResolver,
+        },
+        {
+          provide: AccountingPeriodService,
+          useValue: {
+            validatePostingAllowed: jest.fn().mockResolvedValue(undefined),
+          },
+        },
       ],
     }).compile();
 
@@ -123,22 +175,25 @@ describe('ERP Connector Integration Suite', () => {
     );
   });
 
-  // 2. Transport timeout
-  it('should handle transport timeout (UNKNOWN)', async () => {
+  // 2. Transport timeout — verifyVoucherExists returns NOT_FOUND so job goes to FAILED_TEMPORARY
+  it('should handle transport timeout (FAILED_TEMPORARY when voucher not found)', async () => {
     mockRepo.findJobById.mockResolvedValue({
       id: 'job-2',
       status: 'PENDING',
       voucherCandidateId: 'v-2',
+      attempts: 0,
+      maxAttempts: 5,
     });
     mockVoucherRepo.findById.mockResolvedValue({ id: 'v-2' });
     const timeoutError = new ERPTransportException('Timeout', 'TIMEOUT');
     mockEngine.syncVoucher.mockRejectedValue(timeoutError);
+    mockEngine.verifyVoucherExists.mockResolvedValue('NOT_FOUND');
 
-    await processUseCase.execute('job-2', 1);
+    await expect(processUseCase.execute('job-2', 1)).rejects.toThrow('Timeout');
 
     expect(mockRepo.updateJobStatus).toHaveBeenCalledWith(
       'job-2',
-      'UNKNOWN',
+      'FAILED_TEMPORARY',
       expect.anything(),
     );
   });
@@ -246,6 +301,12 @@ describe('ERP Connector Integration Suite', () => {
 
   // 9. Retry exhaustion
   it('should move to MANUAL_REVIEW when max attempts reached', async () => {
+    // Override retryService to simulate exhaustion for this test
+    const module2 = processUseCase['retryService'] as any;
+    const originalExhausted = module2.isExhausted;
+    module2.isExhausted = jest.fn().mockReturnValue(true);
+    module2.shouldRetry = jest.fn().mockReturnValue({ shouldRetry: false, reason: 'Max attempts' });
+
     mockRepo.findJobById.mockResolvedValue({
       id: 'job-9',
       status: 'PENDING',
@@ -255,6 +316,7 @@ describe('ERP Connector Integration Suite', () => {
     });
     mockVoucherRepo.findById.mockResolvedValue({ id: 'v-9' });
     mockEngine.syncVoucher.mockRejectedValue(new Error('Some error'));
+    mockEngine.verifyVoucherExists.mockResolvedValue('NOT_FOUND');
 
     await processUseCase.execute('job-9', 1);
 
@@ -263,6 +325,9 @@ describe('ERP Connector Integration Suite', () => {
       'MANUAL_REVIEW',
       expect.anything(),
     );
+
+    // Restore
+    module2.isExhausted = originalExhausted;
   });
 
   // 10. Manual review routing (verification limit exceeded)
@@ -347,5 +412,116 @@ describe('ERP Connector Integration Suite', () => {
     });
     await processUseCase.execute('job-15', 1);
     expect(mockEngine.syncVoucher).not.toHaveBeenCalled();
+  });
+
+  // ─── AUDIT FIELD PERSISTENCE TESTS (BLOCKER-1 Fix Verification) ─────────────
+
+  it('AUDIT-01: should persist xmlHash, transportStatus, requestXml, responseXml after successful sync', async () => {
+    mockRepo.findJobById.mockResolvedValue({
+      id: 'job-audit-1',
+      status: 'PENDING',
+      voucherCandidateId: 'v-a1',
+      attempts: 0,
+    });
+    mockVoucherRepo.findById.mockResolvedValue({ id: 'v-a1' });
+    mockEngine.syncVoucher.mockResolvedValue({
+      success: true,
+      referenceId: 'PUR-9999',
+      requestXml: '<ENVELOPE><TEST/></ENVELOPE>',
+      rawResponse: '<ENVELOPE><BODY><DESC>OK</DESC></BODY></ENVELOPE>',
+      parserWarnings: [],
+      transportMetadata: {
+        durationMs: 120,
+        httpStatus: 200,
+        xmlHash: 'abc123auditHash',
+        payloadSizeBytes: 256,
+      },
+      durationMs: 120,
+    });
+
+    await processUseCase.execute('job-audit-1', 1);
+
+    // Verify that updateJobStatus was called with all audit fields
+    const syncedCall = (mockRepo.updateJobStatus as jest.Mock).mock.calls.find(
+      (c) => c[1] === 'SYNCED',
+    );
+    expect(syncedCall).toBeDefined();
+    const auditArg = syncedCall[2];
+    expect(auditArg).toMatchObject({
+      xmlHash: 'abc123auditHash',
+      transportStatus: 'SUCCESS',
+      responseTimeMs: 120,
+      requestXml: '<ENVELOPE><TEST/></ENVELOPE>',
+      responseXml: '<ENVELOPE><BODY><DESC>OK</DESC></BODY></ENVELOPE>',
+    });
+  });
+
+  it('AUDIT-02: should persist transportStatus=TIMEOUT_RECOVERED after timeout recovery to SYNCED', async () => {
+    mockRepo.findJobById.mockResolvedValue({
+      id: 'job-audit-2',
+      status: 'PENDING',
+      voucherCandidateId: 'v-a2',
+      attempts: 0,
+      maxAttempts: 5,
+    });
+    mockVoucherRepo.findById.mockResolvedValue({ id: 'v-a2' });
+
+    const timeoutError = new ERPTransportException('Tally timed out', 'TIMEOUT');
+    mockEngine.syncVoucher.mockRejectedValue(timeoutError);
+    // Pre-flight returns NOT_FOUND (so sync is attempted), then EXISTS on timeout recovery check
+    mockEngine.verifyVoucherExists
+      .mockResolvedValueOnce('NOT_FOUND') // pre-flight check
+      .mockResolvedValueOnce('EXISTS');   // post-timeout recovery check
+
+    await processUseCase.execute('job-audit-2', 1);
+
+    const syncedCall = (mockRepo.updateJobStatus as jest.Mock).mock.calls.find(
+      (c) => c[1] === 'SYNCED',
+    );
+    expect(syncedCall).toBeDefined();
+    const auditArg = syncedCall[2];
+    expect(auditArg).toMatchObject({
+      transportStatus: 'TIMEOUT_RECOVERED',
+      lastResponse: 'Tally timed out',
+    });
+  });
+
+  it('AUDIT-03: should persist transportStatus=BUSINESS_ERROR after business failure', async () => {
+    mockRepo.findJobById.mockResolvedValue({
+      id: 'job-audit-3',
+      status: 'PENDING',
+      voucherCandidateId: 'v-a3',
+      attempts: 0,
+    });
+    mockVoucherRepo.findById.mockResolvedValue({ id: 'v-a3' });
+    mockEngine.syncVoucher.mockResolvedValue({
+      success: false,
+      responseType: 'BUSINESS_ERROR',
+      message: "Tax Classification 'CGST' does not exist!",
+      requestXml: '<ENVELOPE><BAD/></ENVELOPE>',
+      rawResponse: '<ENVELOPE><DESC>ERROR</DESC></ENVELOPE>',
+      parserWarnings: [],
+      transportMetadata: {
+        durationMs: 80,
+        httpStatus: 200,
+        xmlHash: 'failHash456',
+      },
+      durationMs: 80,
+    });
+
+    await processUseCase.execute('job-audit-3', 1);
+
+    const failCall = (mockRepo.updateJobStatus as jest.Mock).mock.calls.find(
+      (c) => c[1] === 'FAILED_PERMANENT',
+    );
+    expect(failCall).toBeDefined();
+    const auditArg = failCall[2];
+    expect(auditArg).toMatchObject({
+      xmlHash: 'failHash456',
+      transportStatus: 'BUSINESS_ERROR',
+      requestXml: '<ENVELOPE><BAD/></ENVELOPE>',
+      responseXml: '<ENVELOPE><DESC>ERROR</DESC></ENVELOPE>',
+      lastResponse: "Tax Classification 'CGST' does not exist!",
+    });
   });
 });

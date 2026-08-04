@@ -62,4 +62,39 @@ export class LearningFeedbackService {
 
     return pattern;
   }
+
+  async learnFromDraft(draftId: string) {
+    const draft = await this.prisma.transactionDraft.findUnique({ where: { id: draftId } });
+    if (!draft) return;
+    
+    const payload = draft.payload as any;
+    // Fetch original OCR'd payload
+    const originalLog = await this.prisma.transactionAuditLog.findFirst({
+      where: { transactionId: draftId, action: 'CREATED' },
+      orderBy: { timestamp: 'asc' }
+    });
+
+    if (!originalLog) return;
+    
+    const originalPayload = originalLog.delta as any;
+
+    this.logger.log(`Extracting learning patterns from successful draft: ${draftId}`);
+    
+    // Example logic to learn ledger mapping differences
+    if (originalPayload?.header?.voucherType && payload.header?.voucherType !== originalPayload.header?.voucherType) {
+      await this.recordCorrection(draftId, 'voucherType', originalPayload.header?.voucherType, payload.header?.voucherType, 'system-learning');
+    }
+
+    // Compare line items
+    const originalLines = originalPayload?.lines || [];
+    const finalLines = payload?.lines || [];
+
+    for (let i = 0; i < Math.min(originalLines.length, finalLines.length); i++) {
+      const origItem = originalLines[i];
+      const finalItem = finalLines[i];
+      if (origItem.ledgerName && finalItem.ledgerName && origItem.ledgerName !== finalItem.ledgerName) {
+         await this.recordCorrection(draftId, 'ledgerName', origItem.ledgerName, finalItem.ledgerName, 'system-learning');
+      }
+    }
+  }
 }

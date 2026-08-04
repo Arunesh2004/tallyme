@@ -5,24 +5,24 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
 export class TallyHealthService {
   private readonly logger = new Logger(TallyHealthService.name);
 
-  constructor(
-    private readonly prisma: PrismaService
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async getHealthStatus(companyId?: string) {
     // 1. Connection Latency & status from Agent Heartbeat
     let latencyMs = -1;
     let isConnected = false;
-    let authFailure = false;
+    const authFailure = false;
     let activeCompany = 'Unknown';
 
     try {
       const lastHeartbeat = await this.prisma.agentHeartbeat.findFirst({
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
 
       if (lastHeartbeat) {
-        isConnected = lastHeartbeat.status === 'ONLINE' && lastHeartbeat.tallyStatus === 'CONNECTED';
+        isConnected =
+          lastHeartbeat.status === 'ONLINE' &&
+          lastHeartbeat.tallyStatus === 'CONNECTED';
         latencyMs = lastHeartbeat.latencyMs || -1;
         if (lastHeartbeat.tallyCompany) {
           activeCompany = lastHeartbeat.tallyCompany;

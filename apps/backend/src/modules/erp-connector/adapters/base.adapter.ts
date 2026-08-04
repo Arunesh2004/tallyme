@@ -15,7 +15,16 @@ export abstract class BaseERPAdapter implements IERPAdapter {
   abstract parseResponse(response: TransportResult): ERPResponse;
   abstract validateResponse(parsedResponse: ERPResponse): boolean;
   abstract verifyVoucherExists(
-    voucherNumber: string,
+    criteria: {
+      voucherNumber?: string;
+      guid?: string;
+      masterId?: string;
+      externalInvoiceNumber?: string;
+      voucherType?: string;
+      partyLedger?: string;
+      amount?: number;
+      date?: Date;
+    },
     context: ERPRequestContext,
   ): Promise<'EXISTS' | 'NOT_FOUND' | 'UNKNOWN'>;
 }

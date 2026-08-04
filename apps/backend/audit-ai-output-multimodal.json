@@ -1,0 +1,64 @@
+{
+  "amount": 6431,
+  "bankDetails": {
+    "accountNumber": "50200012345678",
+    "bankName": "HDFC Bank",
+    "ifsc": "HDFC0001234"
+  },
+  "cess": null,
+  "cgst": 490.5,
+  "confidence": 0.95,
+  "discount": null,
+  "freight": null,
+  "gstin": "27ABCDE1234F1ZS",
+  "igst": null,
+  "invoiceDate": "2024-05-15",
+  "invoiceNumber": "ST/24-25/0115",
+  "lineItems": [
+    {
+      "amount": 2500,
+      "description": "A4 Size Paper (500 Sheets)",
+      "discount": null,
+      "hsnSac": "4802",
+      "quantity": 10,
+      "rate": 250,
+      "taxAmount": null,
+      "taxPercent": null,
+      "unit": null
+    },
+    {
+      "amount": 1900,
+      "description": "HP Ink Cartridge 680",
+      "discount": null,
+      "hsnSac": "8443",
+      "quantity": 2,
+      "rate": 950,
+      "taxAmount": null,
+      "taxPercent": null,
+      "unit": null
+    },
+    {
+      "amount": 1050,
+      "description": "Stapler Machine",
+      "discount": null,
+      "hsnSac": "8472",
+      "quantity": 3,
+      "rate": 350,
+      "taxAmount": null,
+      "taxPercent": null,
+      "unit": null
+    }
+  ],
+  "otherCharges": null,
+  "pan": null,
+  "paymentTerms": null,
+  "placeOfSupply": null,
+  "purchaseOrder": null,
+  "roundOff": 0,
+  "sgst": 490.5,
+  "state": "Maharashtra",
+  "subtotal": 5450,
+  "taxAmount": 981,
+  "vendorAddress": "45, Market Road, Pune - 411002, Maharashtra",
+  "vendorName": "SHREE TRADERS"
+}

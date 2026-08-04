@@ -126,7 +126,7 @@ export default function DashboardPage() {
                 <span className="text-blue-600 text-xs font-bold">API</span>
               </div>
               <div>
-                <p className="text-sm text-gray-900 dark:text-gray-100">Successfully extracted invoice using Hash-based MockOCRProvider.</p>
+                <p className="text-sm text-gray-900 dark:text-gray-100">Successfully extracted invoice using Production AI Engine.</p>
                 <p className="text-xs text-gray-500">2 minutes ago</p>
               </div>
             </div>

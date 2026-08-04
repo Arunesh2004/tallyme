@@ -51,12 +51,24 @@ export class TallyPrimeAdapter extends BaseERPAdapter {
   }
 
   async verifyVoucherExists(
-    voucherNumber: string,
+    criteria: {
+      voucherNumber?: string;
+      guid?: string;
+      masterId?: string;
+      externalInvoiceNumber?: string;
+      voucherType?: string;
+      partyLedger?: string;
+      amount?: number;
+      date?: Date;
+    },
     context: ERPRequestContext,
   ): Promise<'EXISTS' | 'NOT_FOUND' | 'UNKNOWN'> {
     try {
-      // 1. Build the Export XML query
-      const payload = await this.xmlBuilder.buildExportXml(voucherNumber, context.companyId);
+      // 1. Build the Export XML query based on prioritized criteria
+      const payload = await this.xmlBuilder.buildExportXml(
+        criteria,
+        context.companyId,
+      );
 
       // 2. Send via transport
       const transportResult = await this.transport.send(payload, context);

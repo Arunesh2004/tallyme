@@ -1,0 +1,630 @@
+{
+  "ics": [
+    {
+      "id": "eb01a399-43be-493f-8055-a18b64db20af",
+      "documentId": "146006e0-c695-460c-b578-8d93971c385e",
+      "invoiceNumber": "SBD/24-25/0444",
+      "date": "2024-05-28T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "3564",
+      "total": "23364",
+      "extractedGstin": "27AAKFS1234K1Z8",
+      "extractedPan": null,
+      "extractedName": "SIDDHI BOOK DEPOT",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED",
+      "document": {
+        "id": "146006e0-c695-460c-b578-8d93971c385e",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\cb621cc8-ac3a-4e70-9fc6-63dbc5470955-Screenshot_2026-07-26_234549.png",
+        "checksum": "f8475a84563a5355689937af4156c303e586c5bd00b492b00e018eb34ef9d925",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T13:52:11.365Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.95
+      }
+    },
+    {
+      "id": "cc0943ec-2202-4c6d-a391-641f033387a9",
+      "documentId": "84810103-722a-46c0-a1d7-cfc4b8520e55",
+      "invoiceNumber": "1162",
+      "date": "2024-06-05T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "630",
+      "total": "4130",
+      "extractedGstin": null,
+      "extractedPan": null,
+      "extractedName": "MEHTA TRADERS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "document": {
+        "id": "84810103-722a-46c0-a1d7-cfc4b8520e55",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\991f02e2-4f7e-4232-82d1-15dcf28c82dc-Screenshot_2026-07-26_234604.png",
+        "checksum": "e91fddc802ab41a03c012eb9044580b951776e35110e2af84425489832a0dffa",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T13:54:39.010Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.95
+      }
+    },
+    {
+      "id": "c7a6416c-3c46-44f9-8cc5-e961fefa9439",
+      "documentId": "0ca20185-eebc-4169-85aa-0374910f5648",
+      "invoiceNumber": "Fl/24-25/0099",
+      "date": "2024-06-01T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "324",
+      "total": "2124",
+      "extractedGstin": "27AABCFI5567J1Z9",
+      "extractedPan": null,
+      "extractedName": "Industrial Fasteners & Hardware",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED",
+      "document": {
+        "id": "0ca20185-eebc-4169-85aa-0374910f5648",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\6995f024-05cf-434a-afac-e3ffe067ec95-Screenshot_2026-07-26_234559.png",
+        "checksum": "10aba6ca1b751955e452da96ba87d90c9f3bfa5817541efa8c8a6ec2e65fe1cc",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T13:53:40.980Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.99
+      }
+    },
+    {
+      "id": "8504777b-555f-469a-a6c4-c0f380ea7cdc",
+      "documentId": "a9b0bb47-2257-465a-ac76-9a964ed9990d",
+      "invoiceNumber": "ST/24-25/0115",
+      "date": "2024-05-15T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "981",
+      "total": "6434",
+      "extractedGstin": "27ABCDE1234F1Z5",
+      "extractedPan": null,
+      "extractedName": "SHREE TRADERS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "document": {
+        "id": "a9b0bb47-2257-465a-ac76-9a964ed9990d",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\6030d9fe-e518-4195-9bda-8a17dc586a37-Screenshot_2026-07-26_234618.png",
+        "checksum": "035120ecd76ade23d4b9f757048937ea37e070e1e8d1f8f4f22b06969c032a0c",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T14:28:33.725Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.99
+      }
+    },
+    {
+      "id": "836f94cc-7bb5-4974-8ece-d7eefdf4c513",
+      "documentId": "1fc1351b-7ff6-4863-866c-2536a2db453f",
+      "invoiceNumber": "ACHN/ 2025/0024",
+      "date": "2025-03-24T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "525",
+      "total": "6825",
+      "extractedGstin": "27AQQVYE75JIGF23",
+      "extractedPan": null,
+      "extractedName": "YASH ENTERPRIERS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "document": {
+        "id": "1fc1351b-7ff6-4863-866c-2536a2db453f",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\f45debb9-3ed1-45f5-8abc-d00c34b9fc55-Screenshot_2026-07-26_234609.png",
+        "checksum": "f9fbeb0a33acd4fb5aa10ac10f6ae9a3c370daa2deabc4dc3b022b52d5572812",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T14:04:28.200Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "OCR_FAILED",
+        "confidenceScore": 0.95
+      }
+    },
+    {
+      "id": "817dd904-73b7-498c-aa30-d5491bbebc77",
+      "documentId": "f554ffba-f714-43cf-b3e7-8224fb6be030",
+      "invoiceNumber": "ME/24-25/0789",
+      "date": "2024-05-20T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "13590",
+      "total": "89090",
+      "extractedGstin": "27ABCFM5578G1Z1",
+      "extractedPan": null,
+      "extractedName": "MAHALAXMI ENTERPRISES",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED",
+      "document": {
+        "id": "f554ffba-f714-43cf-b3e7-8224fb6be030",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\0b6a1727-72ad-4e1d-8b34-02f669e83cb8-Screenshot_2026-07-26_234533.png",
+        "checksum": "f394f7996687f866bb329af8f9db479b4d0f07d7cccbf372a3564ba0a71d33e8",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T13:49:25.632Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.95
+      }
+    },
+    {
+      "id": "6ebc00fe-1aaf-4c79-84f0-dfd5560f4596",
+      "documentId": "754aa51e-2a56-45e5-bd3f-bf668f0f374c",
+      "invoiceNumber": "ST/24-25/0115",
+      "date": "2024-05-15T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "981",
+      "total": "6431",
+      "extractedGstin": "27ABCDE1234F1ZS",
+      "extractedPan": null,
+      "extractedName": "SHREE TRADERS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED",
+      "document": {
+        "id": "754aa51e-2a56-45e5-bd3f-bf668f0f374c",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\20efb52f-dd4b-4ab7-8700-dd736a3ba383-Screenshot_2026-07-26_234527.png",
+        "checksum": "d4e0d7ad2e25ed7e59eda86172f1714f12fcf31676e87a1de574e3ad735ce100",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T13:47:29.004Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.99
+      }
+    },
+    {
+      "id": "3e4514c0-b513-4251-9463-6fa2a805a9b4",
+      "documentId": "ab2e0bd1-3afe-4675-94ab-432e4ceaaacb",
+      "invoiceNumber": "UNKNOWN",
+      "date": "2024-06-06T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "0",
+      "total": "475",
+      "extractedGstin": null,
+      "extractedPan": null,
+      "extractedName": "Ganesh General Stores",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "document": {
+        "id": "ab2e0bd1-3afe-4675-94ab-432e4ceaaacb",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\c51c5c6e-b65f-4913-919e-822f5cd29bbb-Screenshot_2026-07-26_234638.png",
+        "checksum": "0d35e5feb61d9eeec7808bf4fe7cc99e4c786891336bf50223ad7995025097e0",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T14:50:32.521Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "OCR_PROCESSING",
+        "confidenceScore": 0.95
+      }
+    },
+    {
+      "id": "09cc10ab-dff0-4585-b1ec-17ecc687f0fa",
+      "documentId": "4d18f1c3-75dd-4ac6-b3f4-7047629a86e8",
+      "invoiceNumber": "OE/24-25/0566",
+      "date": "2024-05-25T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "4662",
+      "total": "30562",
+      "extractedGstin": "27AAHFO7890H1Z2",
+      "extractedPan": null,
+      "extractedName": "OM ELECTRICALS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.99,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED",
+      "document": {
+        "id": "4d18f1c3-75dd-4ac6-b3f4-7047629a86e8",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\7735adb9-c445-43a1-886c-c14d958ecc1f-Screenshot_2026-07-26_234538.png",
+        "checksum": "195c2c8e097b8fc7f490c42de872aa23002b5b0082ca2528d0a262a3bd7a5ae7",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T13:50:47.078Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "EXTRACTION_PROCESSING",
+        "confidenceScore": 0.99
+      }
+    },
+    {
+      "id": "021c34a7-b57e-4ac9-a097-15d10786155a",
+      "documentId": "58f451f7-fe8b-4418-9ee7-bb6a2c17e9de",
+      "invoiceNumber": "SS/24-25/115",
+      "date": "2024-06-03T00:00:00.000Z",
+      "subtotal": null,
+      "tax": "981",
+      "total": "6432",
+      "extractedGstin": "27AACKE1234F1Z9",
+      "extractedPan": null,
+      "extractedName": "KIRAN SUPPLIERS",
+      "extractedData": {
+        "lineItems": [],
+        "confidence": 0.95,
+        "confidenceFactors": {}
+      },
+      "status": "QUEUED",
+      "document": {
+        "id": "58f451f7-fe8b-4418-9ee7-bb6a2c17e9de",
+        "organizationId": null,
+        "companyId": null,
+        "fileUrl": "C:\\Users\\Administrator\\.gemini\\antigravity_old\\scratch_old\\tallyme\\apps\\backend\\storage\\invoices\\2026\\07\\45fc1ce6-8c2e-43a6-a260-833e1ea88648-Screenshot_2026-07-26_234614.png",
+        "checksum": "75a2bc1afce171eeec87741e7e348c41dfc57269f6ec9a823c88d43664b14370",
+        "mimeType": "image/png",
+        "uploadedBy": "uat-user",
+        "receivedAt": "2026-07-29T14:16:57.152Z",
+        "source": "MANUAL_UPLOAD",
+        "status": "OCR_FAILED",
+        "confidenceScore": 0.95
+      }
+    }
+  ],
+  "vcs": [
+    {
+      "id": "b1dc1c1d-c0ca-48af-9bc9-747f57259f2b",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-969760",
+      "voucherType": "Purchase",
+      "date": "2024-05-20T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "MAHALAXMI ENTERPRISES",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    {
+      "id": "9d855c26-6058-40be-a90a-0362df8d639f",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-888338",
+      "voucherType": "Purchase",
+      "date": "2024-05-15T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "SHREE TRADERS LEDGER",
+            "source": "VendorMatchingEngine",
+            "confidence": 99
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    {
+      "id": "70a8b072-cd23-4c43-9a32-1c666702dbb2",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-946724",
+      "voucherType": "Purchase",
+      "date": "2024-06-03T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "KIRAN SUPPLIERS",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    {
+      "id": "4e3bc46a-a0dc-4ba4-87f0-39d301b9d5b4",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-230941",
+      "voucherType": "Purchase",
+      "date": "2024-06-01T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "Industrial Fasteners & Hardware",
+            "source": "VendorMatchingEngine",
+            "confidence": 99
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    {
+      "id": "43e19e7b-5b40-4634-b519-c34715424802",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-054054",
+      "voucherType": "Purchase",
+      "date": "2024-05-25T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "OM ELECTRICALS",
+            "source": "VendorMatchingEngine",
+            "confidence": 99
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    {
+      "id": "2e5e2457-69da-4923-a5c1-ae996311e6da",
+      "companyId": "UAT-TENANT-123",
+      "voucherNumber": "PUR-143637",
+      "voucherType": "Purchase",
+      "date": "2024-05-28T00:00:00.000Z",
+      "narration": null,
+      "partyLedgerName": null,
+      "isEdit": false,
+      "status": "PENDING",
+      "metadata": {
+        "ledgerDecisions": {
+          "tax": {
+            "name": "INPUT_GST_LEDGER",
+            "source": "TaxResolutionEngine",
+            "confidence": 0.95
+          },
+          "vendor": {
+            "name": "SIDDHI BOOK DEPOT",
+            "source": "VendorMatchingEngine",
+            "confidence": 95
+          },
+          "expense": {
+            "name": "TEST_VENDOR_EXPENSE",
+            "source": "LedgerMappingConfiguration",
+            "confidence": 0.95
+          }
+        }
+      }
+    }
+  ],
+  "vendors": [
+    {
+      "id": "shree-traders-123",
+      "organizationId": null,
+      "companyId": "test-company-123",
+      "vendorCode": null,
+      "name": "SHREE TRADERS",
+      "gstin": "27ABCDE1234F1ZS",
+      "pan": null,
+      "createdAt": "2026-07-28T07:37:12.435Z",
+      "updatedAt": "2026-07-28T08:03:02.388Z",
+      "deletedAt": null
+    },
+    {
+      "id": "a335e7ce-ab4e-4ea4-bfed-24755580ef5a",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "Ganesh General Stores",
+      "gstin": "29ABCDE1234F1Z5",
+      "pan": null,
+      "createdAt": "2026-07-28T09:31:10.540Z",
+      "updatedAt": "2026-07-28T09:31:10.540Z",
+      "deletedAt": null
+    },
+    {
+      "id": "d0681b7f-000f-4d75-88ed-dedfa695f322",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "MAHALAXMI ENTERPRISES",
+      "gstin": "27ABCFM5578G1Z1",
+      "pan": null,
+      "createdAt": "2026-07-28T09:39:33.896Z",
+      "updatedAt": "2026-07-28T09:39:33.896Z",
+      "deletedAt": null
+    },
+    {
+      "id": "790fd4f1-6b20-464b-a8df-1ae26a02a40c",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "OM ELECTRICALS",
+      "gstin": "27AAHFO7890H1Z2",
+      "pan": null,
+      "createdAt": "2026-07-28T09:39:43.708Z",
+      "updatedAt": "2026-07-28T09:39:43.708Z",
+      "deletedAt": null
+    },
+    {
+      "id": "92da0107-612b-43ce-b714-123ab0d499fa",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "SIDDHI BOOK DEPOT",
+      "gstin": "27AAKFS1234K1Z8",
+      "pan": null,
+      "createdAt": "2026-07-28T09:39:54.162Z",
+      "updatedAt": "2026-07-28T09:39:54.162Z",
+      "deletedAt": null
+    },
+    {
+      "id": "a834e9c7-3f07-42f3-88ee-13ffcae8257b",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "Industrial Fasteners & Hardware",
+      "gstin": "27AABCFI5567J1Z9",
+      "pan": null,
+      "createdAt": "2026-07-28T09:40:05.777Z",
+      "updatedAt": "2026-07-28T09:40:05.777Z",
+      "deletedAt": null
+    },
+    {
+      "id": "dccc5bf8-7e84-43c9-a3f7-cece36f699bf",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "YASH ENTERPRIERS",
+      "gstin": "27AABVVEE230FTZ3",
+      "pan": null,
+      "createdAt": "2026-07-28T09:40:17.564Z",
+      "updatedAt": "2026-07-28T09:40:17.564Z",
+      "deletedAt": null
+    },
+    {
+      "id": "fce5538d-afdb-4cdd-9967-f3ab47fa797b",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "KIRAN SUPPLIERS",
+      "gstin": "27AACKE1234F1Z9",
+      "pan": null,
+      "createdAt": "2026-07-28T09:40:30.433Z",
+      "updatedAt": "2026-07-28T09:40:30.433Z",
+      "deletedAt": null
+    },
+    {
+      "id": "a8458880-cf6c-417c-ae6f-b3263915d307",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "MEHTA TRADERS",
+      "gstin": "GST323799",
+      "pan": null,
+      "createdAt": "2026-07-28T09:45:36.804Z",
+      "updatedAt": "2026-07-28T09:45:36.804Z",
+      "deletedAt": null
+    },
+    {
+      "id": "34772c17-5f69-418f-8e1f-fe89ed40036e",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "YASH ENTRRPRIERS",
+      "gstin": "27A00WYE333GFT23",
+      "pan": null,
+      "createdAt": "2026-07-28T10:15:14.281Z",
+      "updatedAt": "2026-07-28T10:15:14.281Z",
+      "deletedAt": null
+    },
+    {
+      "id": "fa6cfa86-8d0b-482c-8cac-d9631c35f55f",
+      "organizationId": null,
+      "companyId": null,
+      "vendorCode": null,
+      "name": "YASH ENTERPRISE",
+      "gstin": "27ABCDE1234F1Z3",
+      "pan": null,
+      "createdAt": "2026-07-28T11:04:02.721Z",
+      "updatedAt": "2026-07-28T11:04:02.721Z",
+      "deletedAt": null
+    }
+  ]
+}

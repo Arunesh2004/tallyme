@@ -6,6 +6,8 @@ import {
   StudentVoucherMappingPolicy,
   StudentNarrationPolicy,
 } from './domain/services/student-voucher.orchestrator';
+import { PaymentExtractor, EmailParser } from './domain/services/payment-extractor.service';
+import { PaymentIntelligenceEngine } from './intelligence/payment-intelligence.engine';
 
 import { VoucherBuilderModule } from '../voucher-builder/voucher-builder.module';
 import { StudentFeeWorker } from './queue/student-fee.worker';
@@ -19,6 +21,8 @@ import { SharedCacheModule } from '../../shared/cache/cache.module';
 import { StudentModule } from '../student/student.module'; // for STUDENT_REPOSITORY
 import { ContextModule } from '../../core/context/context.module';
 import { EnterpriseAccountingIntelligenceModule } from '../accounting-intelligence/enterprise-accounting-intelligence.module';
+import { UniversalTransactionModule } from '../universal-transaction/universal-transaction.module';
+import { StudentFeeDraftAdapter } from './application/student-fee-draft.adapter';
 
 const controllers = isWorkerMode
   ? []
@@ -31,6 +35,10 @@ const providers: any[] = [
   StudentMatcher,
   FeeAllocationService,
   MatchStudentCommandHandler,
+  StudentFeeDraftAdapter,
+  PaymentExtractor,
+  EmailParser,
+  PaymentIntelligenceEngine,
 ];
 
 if (isWorkerMode) {
@@ -45,6 +53,7 @@ if (isWorkerMode) {
     StudentModule,
     ContextModule,
     EnterpriseAccountingIntelligenceModule,
+    UniversalTransactionModule,
     BullModule.registerQueue({
       name: 'payment-candidate-processing',
     }),

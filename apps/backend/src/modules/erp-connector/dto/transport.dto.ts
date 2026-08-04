@@ -14,4 +14,8 @@ export interface TransportResult {
   durationMs: number;
   success: boolean;
   headers?: Record<string, string>;
+  /** SHA-256 hash of the exact XML payload transmitted to Tally. */
+  xmlHash?: string;
+  /** UTF-8 byte length of the transmitted XML payload. */
+  payloadSizeBytes?: number;
 }

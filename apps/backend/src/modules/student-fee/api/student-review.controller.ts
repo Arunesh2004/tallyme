@@ -7,6 +7,8 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  NotFoundException,
+  BadRequestException
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import {
@@ -14,19 +16,18 @@ import {
   RequirePermissions,
 } from '../../auth/guards/permissions.guard';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
-import { Inject, NotFoundException, BadRequestException } from '@nestjs/common';
-import { QUEUE_PROVIDER } from '../../../infrastructure/queue/queue.constants';
-import { IQueueService } from '../../../infrastructure/queue/queue.interfaces';
-import { VOUCHER_BUILDER_QUEUE } from '../../voucher-builder/constants/voucher.constants';
 import { CompanyContextService } from '../../../core/context/company-context.service';
+import { TransactionDraftService } from '../../universal-transaction/services/transaction-draft.service';
+import { StudentFeeDraftAdapter } from '../application/student-fee-draft.adapter';
 
 @Controller('student-fees/manual-review')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class StudentManualReviewController {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(QUEUE_PROVIDER) private readonly queueService: IQueueService,
     private readonly companyContext: CompanyContextService,
+    private readonly draftService: TransactionDraftService,
+    private readonly draftAdapter: StudentFeeDraftAdapter,
   ) {}
 
   @Get()
@@ -100,14 +101,37 @@ export class StudentManualReviewController {
     });
 
     if (review.document.paymentCandidate) {
-      await this.queueService.addJob(
-        VOUCHER_BUILDER_QUEUE,
-        'build-student-voucher',
-        {
-          candidateId: review.document.paymentCandidate.id,
-          companyId: this.companyContext.getCompanyId(),
+      const companyId = this.companyContext.getCompanyId();
+      const legacyPayload = {
+        voucherType: 'RECEIPT',
+        companyId,
+        allocationData: {
+          allocatedAmount: Number(review.document.paymentCandidate.amount) || 0,
+          allocationBreakdown: [
+            {
+              feeHeadName: 'Fee Collection',
+              allocated: Number(review.document.paymentCandidate.amount) || 0,
+            },
+          ],
         },
+        paymentData: {
+          gateway: review.document.paymentCandidate.paymentGateway || '',
+          reference: review.document.paymentCandidate.paymentCandidateId || '',
+          amount: Number(review.document.paymentCandidate.amount) || 0,
+          bankLedger: 'Bank A/c', // Default since not provided in original payload
+        },
+        student: {
+          id: review.document.paymentCandidate.studentId,
+          name: 'Student', // studentName is not available on studentPaymentCandidate
+        },
+      };
+
+      const canonicalModel = this.draftAdapter.map(
+        legacyPayload,
+        review.document.paymentCandidate.id,
       );
+
+      await this.draftService.createDraft(canonicalModel, 'manual-reviewer');
     }
 
     return { id, status: 'APPROVED' };

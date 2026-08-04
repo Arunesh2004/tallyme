@@ -31,11 +31,11 @@ export class TallyDiscoveryService {
       });
       if (companies && companies.length > 0) {
         await this.prisma.tallyCompanyDiscovery.createMany({
-          data: companies.map(c => ({
+          data: companies.map((c) => ({
             connectionId: companyId,
             companyName: c.name,
-            active: true
-          }))
+            active: true,
+          })),
         });
       }
 

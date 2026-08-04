@@ -53,7 +53,9 @@ export class TallyMasterIntelligenceService {
         `Successfully loaded ${this.knownLedgers.size} masters from Tally.`,
       );
     } catch (error: any) {
-      this.logger.error(`Failed to load masters from Tally: ${(error as any).message}`);
+      this.logger.error(
+        `Failed to load masters from Tally: ${(error as any).message}`,
+      );
       // Don't throw. We'll attempt creation and let it fail on creation if Tally is down.
     }
   }

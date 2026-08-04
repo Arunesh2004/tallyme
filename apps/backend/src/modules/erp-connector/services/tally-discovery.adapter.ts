@@ -47,8 +47,10 @@ export class TallyDiscoveryAdapter implements IERPDiscoveryAdapter {
         },
       );
       if (!result.success) return [];
-      
-      const match = /<SVCURRENTCOMPANY>([^<]+)<\/SVCURRENTCOMPANY>/i.exec(result.rawResponse);
+
+      const match = /<SVCURRENTCOMPANY>([^<]+)<\/SVCURRENTCOMPANY>/i.exec(
+        result.rawResponse,
+      );
       if (match && match[1]) {
         return [{ name: match[1] }];
       }
@@ -108,7 +110,9 @@ export class TallyDiscoveryAdapter implements IERPDiscoveryAdapter {
       const names = this.extractNames(result.rawResponse, 'VOUCHERTYPE');
       return names.map((name) => ({ name, data: { type: 'VOUCHERTYPE' } }));
     } catch (error: any) {
-      this.logger.warn(`Failed to fetch voucher types: ${(error as any).message}`);
+      this.logger.warn(
+        `Failed to fetch voucher types: ${(error as any).message}`,
+      );
       return [];
     }
   }
@@ -126,7 +130,9 @@ export class TallyDiscoveryAdapter implements IERPDiscoveryAdapter {
       const names = this.extractNames(result.rawResponse, 'COSTCENTRE');
       return names.map((name) => ({ name, data: { type: 'COSTCENTRE' } }));
     } catch (error: any) {
-      this.logger.warn(`Failed to fetch cost centres: ${(error as any).message}`);
+      this.logger.warn(
+        `Failed to fetch cost centres: ${(error as any).message}`,
+      );
       return [];
     }
   }

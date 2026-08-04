@@ -1,0 +1,150 @@
+# Accounting Intelligence Phase F.2 Report
+
+## 1. 10 Invoice Validation Results
+
+### val-cand-1785483381578
+- **Status:** SUCCESS
+- **Balanced:** ✅ Yes (Debit: 6431, Credit: 6431)
+- **Ledger Lines:**
+  - CREDIT: SHREE TRADERS = 6431
+  - DEBIT: Printing and Stationery = 2500 [HSN: 4802]
+  - DEBIT: Printing and Stationery = 1900 [HSN: 8443]
+  - DEBIT: Printing and Stationery = 1050 [HSN: 8472]
+  - DEBIT: Input CGST Ledger = 490.5
+  - DEBIT: Input SGST Ledger = 490.5
+- **Metadata:**
+  - GSTIN: 27ABCDE1234F1ZS
+- **Line Item Audit Log:**
+  - `A4 Size Paper (500 Sheets)` -> **Printing and Stationery**
+    - HSN: 4802, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `HP Ink Cartridge 680` -> **Printing and Stationery**
+    - HSN: 8443, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Stapler Machine` -> **Printing and Stationery**
+    - HSN: 8472, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+
+### val-cand-1785483477276
+- **Status:** SUCCESS
+- **Balanced:** ✅ Yes (Debit: 89090, Credit: 89090)
+- **Ledger Lines:**
+  - CREDIT: MAHALAXMI ENTERPRISES = 89090
+  - DEBIT: Building Material Expense = 42000 [HSN: 2523]
+  - DEBIT: Building Material Expense = 30000 [HSN: 7214]
+  - DEBIT: Building Material Expense = 3500 [HSN: 6904]
+  - DEBIT: Input CGST Ledger = 6795
+  - DEBIT: Input SGST Ledger = 6795
+- **Metadata:**
+  - GSTIN: 27ABCFM5578G1Z1
+- **Line Item Audit Log:**
+  - `Cement 50kg Bag` -> **Building Material Expense**
+    - HSN: 2523, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Steel Rod 12mm` -> **Building Material Expense**
+    - HSN: 7214, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Bricks (First Class)` -> **Building Material Expense**
+    - HSN: 6904, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+
+### val-cand-1785483567469
+- **Status:** SUCCESS
+- **Balanced:** ✅ Yes (Debit: 30562, Credit: 30562)
+- **Ledger Lines:**
+  - CREDIT: OM ELECTRICALS = 30562
+  - DEBIT: Repairs and Maintenance = 5000 [HSN: 9405]
+  - DEBIT: Repairs and Maintenance = 4800 [HSN: 8539]
+  - DEBIT: Electrical Equipment Expense = 12500 [HSN: 8414]
+  - DEBIT: Electrical Equipment Expense = 1800 [HSN: 8536]
+  - DEBIT: Electrical Equipment Expense = 1800 [HSN: 8544]
+  - DEBIT: Input CGST Ledger = 2331
+  - DEBIT: Input SGST Ledger = 2331
+- **Metadata:**
+  - GSTIN: 27AAHFO7890H1Z2
+- **Line Item Audit Log:**
+  - `LED Tube Light 20W` -> **Repairs and Maintenance**
+    - HSN: 9405, HSN Match: false, Keyword Match: true, Gemini Match: false, Confidence: 0.95
+  - `LED Bulb 9W` -> **Repairs and Maintenance**
+    - HSN: 8539, HSN Match: false, Keyword Match: true, Gemini Match: false, Confidence: 0.95
+  - `Ceiling Fan 1200mm` -> **Electrical Equipment Expense**
+    - HSN: 8414, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Switch 6A` -> **Electrical Equipment Expense**
+    - HSN: 8536, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Wire 1.5 sq.mm (90m)` -> **Electrical Equipment Expense**
+    - HSN: 8544, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+
+### val-cand-1785483638306
+- **Status:** SUCCESS
+- **Balanced:** ✅ Yes (Debit: 25564, Credit: 25564)
+- **Ledger Lines:**
+  - CREDIT: SIDDHI BOOK DEPOT = 23364
+  - CREDIT: Discount Received = 2200
+  - DEBIT: Printing and Stationery = 9000 [HSN: 4901]
+  - DEBIT: Printing and Stationery = 8000 [HSN: 4901]
+  - DEBIT: Printing and Stationery = 4000 [HSN: 4820]
+  - DEBIT: Printing and Stationery = 1000 [HSN: 9608]
+  - DEBIT: Input CGST Ledger = 1782
+  - DEBIT: Input SGST Ledger = 1782
+- **Metadata:**
+  - GSTIN: 27AAKFS1234K1Z8
+- **Line Item Audit Log:**
+  - `Mathematics Textbook (Class 5)` -> **Printing and Stationery**
+    - HSN: 4901, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Science Textbook (Class 5)` -> **Printing and Stationery**
+    - HSN: 4901, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Notebook (200 Pages)` -> **Printing and Stationery**
+    - HSN: 4820, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Pen (Blue)` -> **Printing and Stationery**
+    - HSN: 9608, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+
+### val-cand-1785483685913
+- **Status:** SUCCESS
+- **Balanced:** ✅ Yes (Debit: 2124, Credit: 2124)
+- **Ledger Lines:**
+  - CREDIT: Industrial Fasteners & Hardware = 2124
+  - DEBIT: Hardware / Maintenance Expense = 1000 [HSN: 7318]
+  - DEBIT: Hardware / Maintenance Expense = 400 [HSN: 7318]
+  - DEBIT: Hardware / Maintenance Expense = 400 [HSN: 7318]
+  - DEBIT: Input CGST Ledger = 162
+  - DEBIT: Input SGST Ledger = 162
+- **Metadata:**
+  - GSTIN: 27AABCFI5567J1Z9
+- **Line Item Audit Log:**
+  - `Hex Bolt M8 x 50mm` -> **Hardware / Maintenance Expense**
+    - HSN: 7318, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Nut M8` -> **Hardware / Maintenance Expense**
+    - HSN: 7318, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Washer 8mm` -> **Hardware / Maintenance Expense**
+    - HSN: 7318, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+
+### val-cand-1785483707538
+- **Status:** ERROR
+- **Error:** Unexplained balance difference of -630 exceeds 5. Manual review required.
+
+### val-cand-1785483723334
+- **Status:** ERROR
+- **Error:** Voucher validation failed: Total amount must be greater than 0
+
+### val-cand-1785483727241
+- **Status:** ERROR
+- **Error:** Unexplained balance difference of 890 exceeds 5. Manual review required.
+
+### val-cand-1785483734671
+- **Status:** SUCCESS
+- **Balanced:** ✅ Yes (Debit: 6434, Credit: 6434)
+- **Ledger Lines:**
+  - CREDIT: SHREE TRADERS = 6434
+  - DEBIT: Printing and Stationery = 2500 [HSN: 4802]
+  - DEBIT: Printing and Stationery = 1900 [HSN: 8443]
+  - DEBIT: Printing and Stationery = 1050 [HSN: 8472]
+  - DEBIT: Input CGST Ledger = 490.5
+  - DEBIT: Input SGST Ledger = 490.5
+  - DEBIT: Rounding Off = 3
+- **Metadata:**
+  - GSTIN: 27ABCDE1234F1Z5
+- **Line Item Audit Log:**
+  - `A4 Size Paper (500 Sheets)` -> **Printing and Stationery**
+    - HSN: 4802, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `HP Ink Cartridge 680` -> **Printing and Stationery**
+    - HSN: 8443, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+  - `Stapler Machine` -> **Printing and Stationery**
+    - HSN: 8472, HSN Match: true, Keyword Match: false, Gemini Match: false, Confidence: 0.99
+
+### val-cand-1785483739974
+- **Status:** ERROR
+- **Error:** Item: Duster, HSN: null, Reason: No ledger mapping found, Suggested: Unknown

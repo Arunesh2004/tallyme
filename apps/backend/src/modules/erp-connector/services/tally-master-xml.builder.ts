@@ -16,7 +16,8 @@ export class TallyMasterXmlBuilder {
   }
 
   private async getStaticVariables(companyName?: string): Promise<string> {
-    const resolvedName = await this.companyResolver.resolveCompanyName(companyName);
+    const resolvedName =
+      await this.companyResolver.resolveCompanyName(companyName);
     if (!resolvedName) return '';
     return `<STATICVARIABLES>
           <SVCURRENTCOMPANY>${this.escapeXml(resolvedName)}</SVCURRENTCOMPANY>

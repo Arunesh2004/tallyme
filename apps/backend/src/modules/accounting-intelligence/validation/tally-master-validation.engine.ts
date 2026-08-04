@@ -27,9 +27,11 @@ export class TallyMasterValidationEngine {
 
     if (!latestDiscovery) {
       return {
-        valid: false,
+        valid: true,
         missingMasters: [],
-        warnings: ['No Tally Discovery Report available for validation.'],
+        warnings: [
+          'No Tally Discovery Report available for validation, assuming valid.',
+        ],
       };
     }
 

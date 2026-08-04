@@ -7,9 +7,13 @@ export class DateParserUtil {
   static parse(dateStr: string | null | undefined): Date | null {
     if (!dateStr) return null;
     if (typeof dateStr !== 'string') return null;
-    
-    let sanitized = dateStr.trim();
-    if (sanitized === '' || sanitized.toUpperCase() === 'N/A' || sanitized.toUpperCase() === 'UNKNOWN') {
+
+    const sanitized = dateStr.trim();
+    if (
+      sanitized === '' ||
+      sanitized.toUpperCase() === 'N/A' ||
+      sanitized.toUpperCase() === 'UNKNOWN'
+    ) {
       return null;
     }
 
@@ -19,7 +23,7 @@ export class DateParserUtil {
       const day = parseInt(dmyMatch[1], 10);
       const month = parseInt(dmyMatch[2], 10);
       const year = parseInt(dmyMatch[3], 10);
-      
+
       return this.validateAndCreate(year, month, day);
     }
 
@@ -29,7 +33,7 @@ export class DateParserUtil {
       const year = parseInt(ymdMatch[1], 10);
       const month = parseInt(ymdMatch[2], 10);
       const day = parseInt(ymdMatch[3], 10);
-      
+
       return this.validateAndCreate(year, month, day);
     }
 
@@ -42,7 +46,11 @@ export class DateParserUtil {
     return null;
   }
 
-  private static validateAndCreate(year: number, month: number, day: number): Date | null {
+  private static validateAndCreate(
+    year: number,
+    month: number,
+    day: number,
+  ): Date | null {
     if (month < 1 || month > 12) return null;
     if (day < 1 || day > 31) return null;
 

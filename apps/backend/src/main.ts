@@ -49,7 +49,7 @@ async function bootstrap() {
 
   const logger = app.get(LoggerService);
 
-  if (true) {
+  if (process.env.WORKER_MODE === 'true') {
     await app.init();
     logger.log(`🚀 Worker node is running (HTTP server disabled)`, 'Bootstrap');
   } else {

@@ -16,55 +16,99 @@ export class ReconciliationService {
 
     let isMatched = true;
 
-    // 1. Voucher Structure Validation (Debit vs Credit Ledger correctness)
-    const expectedDebits =
-      expectedPayload.ledgers
-        ?.filter((l: any) => l.amount > 0)
-        .map((l: any) => l.name)
-        .sort() || [];
-    const expectedCredits =
-      expectedPayload.ledgers
-        ?.filter((l: any) => l.amount < 0)
-        .map((l: any) => l.name)
-        .sort() || [];
+    // ── 1. Voucher Structure Validation (Debit vs Credit Ledger names) ───
+    // TallyVoucherDTO uses `lines` — NOT `ledgers` (FIX: aligned field name)
+    const expectedDebits = (
+      expectedPayload.lines ??
+      expectedPayload.ledgers ??
+      []
+    )
+      .filter((l: any) => l.isDebit === true)
+      .map((l: any) => l.ledgerName ?? l.name)
+      .filter(Boolean)
+      .sort();
 
-    const actualDebits =
-      tallyResponse.ledgers
-        ?.filter((l: any) => l.amount > 0)
-        .map((l: any) => l.name)
-        .sort() || [];
-    const actualCredits =
-      tallyResponse.ledgers
-        ?.filter((l: any) => l.amount < 0)
-        .map((l: any) => l.name)
-        .sort() || [];
+    const expectedCredits = (
+      expectedPayload.lines ??
+      expectedPayload.ledgers ??
+      []
+    )
+      .filter((l: any) => l.isDebit === false)
+      .map((l: any) => l.ledgerName ?? l.name)
+      .filter(Boolean)
+      .sort();
+
+    const actualDebits = (tallyResponse.lines ?? tallyResponse.ledgers ?? [])
+      .filter((l: any) => l.isDebit === true)
+      .map((l: any) => l.ledgerName ?? l.name)
+      .filter(Boolean)
+      .sort();
+
+    const actualCredits = (tallyResponse.lines ?? tallyResponse.ledgers ?? [])
+      .filter((l: any) => l.isDebit === false)
+      .map((l: any) => l.ledgerName ?? l.name)
+      .filter(Boolean)
+      .sort();
 
     if (
       JSON.stringify(expectedDebits) !== JSON.stringify(actualDebits) ||
       JSON.stringify(expectedCredits) !== JSON.stringify(actualCredits)
     ) {
-      this.logger.warn(`Structure mismatch for ${voucherId}`);
-      isMatched = false;
-    }
-
-    // 2. Amount Reconciliation
-    const expectedAmount = expectedPayload.totalAmount || 0;
-    const actualAmount = tallyResponse.totalAmount || 0;
-
-    if (expectedAmount !== actualAmount) {
       this.logger.warn(
-        `Amount mismatch for ${voucherId}: Expected ${expectedAmount}, Actual ${actualAmount}`,
+        `Ledger structure mismatch for ${voucherId}`,
+        undefined,
+        ReconciliationService.name,
       );
       isMatched = false;
     }
 
-    // 3. Tax Reconciliation
-    // Checking CGST, SGST, IGST totals if present
-    const expectedTax = expectedPayload.taxAmount || 0;
-    const actualTax = tallyResponse.taxAmount || 0;
+    // ── 2. Amount Reconciliation ─────────────────────────────────────────
+    // Sum debit amounts from lines (positive values expected on debit side)
+    const expectedDebitTotal = (
+      expectedPayload.lines ??
+      expectedPayload.ledgers ??
+      []
+    )
+      .filter((l: any) => l.isDebit === true)
+      .reduce(
+        (sum: number, l: any) => sum + Math.abs(Number(l.amount) || 0),
+        0,
+      );
 
-    if (expectedTax !== actualTax) {
-      this.logger.warn(`Tax mismatch for ${voucherId}`);
+    const actualDebitTotal = (
+      tallyResponse.lines ??
+      tallyResponse.ledgers ??
+      []
+    )
+      .filter((l: any) => l.isDebit === true)
+      .reduce(
+        (sum: number, l: any) => sum + Math.abs(Number(l.amount) || 0),
+        0,
+      );
+
+    // Fallback to totalAmount field when available (backwards compat)
+    const expectedAmount = expectedPayload.totalAmount ?? expectedDebitTotal;
+    const actualAmount = tallyResponse.totalAmount ?? actualDebitTotal;
+
+    if (Math.abs(expectedAmount - actualAmount) > 0.01) {
+      this.logger.warn(
+        `Amount mismatch for ${voucherId}: Expected ${expectedAmount}, Actual ${actualAmount}`,
+        undefined,
+        ReconciliationService.name,
+      );
+      isMatched = false;
+    }
+
+    // ── 3. Tax Reconciliation ────────────────────────────────────────────
+    const expectedTax = expectedPayload.taxAmount ?? 0;
+    const actualTax = tallyResponse.taxAmount ?? 0;
+
+    if (Math.abs(expectedTax - actualTax) > 0.01) {
+      this.logger.warn(
+        `Tax mismatch for ${voucherId}: Expected ${expectedTax}, Actual ${actualTax}`,
+        undefined,
+        ReconciliationService.name,
+      );
       isMatched = false;
     }
 

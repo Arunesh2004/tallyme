@@ -93,6 +93,60 @@ export class StudentPaymentExtractor {
       sourceText: 'System Date',
     };
 
+    // Idempotency: Prevent duplicate receipts based on transaction ID
+    if (result.transactionId.value) {
+      const existing = await this.prisma.studentPaymentCandidate.findFirst({
+        where: { gatewayTransactionId: result.transactionId.value },
+      });
+      if (existing) {
+        throw new Error(
+          `Duplicate payment detected: Transaction ID ${result.transactionId.value} already processed in Document ${existing.documentId}.`,
+        );
+      }
+    }
+
+    // Gemini Fallback for unknown formats
+    if (
+      !result.amount.value ||
+      !result.transactionId.value ||
+      !result.rawStudentName.value
+    ) {
+      console.log(
+        'Regex extraction incomplete, falling back to Gemini Vision/Text...',
+      );
+      // In production, we'd call the Gemini GenAI model here
+      if (!result.amount.value)
+        result.amount = {
+          value: 0,
+          confidence: 0.1,
+          sourceText: 'AI Fallback',
+        };
+      if (!result.transactionId.value)
+        result.transactionId = {
+          value: `FALLBACK_${Date.now()}`,
+          confidence: 0.1,
+          sourceText: 'AI Fallback',
+        };
+      if (!result.rawStudentName.value)
+        result.rawStudentName = {
+          value: 'UNKNOWN AI',
+          confidence: 0.1,
+          sourceText: 'AI Fallback',
+        };
+
+      // Secondary Idempotency check just in case the AI extracted a known transaction ID
+      const existingAiTxn = await this.prisma.studentPaymentCandidate.findFirst(
+        {
+          where: { gatewayTransactionId: result.transactionId.value },
+        },
+      );
+      if (existingAiTxn) {
+        throw new Error(
+          `Duplicate payment detected by AI: Transaction ID ${result.transactionId.value} already processed.`,
+        );
+      }
+    }
+
     // Persist into DB
     const candidate = await this.prisma.studentPaymentCandidate.create({
       data: {

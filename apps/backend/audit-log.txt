@@ -1,0 +1,73 @@
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mContextModule dependencies initialized[39m[38;5;3m +63ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mObservabilityModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mThrottlerModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrometheusModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullMQModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTerminusModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMetricsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+--- GEMINI CONFIG CHECK ---
+AI_API_KEY Configured: true
+AI_MODEL: models/gemini-flash-lite-latest
+---------------------------
+[33m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [33m   WARN[39m [38;5;3m[AzureOCRProvider] [39m[33mAZURE_OCR_ENDPOINT or AZURE_OCR_KEY is missing. AzureOCRProvider will gracefully fail on extraction.[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +10ms[39m
+[33m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [33m   WARN[39m [38;5;3m[OCRProviderFactory] [39m[33mAzure OCR credentials not found.
+Using Gemini Vision OCR.[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLoggerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLoggerModule dependencies initialized[39m[38;5;3m +7ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +21ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisModule dependencies initialized[39m[38;5;3m +18ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mQueueModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuditModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBackupModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAIGovernanceModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSharedCacheModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFilesModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrganizationModule dependencies initialized[39m[38;5;3m +5ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOperationsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFeeValidationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEnterpriseAccountingIntelligenceModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPaymentParserModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mStudentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mStudentMatchingModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mVoucherBuilderModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mVendorSlipModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 29364  - [39m31/07/2026, 12:40:35 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mERPConnectorModule dependencies initialized[39m[38;5;3m +0ms[39m
+[33m[Nest] 29364  - [39m31/07/2026, 12:40:36 pm [33m   WARN[39m [38;5;3m[GmailWatchService] [39m[33mIMAP configuration missing. Mail polling aborted.[39m
+UnknownElementException [Error]: Nest could not find GeminiExtractionProvider element (this provider does not exist in the current context)
+    at InstanceLinksHost.get (C:\Users\Administrator\.gemini\antigravity_old\scratch_old\tallyme\apps\backend\node_modules\@nestjs\core\injector\instance-links-host.js:15:19)
+    at NestApplicationContext.find (C:\Users\Administrator\.gemini\antigravity_old\scratch_old\tallyme\apps\backend\node_modules\@nestjs\core\injector\abstract-instance-resolver.js:8:60)
+    at NestApplicationContext.get (C:\Users\Administrator\.gemini\antigravity_old\scratch_old\tallyme\apps\backend\node_modules\@nestjs\core\nest-application-context.js:70:20)
+    at bootstrap (C:\Users\Administrator\.gemini\antigravity_old\scratch_old\tallyme\apps\backend\scripts\audit-pipeline.ts:12:24)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+[12:40:35.846] [32mINFO[39m (29364): [36mJwtStrategy initialized[39m [90m{"context":"Auth"}[39m
+[12:40:36.006] [32mINFO[39m (29364): [36mSuccessfully established connection to PostgreSQL[39m [90m{"context":"PrismaService"}[39m
+[12:40:36.008] [32mINFO[39m (29364): [36mInitializing BullMQ Service infrastructure[39m [90m{"context":"BullMqService"}[39m
+[12:40:36.029] [32mINFO[39m (29364): [36mSuccessfully established connection to Redis[39m [90m{"context":"RedisService"}[39m
+[12:40:36.029] [32mINFO[39m (29364): [36mMailListenerService initialized, starting poll interval[39m [90m{"context":"MailListenerService"}[39m

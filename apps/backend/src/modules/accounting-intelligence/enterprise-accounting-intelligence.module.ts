@@ -7,6 +7,7 @@ import { VendorIntelligenceService } from './workflows/vendor-intelligence.servi
 import { StudentIntelligenceService } from './workflows/student-intelligence.service';
 import { LedgerMappingEngine } from './ledger-mapping/ledger-mapping.engine';
 import { AccountingRulesEngine } from './rules-engine/accounting-rules.engine';
+import { AccountingIntelligenceService } from './workflows/accounting-intelligence.service';
 import { TallyDiscoveryController } from './tally-discovery/tally-discovery.controller';
 import { ERPConnectorModule } from '../erp-connector/erp-connector.module';
 import { TallyMasterValidationEngine } from './validation/tally-master-validation.engine';
@@ -25,6 +26,12 @@ import { ApprovalController } from './governance/approval.controller';
 // import { RollbackExecutionService } from './rollback/rollback-execution.service';
 
 import { DecisionAuditController } from './decision-audit/decision-audit.controller';
+import { MasterGroupResolverService } from './governance/master-group-resolver.service';
+import { LearningFeedbackService } from './learning-feedback/learning-feedback.service';
+import { RequiredFieldResolver } from './rules-engine/required-field.resolver';
+import { CompanyIntelligenceService } from './company/company-intelligence.service';
+import { ErpCapabilityService } from './erp-capability/erp-capability.service';
+import { HistoricalIntelligenceService } from './historical/historical-intelligence.service';
 
 @Module({
   imports: [
@@ -48,24 +55,38 @@ import { DecisionAuditController } from './decision-audit/decision-audit.control
     AccountingDecisionAuditService,
     VendorIntelligenceService,
     StudentIntelligenceService,
+    AccountingIntelligenceService,
     LedgerMappingEngine,
     AccountingRulesEngine,
     TallyMasterValidationEngine,
     ApprovalWorkflowEngine,
     BulkApprovalService,
     AccountingTemplateEngine,
+    MasterGroupResolverService,
+    LearningFeedbackService,
+    RequiredFieldResolver,
+    CompanyIntelligenceService,
+    ErpCapabilityService,
+    HistoricalIntelligenceService,
   ],
   exports: [
     TallyDiscoveryService,
     AccountingDecisionAuditService,
     VendorIntelligenceService,
     StudentIntelligenceService,
+    AccountingIntelligenceService,
     LedgerMappingEngine,
     AccountingRulesEngine,
     TallyMasterValidationEngine,
     ApprovalWorkflowEngine,
     BulkApprovalService,
     AccountingTemplateEngine,
+    MasterGroupResolverService,
+    LearningFeedbackService,
+    RequiredFieldResolver,
+    CompanyIntelligenceService,
+    ErpCapabilityService,
+    HistoricalIntelligenceService,
   ],
 })
 export class EnterpriseAccountingIntelligenceModule {}

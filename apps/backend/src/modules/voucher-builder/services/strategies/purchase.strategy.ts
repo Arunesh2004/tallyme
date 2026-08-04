@@ -38,28 +38,46 @@ export class PurchaseStrategy implements IVoucherStrategy {
       isBalanced: false,
     };
 
-    // Credit Vendor Ledger
-    // In Tally, purchases credit the vendor and debit the purchase/expense accounts
-    // We assume payload.allocation.vendorLedger contains the vendor ledger name
-    result.lines.push({
-      ledgerId: crypto.randomUUID(), // (implementation note)
-      ledgerName: allocation.vendorLedger,
-      type: 'CREDIT',
-      amount: Number(allocation.totalAmount),
-      description: `Purchase from vendor`,
-    });
-
-    // Debit Expense/Purchase Lines
-    if (allocation.lines && Array.isArray(allocation.lines)) {
-      for (const line of allocation.lines) {
+    // Process Credit Lines (Vendor, Discount, Round Off)
+    if (allocation.creditLines && Array.isArray(allocation.creditLines)) {
+      for (const line of allocation.creditLines) {
         result.lines.push({
           ledgerId: crypto.randomUUID(), // (implementation note)
           ledgerName: line.ledger,
-          type: 'DEBIT',
+          type: 'CREDIT',
           amount: Number(line.amount),
-          description: `Expense allocation`,
+          description: line.isVendor
+            ? `Purchase from vendor`
+            : `Credit adjustment`,
+          isParty: line.isVendor || false,
         });
       }
+    } else {
+      // Legacy fallback
+      result.lines.push({
+        ledgerId: crypto.randomUUID(),
+        ledgerName: allocation.vendorLedger,
+        type: 'CREDIT',
+        amount: Number(allocation.totalAmount),
+        description: `Purchase from vendor`,
+        isParty: true,
+      });
+    }
+
+    // Process Debit Lines (Expense, GST, Freight, Round Off)
+    const debitLines = allocation.debitLines || allocation.lines || [];
+    for (const line of debitLines) {
+      result.lines.push({
+        ledgerId: crypto.randomUUID(), // (implementation note)
+        ledgerName: line.ledger,
+        type: 'DEBIT',
+        amount: Number(line.amount),
+        description: `Expense/Tax allocation`,
+        hsnSac: line.hsnSac,
+        rate: line.rate,
+        quantity: line.quantity,
+        unit: line.unit,
+      });
     }
 
     this.validator.validate(result);

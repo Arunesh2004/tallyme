@@ -19,35 +19,23 @@ async function bootstrap() {
   const candidate = await prisma.invoiceCandidate.findFirst({ where: { status: 'EXTRACTED' }, orderBy: { id: 'desc' } });
   if (!candidate) return console.log('No EXTRACTED candidate');
 
-  console.log('Running VendorSlipWorker for:', candidate.id);
-  try {
-    const res = await vendorWorker.process({ data: { candidateId: candidate.id, companyId: 'test' } } as any);
-    console.log('VendorSlipWorker Result:', res);
-  } catch (e:any) { console.error('Vendor Worker Error:', e.stack); return; }
+  console.log('Dispatching to VendorSlipWorker via Queue:', candidate.id);
+  const queueService = app.get('QUEUE_PROVIDER');
+  await queueService.addJob('vendor-slip-queue', 'process-vendor-slip', { candidateId: candidate.id, companyId: 'test-company-123' });
 
-  // Wait for async processing / DB writes
-  await new Promise(r => setTimeout(r, 1000));
-
-  const expAlloc = await prisma.expenseAllocationCandidate.findFirst({ where: { id: { not: '' } }, orderBy: { id: 'desc' } });
-  if (!expAlloc) return console.log('No ExpenseAllocationCandidate produced.');
-
-  const voucherCandidate = await prisma.voucherCandidate.findUnique({ where: { id: expAlloc.voucherCandidateId! } });
-  if (!voucherCandidate) return console.log('No VoucherCandidate produced.');
-
-  console.log('Running VoucherBuilderWorker for:', voucherCandidate.id);
-  try {
-    const res = await voucherWorker.process({ data: { expenseAllocationCandidateId: expAlloc.id }, id: 'job1' } as any);
-    console.log('VoucherBuilderWorker Result:', res);
-  } catch(e:any) { console.error('Voucher Worker Error:', e.stack); return; }
-
-  console.log('Running ERPSyncWorker for:', voucherCandidate.id);
-  try {
-    const res = await erpWorker.process({ data: { voucherCandidateId: voucherCandidate.id }, attemptsMade: 1, id: 'job2' } as any);
-    console.log('ERPSyncWorker Result:', res);
-  } catch(e:any) { console.error('ERP Worker Error:', e.stack); return; }
-
-  const syncJob = await prisma.eRPSyncJob.findFirst({ where: { voucherCandidateId: voucherCandidate.id } });
-  console.log('Sync Job Status:', syncJob?.status);
+  // Poll for completion
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 1000));
+    const syncJob = await prisma.eRPSyncJob.findFirst({ orderBy: { createdAt: 'desc' } });
+    if (syncJob) {
+      console.log('Found Sync Job:', syncJob.id, 'Status:', syncJob.status, 'Error:', syncJob.lastError);
+      if ((syncJob.status as string) === 'COMPLETED' || (syncJob.status as string) === 'FAILED' || (syncJob.status as string) === 'MANUAL_REVIEW') {
+         break;
+      }
+    } else {
+      console.log('Waiting for pipeline...');
+    }
+  }
 
   await app.close();
 }

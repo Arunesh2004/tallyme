@@ -2,15 +2,29 @@
 import { Injectable } from '@nestjs/common';
 import { Result, fail, ok } from '../../../../shared/domain/result';
 import { FeeAllocation } from '../entities';
-import { IQueueService } from '../../../../infrastructure/queue/queue.interfaces';
-import { QUEUE_PROVIDER } from '../../../../infrastructure/queue/queue.constants';
 import { Inject } from '@nestjs/common';
-import { VOUCHER_BUILDER_QUEUE } from '../../../voucher-builder/constants/voucher.constants';
 import { CompanyContextService } from '../../../../core/context/company-context.service';
+import { PrismaService } from '../../../../infrastructure/database/prisma.service';
+import { TransactionDraftService } from '../../../universal-transaction/services/transaction-draft.service';
+import { StudentFeeDraftAdapter } from '../../application/student-fee-draft.adapter';
 
 @Injectable()
 export class StudentVoucherMappingPolicy {
-  getBankLedger(paymentMethod: string): string {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async getBankLedger(paymentMethod: string): Promise<string> {
+    const config = await this.prisma.ledgerMappingConfiguration.findFirst();
+    if (config) {
+      if (
+        config.feeCategories &&
+        (config.feeCategories as any)[paymentMethod]
+      ) {
+        return (config.feeCategories as any)[paymentMethod];
+      }
+      if (config.bankLedger) {
+        return config.bankLedger;
+      }
+    }
     return paymentMethod;
   }
 }
@@ -25,10 +39,11 @@ export class StudentNarrationPolicy {
 @Injectable()
 export class StudentVoucherOrchestrator {
   constructor(
-    @Inject(QUEUE_PROVIDER) private readonly queueService: IQueueService,
     private readonly mappingPolicy: StudentVoucherMappingPolicy,
     private readonly narrationPolicy: StudentNarrationPolicy,
     private readonly companyContext: CompanyContextService,
+    private readonly draftService: TransactionDraftService,
+    private readonly adapter: StudentFeeDraftAdapter,
   ) {}
 
   async orchestrate(
@@ -63,13 +78,12 @@ export class StudentVoucherOrchestrator {
       student: { name: studentName },
     };
 
-    // Dispatch to Shared Accounting Engine via Queue
-    await this.queueService.addJob(
-      VOUCHER_BUILDER_QUEUE,
-      'build-receipt-voucher',
-      payload,
-    );
+    // Map legacy payload to canonical draft
+    const canonicalModel = this.adapter.map(payload, `student-fee-${Date.now()}`);
 
-    return ok({ status: 'QUEUED' });
+    // Create Draft (Wait in DRAFT status)
+    const draft = await this.draftService.createDraft(canonicalModel, 'system-orchestrator');
+
+    return ok({ status: 'DRAFT_CREATED', draftId: draft.id });
   }
 }

@@ -16,6 +16,20 @@ export class ReviewQueueController {
     const [items, total] = await Promise.all([
       this.prisma.invoiceCandidate.findMany({
         where: { status: 'MANUAL_REVIEW_REQUIRED' },
+        include: {
+          document: true,
+          matchDecision: {
+            include: {
+              selectedVendorLedger: {
+                include: {
+                  vendorBranch: {
+                    include: { vendor: true },
+                  },
+                },
+              },
+            },
+          },
+        },
         skip,
         take,
         orderBy: { date: 'desc' },
@@ -25,8 +39,39 @@ export class ReviewQueueController {
       }),
     ]);
 
+    const mappedItems = await Promise.all(
+      items.map(async (item) => {
+        let suggestedVendor = null;
+        if (item.matchDecision?.selectedVendorLedger?.vendorBranch) {
+          const branch = item.matchDecision.selectedVendorLedger.vendorBranch;
+          suggestedVendor = {
+            id: branch.id, // This is the vendorBranchId the frontend needs
+            name: branch.vendor.name,
+            gstin: branch.gstin,
+          };
+        } else if (item.extractedGstin) {
+          // Fallback: If no matchDecision exists but we have a GSTIN, try to find the branch
+          const branch = await this.prisma.vendorBranch.findFirst({
+            where: { gstin: item.extractedGstin },
+            include: { vendor: true },
+          });
+          if (branch) {
+            suggestedVendor = {
+              id: branch.id,
+              name: branch.vendor.name,
+              gstin: branch.gstin,
+            };
+          }
+        }
+        return {
+          ...item,
+          suggestedVendor,
+        };
+      }),
+    );
+
     return {
-      data: items,
+      data: mappedItems,
       meta: { total, page: parseInt(page), limit: parseInt(limit) },
     };
   }

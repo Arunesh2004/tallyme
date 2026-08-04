@@ -1,5 +1,5 @@
 @echo off
 echo Starting API...
-start "API" cmd /k "cd apps\backend && set PORT=3000&& node dist/src/main"
+start "API" cmd /k "cd apps\backend && set PORT=3001&& node dist/src/main"
 echo Starting Worker...
-start "Worker" cmd /k "cd apps\backend && set WORKER_MODE=true&& set PORT=3001&& node dist/src/main"
+start "Worker" cmd /k "cd apps\backend && set WORKER_MODE=true&& set PORT=3002&& node dist/src/main"

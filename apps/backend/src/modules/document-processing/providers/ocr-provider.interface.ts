@@ -4,5 +4,8 @@ export interface OCRResult {
 }
 
 export interface OCRProvider {
-  extractText(documentBuffer: Buffer, metadata?: Record<string, any>): Promise<OCRResult>;
+  extractText(
+    documentBuffer: Buffer,
+    metadata?: Record<string, any>,
+  ): Promise<OCRResult>;
 }

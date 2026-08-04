@@ -11,7 +11,7 @@ export class GmailClientService implements IGmailClient, OnModuleDestroy {
 
   constructor(private configService: ConfigService) {
     const imapConfig = this.configService.get('mail.imap');
-    
+
     this.client = new ImapFlow({
       host: imapConfig.host,
       port: imapConfig.port,
@@ -42,11 +42,16 @@ export class GmailClientService implements IGmailClient, OnModuleDestroy {
       const lock = await this.client.getMailboxLock('INBOX');
       const emails: any[] = [];
       try {
-        const messages = this.client.fetch({ seen: false }, { source: true, uid: true });
+        const messages = this.client.fetch(
+          { seen: false },
+          { source: true, uid: true },
+        );
         for await (const message of messages) {
           if (!message.source) continue;
-          
-          const parsed: import('mailparser').ParsedMail = await simpleParser(message.source as Buffer);
+
+          const parsed: import('mailparser').ParsedMail = await simpleParser(
+            message.source as Buffer,
+          );
           emails.push({
             uid: message.uid, // Internal IMAP ID
             messageId: parsed.messageId || `uid-${message.uid}`, // Email standard ID
@@ -75,13 +80,17 @@ export class GmailClientService implements IGmailClient, OnModuleDestroy {
       const lock = await this.client.getMailboxLock('INBOX');
       try {
         // uid is passed from the fetcher
-        await this.client.messageFlagsAdd({ uid: Number(uid) }, ['\\Seen'], { uid: true });
+        await this.client.messageFlagsAdd({ uid: Number(uid) }, ['\\Seen'], {
+          uid: true,
+        });
         this.logger.debug(`Marked email UID ${uid} as read.`);
       } finally {
         lock.release();
       }
     } catch (error: any) {
-      this.logger.error(`Failed to mark email ${uid} as read: ${error.message}`);
+      this.logger.error(
+        `Failed to mark email ${uid} as read: ${error.message}`,
+      );
       throw error;
     }
   }

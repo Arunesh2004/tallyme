@@ -18,6 +18,7 @@ export const redisProvider: Provider = {
       port,
       password,
       db,
+      family: 4,
       lazyConnect: true, // Let the service handle connection during onModuleInit
       maxRetriesPerRequest: null,
       enableReadyCheck: false,

@@ -1,11 +1,21 @@
 jest.mock('bullmq', () => ({
-  Queue: class { on() {} },
-  Worker: class { on() {} }
+  Queue: class {
+    on() {}
+  },
+  Worker: class {
+    on() {}
+  },
 }));
 
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, Controller, Get, UseGuards, Req } from '@nestjs/common';
+import {
+  INestApplication,
+  Controller,
+  Get,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthModule } from '../src/modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { configureApp } from '../src/bootstrap/configure-app';
@@ -39,35 +49,37 @@ describe('Auth e2e Tests', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({ isGlobal: true }),
-        AuthModule
-      ],
+      imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule],
       providers: [
         {
           provide: LoggerService,
-          useValue: { log: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() }
-        }
+          useValue: {
+            log: jest.fn(),
+            error: jest.fn(),
+            warn: jest.fn(),
+            debug: jest.fn(),
+          },
+        },
       ],
-      controllers: [TestTenantController]
+      controllers: [TestTenantController],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     configureApp(app);
     await app.init();
-    
+
     httpServer = app.getHttpServer();
     prisma = app.get(PrismaService);
     jwtService = app.get(JwtService);
 
     const passwordHash = await bcrypt.hash('SecurePassword123!', 10);
-    
+
     testOrg = await prisma.organization.create({
-      data: { name: 'Test Org', slug: 'test-org-' + Date.now() }
+      data: { name: 'Test Org', slug: 'test-org-' + Date.now() },
     });
 
     otherOrg = await prisma.organization.create({
-      data: { name: 'Other Org', slug: 'other-org-' + Date.now() }
+      data: { name: 'Other Org', slug: 'other-org-' + Date.now() },
     });
 
     testUser = await prisma.userAccount.create({
@@ -75,8 +87,8 @@ describe('Auth e2e Tests', () => {
         email: `test-${Date.now()}@example.com`,
         name: 'Test User',
         passwordHash,
-        status: 'ACTIVE'
-      }
+        status: 'ACTIVE',
+      },
     });
 
     await prisma.organizationMember.create({
@@ -84,13 +96,15 @@ describe('Auth e2e Tests', () => {
         userId: testUser.id,
         organizationId: testOrg.id,
         role: 'SUPER_ADMIN',
-        status: 'ACTIVE'
-      }
+        status: 'ACTIVE',
+      },
     });
   });
 
   afterAll(async () => {
-    await prisma.organizationMember.deleteMany({ where: { userId: testUser.id } });
+    await prisma.organizationMember.deleteMany({
+      where: { userId: testUser.id },
+    });
     await prisma.userAccount.delete({ where: { id: testUser.id } });
     await prisma.organization.delete({ where: { id: testOrg.id } });
     await prisma.organization.delete({ where: { id: otherOrg.id } });
@@ -116,8 +130,10 @@ describe('Auth e2e Tests', () => {
         .send({ email: testUser.email, password: 'WrongPassword!' });
 
       expect(res.status).toBe(401);
-      
-      const user = await prisma.userAccount.findUnique({ where: { id: testUser.id }});
+
+      const user = await prisma.userAccount.findUnique({
+        where: { id: testUser.id },
+      });
       expect(user?.failedAttempts).toBeGreaterThan(0);
     });
 
@@ -133,11 +149,16 @@ describe('Auth e2e Tests', () => {
         .send({ email: testUser.email, password: 'SecurePassword123!' });
 
       expect(res.status).toBe(401);
-      
-      const user = await prisma.userAccount.findUnique({ where: { id: testUser.id }});
+
+      const user = await prisma.userAccount.findUnique({
+        where: { id: testUser.id },
+      });
       expect(user?.status).toBe('LOCKED');
 
-      await prisma.userAccount.update({ where: { id: testUser.id }, data: { status: 'ACTIVE', failedAttempts: 0 } });
+      await prisma.userAccount.update({
+        where: { id: testUser.id },
+        data: { status: 'ACTIVE', failedAttempts: 0 },
+      });
     });
   });
 
@@ -151,7 +172,8 @@ describe('Auth e2e Tests', () => {
     });
 
     it('TEST 5: Modified JWT payload - Expected Rejected', async () => {
-      const forgedToken = validAccessToken.substring(0, validAccessToken.length - 5) + 'xxxxx';
+      const forgedToken =
+        validAccessToken.substring(0, validAccessToken.length - 5) + 'xxxxx';
       const res = await request(httpServer)
         .post('/api/v1/auth/logout')
         .set('Authorization', `Bearer ${forgedToken}`);
@@ -178,9 +200,11 @@ describe('Auth e2e Tests', () => {
         sub: testUser.id,
         email: testUser.email,
         organizationId: otherOrg.id, // User is NOT a member of otherOrg
-        role: 'SUPER_ADMIN'
+        role: 'SUPER_ADMIN',
       };
-      const signedForged = await jwtService.signAsync(payload, { secret: process.env.JWT_SECRET || 'CHANGE_ME_IN_PRODUCTION' });
+      const signedForged = await jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET || 'CHANGE_ME_IN_PRODUCTION',
+      });
 
       const res = await request(httpServer)
         .get('/api/v1/test-tenant/resource')

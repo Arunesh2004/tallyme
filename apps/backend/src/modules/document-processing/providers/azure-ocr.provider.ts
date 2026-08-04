@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DocumentAnalysisClient, AzureKeyCredential } from '@azure/ai-form-recognizer';
+import {
+  DocumentAnalysisClient,
+  AzureKeyCredential,
+} from '@azure/ai-form-recognizer';
 import { OCRProvider, OCRResult } from './ocr-provider.interface';
 
 @Injectable()
@@ -23,7 +26,9 @@ export class AzureOCRProvider implements OCRProvider {
           new AzureKeyCredential(apiKey),
         );
       } catch (error: any) {
-        this.logger.error(`Failed to initialize Azure DocumentAnalysisClient: ${error.message}`);
+        this.logger.error(
+          `Failed to initialize Azure DocumentAnalysisClient: ${error.message}`,
+        );
       }
     }
   }
@@ -39,8 +44,10 @@ export class AzureOCRProvider implements OCRProvider {
     }
 
     try {
-      this.logger.log(`Starting Azure Document Intelligence extraction for document (${documentBuffer.length} bytes)`);
-      
+      this.logger.log(
+        `Starting Azure Document Intelligence extraction for document (${documentBuffer.length} bytes)`,
+      );
+
       const poller = await this.client.beginAnalyzeDocument(
         'prebuilt-read',
         documentBuffer,
@@ -52,7 +59,9 @@ export class AzureOCRProvider implements OCRProvider {
         throw new Error('No content returned from Azure Document Intelligence');
       }
 
-      this.logger.log('Successfully extracted text via Azure Document Intelligence.');
+      this.logger.log(
+        'Successfully extracted text via Azure Document Intelligence.',
+      );
 
       return {
         text: content,
@@ -63,7 +72,10 @@ export class AzureOCRProvider implements OCRProvider {
         },
       };
     } catch (error: any) {
-      this.logger.error(`Azure OCR Extraction failed: ${error.message}`, error.stack);
+      this.logger.error(
+        `Azure OCR Extraction failed: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
